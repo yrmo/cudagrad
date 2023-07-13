@@ -22,6 +22,36 @@ __global__ void vecDiv(float* A, float* B, float* C) {
   C[i] = A[i] / B[i];
 }
 
+struct Add {
+    __device__ float operator()(const float& a, const float& b) const {
+        return a + b;
+    }
+};
+
+struct Sub {
+    __device__ float operator()(const float& a, const float& b) const {
+        return a - b;
+    }
+};
+
+struct Mul {
+    __device__ float operator()(const float& a, const float& b) const {
+        return a * b;
+    }
+};
+
+struct Div {
+    __device__ float operator()(const float& a, const float& b) const {
+        return a / b;
+    }
+};
+
+template <typename T>
+__global__ void vecOp(T op, float* A, float* B, float* C) {
+    int i = threadIdx.x + blockDim.x * blockIdx.x;
+    C[i] = op(A[i], B[i]);
+}
+
 int main(void) {
   int N = 1024;
   size_t size = N * sizeof(float);
@@ -45,7 +75,7 @@ int main(void) {
 
   int threadsPerBlock = 256;
   int blocksPerGrid = (N + threadsPerBlock - 1) / threadsPerBlock;
-  vecAdd<<<blocksPerGrid, threadsPerBlock>>>(d_A, d_B, d_C);
+  vecOp<<<blocksPerGrid, threadsPerBlock>>>(Add(), d_A, d_B, d_C);
 
   cudaMemcpy(h_C, d_C, size, cudaMemcpyDeviceToHost);
 
