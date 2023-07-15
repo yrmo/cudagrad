@@ -2,7 +2,7 @@
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 from setuptools import setup
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 # The main interface is through Pybind11Extension.
 # * You can add cxx_std=11/14/17, and then build_ext can be removed.
@@ -24,10 +24,10 @@ ext_modules = [
 setup(
     name="cudagrad",
     version=__version__,
-    author="Sylvain Corlay",
-    author_email="sylvain.corlay@gmail.com",
-    url="https://github.com/pybind/cudagrad",
-    description="A test project using pybind11",
+    author="Ryan Moore",
+    author_email="moorethreads@hey.com",
+    url="https://github.com/yrom1/cudagrad",
+    description="A small autograd engine",
     long_description="",
     ext_modules=ext_modules,
     extras_require={"test": "pytest"},
