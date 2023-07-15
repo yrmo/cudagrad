@@ -113,7 +113,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
 
   void backward();
   void zero_grad();
-  std::shared_ptr<Tensor> sum();
+  std::shared_ptr<Tensor> sum(std::shared_ptr<Tensor> t);
   std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> lhs,
                                  std::shared_ptr<Tensor> rhs);
 
@@ -317,14 +317,14 @@ std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> lhs,
   return binaryForwardOperator<std::shared_ptr<MatMulForward>>(lhs, rhs, f);
 }
 
-std::shared_ptr<Tensor> Tensor::sum() {
+std::shared_ptr<Tensor> sum(std::shared_ptr<Tensor> t) {
   std::vector<float> total(1, 0.0f);
-  for (float x : data_) {
+  for (float x : t.get()->data_) {
     total[0] += x;
   }
   return std::make_shared<Tensor>(
       std::vector<int>{1}, std::vector<float>{total},
-      std::vector<std::shared_ptr<Tensor>>{get_shared()},
+      std::vector<std::shared_ptr<Tensor>>{t.get()->get_shared()},
       std::make_shared<SumBackward>(), 's');
 }
 

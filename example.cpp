@@ -5,7 +5,7 @@ int main() {
   auto c = cg::tensor({2, 2}, {10.0, 10.0, 10.0, 10.0});
   auto d = cg::tensor({2, 2}, {11.0, 11.0, 11.0, 11.0});
   auto e = (cg::matmul(a, b) + c) * d;
-  auto f = e.get()->sum();
+  auto f = cg::sum(e);
   f.get()->backward();
 
   // (std::vector<float> &) { 2794.00f }
