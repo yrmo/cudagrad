@@ -1,11 +1,6 @@
-<p align="center">
-  <img src="logo.jpg">
-</p>
-<p align="center">
-  <it>A small autograd engine, inspired by PyTorch and micrograd</it>
-</p>
+# cudagrad ⚡️
 
----
+A small autograd engine, inspired by PyTorch and micrograd
 
 ## Example
 
