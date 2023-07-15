@@ -12,15 +12,13 @@ int main() {
   auto c = cg::tensor({2, 2}, {10.0, 10.0, 10.0, 10.0});
   auto d = cg::tensor({2, 2}, {11.0, 11.0, 11.0, 11.0});
   auto e = (cg::matmul(a, b) + c) * d;
-  auto f = e.get()->sum();
+  auto f = cg::sum(e);
   f.get()->backward();
 
-  // (std::vector<float> &) { 2794.00f }
-  f.get()->data_;
-  // (std::vector<float> &) { 143.000f, 187.000f, 143.000f, 187.000f }
-  a.get()->grad_;
-  // (std::vector<float> &) { 66.0000f, 66.0000f, 88.0000f, 88.0000f }
-  b.get()->grad_;
+  // std::vector<float>
+  f.get()->data_; // { 2794.00f }
+  a.get()->grad_; // { 143.000f, 187.000f, 143.000f, 187.000f }
+  b.get()->grad_; // { 66.0000f, 66.0000f, 88.0000f, 88.0000f }
 }
 ```
 
