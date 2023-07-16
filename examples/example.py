@@ -1,5 +1,4 @@
-# this is not real... *yet*
-# pip install cudagrad; py example.py
+# pip install cudagrad; py ./examples/example.py
 import cudagrad as cg
 
 a = cg.tensor([2, 2], [2.0, 3.0, 4.0, 5.0])

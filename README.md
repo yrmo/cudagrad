@@ -7,7 +7,7 @@ A small autograd engine, inspired by PyTorch and micrograd
 ## Example
 
 ```cpp
-// c++ -std=c++11 -I../src example.cpp && ./a.out
+// c++ -std=c++11 -I./src examples/example.cpp && ./a.out
 #include "cudagrad.hpp"
 int main() {
   auto a = cg::tensor({2, 2}, {2.0, 3.0, 4.0, 5.0});
@@ -27,8 +27,7 @@ int main() {
 ```
 
 ```py
-# this is not real... *yet*
-# pip install cudagrad; py example.py
+# pip install cudagrad; py ./examples/example.py
 import cudagrad as cg
 
 a = cg.tensor([2, 2], [2.0, 3.0, 4.0, 5.0])

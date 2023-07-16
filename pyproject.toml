@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cudagrad"
-version = "0.0.9"
+version = "0.0.11"
 authors = [
   { name="Ryan Moore", email="moorethreads@hey.com" },
 ]
