@@ -10,6 +10,10 @@ A small autograd engine, inspired by PyTorch and micrograd
 ```
 
 ```py
+{open('example.py').read().strip()}
+```
+
+```py
 >>> import torch
 >>> a = torch.tensor(((2.0, 3.0), (4.0, 5.0)), requires_grad=True)
 >>> b = torch.tensor(((6.0, 7.0), (8.0, 9.0)), requires_grad=True)
