@@ -2,6 +2,8 @@
 
 A small autograd engine, inspired by PyTorch and micrograd
 
+![](parallel.png)
+
 ## Example
 
 ```cpp

@@ -51,6 +51,31 @@ PYBIND11_MODULE(cudagrad, m) {
     }, R"pbdoc(Magic tensor)pbdoc",
     py::arg("sizes"), py::arg("values"));
 
+    py::class_<cg::Tensor, std::shared_ptr<cg::Tensor>>(m, "Tensor")
+        .def(py::init<std::vector<int>, std::vector<float>>())
+        .def(py::init<std::vector<int>, std::vector<float>, std::vector<std::shared_ptr<cg::Tensor>>, std::shared_ptr<cg::AutoGradBackward>, char>())
+        .def("get_shared", &cg::Tensor::get_shared)
+        .def("backward", &cg::Tensor::backward)
+        .def("zero_grad", &cg::Tensor::zero_grad)
+        .def("sum", &cg::Tensor::sum)
+        .def("matmul", &cg::Tensor::matmul)
+        .def_property_readonly("size", &cg::Tensor::get_size)
+        .def_property_readonly("data", &cg::Tensor::get_data)
+        .def_property_readonly("grad", &cg::Tensor::get_grad)
+        .def("graph", &cg::Tensor::graph)
+        .def_static("ones", &cg::Tensor::ones)
+        .def_static("zeros", &cg::Tensor::zeros)
+        .def_static("explode", &cg::Tensor::explode)
+        .def_static("rand", &cg::Tensor::rand);
+
+    // Add the stream output operator if you want to print your Tensor object in Python.
+    // py::class_<std::ostream>(m, "ostream")
+    //     .def(py::self_ns::str(py::self_ns::self))
+    //     .def(py::self_ns::repr(py::self_ns::self));
+
+    // m.def("__lshift__", [](std::ostream &os, const std::shared_ptr<cg::Tensor> &t) -> std::ostream& {
+    //     os << t; return os;
+    // }, py::is_operator());
 
     // m.def("tensor", [](std::vector<int> size, std::vector<float> data) {
     //     return cg::tensor(size, data);
