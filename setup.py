@@ -1,8 +1,13 @@
 # Available at setup time due to pyproject.toml
+from importlib.metadata import version
+
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 from setuptools import setup
 
-__version__ = "0.0.11"
+try:
+    __version__ = version(__name__)
+except:
+    __version__ = "unknown"
 
 # The main interface is through Pybind11Extension.
 # * You can add cxx_std=11/14/17, and then build_ext can be removed.
