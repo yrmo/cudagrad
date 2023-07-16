@@ -69,7 +69,8 @@ PYBIND11_MODULE(cudagrad, m) {
         .def("__add__", [](std::shared_ptr<cg::Tensor> a, std::shared_ptr<cg::Tensor> b) { return a + b; })
         .def("__sub__", [](std::shared_ptr<cg::Tensor> a, std::shared_ptr<cg::Tensor> b) { return a - b; })
         .def("__mul__", [](std::shared_ptr<cg::Tensor> a, std::shared_ptr<cg::Tensor> b) { return a * b; })
-        .def("__truediv__", [](std::shared_ptr<cg::Tensor> a, std::shared_ptr<cg::Tensor> b) { return a / b; });
+        .def("__truediv__", [](std::shared_ptr<cg::Tensor> a, std::shared_ptr<cg::Tensor> b) { return a / b; })
+        .def("__matmul__", [](std::shared_ptr<cg::Tensor> a, std::shared_ptr<cg::Tensor> b) { return cg::matmul(a, b); });
 
     // Add the stream output operator if you want to print your Tensor object in Python.
     // py::class_<std::ostream>(m, "ostream")
