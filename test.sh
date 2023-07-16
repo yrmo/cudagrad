@@ -11,10 +11,9 @@ cmake ..
 make
 ./cudagrad_test
 
-pip uninstall cudagrad
+pip uninstall -y cudagrad
 pip cache purge
-cd /
-pip install cudagrad
 cd ~/cudagrad
+pip install . # hmmm, this tests local install but not pypi install...
 py tests/test.py
 # make clean
