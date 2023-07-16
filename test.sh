@@ -7,5 +7,5 @@ cd build
 cmake -DCMAKE_PREFIX_PATH=$(python -c 'import torch;print(torch.utils.cmake_prefix_path)') ..
 cmake ..
 make
-./Tensor
+./cudagrad_test
 # make clean
