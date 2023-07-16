@@ -1,4 +1,4 @@
-// c++ -std=c++20 or.cpp && ./a.out
+// c++ -std=c++11 -I./src examples/or.cpp && ./a.out
 
 #include "cudagrad.hpp"
 #include <cmath>
