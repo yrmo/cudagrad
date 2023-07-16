@@ -3,6 +3,8 @@ README = f"""\
 
 A small autograd engine, inspired by PyTorch and micrograd
 
+![](parallel_1_20.png)
+
 ## Example
 
 ```cpp
