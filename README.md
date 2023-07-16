@@ -1,6 +1,6 @@
-# cudagrad⚡️
+# cudagrad
 
-A small autograd engine, inspired by PyTorch and micrograd
+A small autograd engine
 
 ![](parallel_1_20.png)
 
@@ -42,25 +42,6 @@ print(f.data) # [2794.0]
 print(f.size) # [1]
 print(a.grad) # [143.0, 187.0, 143.0, 187.0]
 print(b.grad) # [66.0, 66.0, 88.0, 88.0]
-```
-
-```py
->>> import torch
->>> a = torch.tensor(((2.0, 3.0), (4.0, 5.0)), requires_grad=True)
->>> b = torch.tensor(((6.0, 7.0), (8.0, 9.0)), requires_grad=True)
->>> c = torch.tensor(((10.0, 10.0), (10.0, 10.0)), requires_grad=True)
->>> d = torch.tensor(((11.0, 11.0), (11.0, 11.0)), requires_grad=True)
->>> e = (a.matmul(b) + c) * d
->>> f = e.sum()
->>> f.backward()
->>> f
-tensor(2794., grad_fn=<SumBackward0>)
->>> a.grad
-tensor([[143., 187.],
-        [143., 187.]])
->>> b.grad
-tensor([[66., 66.],
-        [88., 88.]])
 ```
 
 ## Design
