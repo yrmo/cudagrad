@@ -6,11 +6,11 @@ A small autograd engine, inspired by PyTorch and micrograd
 ## Example
 
 ```cpp
-{open('example.cpp').read().strip()}
+{open('examples/example.cpp').read().strip()}
 ```
 
 ```py
-{open('example.py').read().strip()}
+{open('examples/example.py').read().strip()}
 ```
 
 ```py
