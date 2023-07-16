@@ -56,7 +56,7 @@ PYBIND11_MODULE(cudagrad, m) {
         .def("get_shared", &cg::Tensor::get_shared)
         .def("backward", &cg::Tensor::backward)
         .def("zero_grad", &cg::Tensor::zero_grad)
-        .def("sum", &cg::sum)
+        .def("sum", &cg::Tensor::sum)
         .def("matmul", &cg::matmul)
         .def_property_readonly("size", &cg::Tensor::get_size)
         .def_property_readonly("data", &cg::Tensor::get_data)

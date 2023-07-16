@@ -40,7 +40,7 @@ TEST(Basic, Sum) {
   tensor([1., 1., 1.])
   */
   cg::t a = cg::tensor({3}, {42.0, 24.0, 12.0});
-  auto l = cg::sum(a);
+  auto l = a.get()->sum();
   l.get()->backward();
 
   EXPECT_EQ(l.get()->data_[0], 78.0);
@@ -72,7 +72,7 @@ TEST(Basic, Minus) {
   cg::t a = cg::tensor({4}, {5.0, 4.0, 3.0, 2.0});
   cg::t b = cg::tensor({4}, {2.0, 3.0, 4.0, 5.0});
   cg::t c = a - b;
-  auto l = cg::sum(c);
+  auto l = c.get()->sum();
   l.get()->backward();
 
   EXPECT_EQ(l.get()->data_[0], 0.0);
@@ -111,7 +111,7 @@ TEST(Basic, Multiply) {
   cg::t a = cg::tensor({4}, {5.0, 4.0, 3.0, 2.0});
   cg::t b = cg::tensor({4}, {2.0, 3.0, 4.0, 5.0});
   cg::t c = a * b;
-  auto l = cg::sum(c);
+  auto l = c.get()->sum();
   l.get()->backward();
 
   EXPECT_EQ(l.get()->data_[0], 44.0);
@@ -152,7 +152,7 @@ TEST(Basic, Divide) {
   cg::t a = cg::tensor({4}, {5.0, 4.0, 3.0, 2.0});
   cg::t b = cg::tensor({4}, {2.0, 3.0, 4.0, 5.0});
   cg::t c = a / b;
-  auto l = cg::sum(c);
+  auto l = c.get()->sum();
   l.get()->backward();
 
   EXPECT_NEAR(l.get()->data_[0], 4.9833, 0.1);
@@ -191,7 +191,7 @@ TEST(Basic, MatMul) {
   cg::t a = cg::tensor({2, 2}, {5.0, 4.0, 3.0, 2.0});
   cg::t b = cg::tensor({2, 2}, {2.0, 3.0, 4.0, 5.0});
   cg::t c = cg::matmul(a, b);
-  auto l = cg::sum(c);
+  auto l = c.get()->sum();
   l.get()->backward();
 
   EXPECT_NEAR(l.get()->data_[0], 94.0, 0.1);
@@ -241,7 +241,7 @@ TEST(Basic, ChainedMM) {
   cg::t b = cg::tensor({2, 2}, {2.0, 3.0, 4.0, 5.0});
   cg::t c = cg::matmul(a, b);
   cg::t d = cg::matmul(c, b);
-  cg::t l = cg::sum(d);
+  cg::t l = d.get()->sum();
   l.get()->backward();
 
   EXPECT_NEAR(l.get()->data_[0], 686.0, 0.1);
@@ -323,7 +323,7 @@ TEST(Basic, ChainedComplexOperations) {
   cg::t c = cg::tensor({2, 2}, {10.0, 10.0, 10.0, 10.0});
   cg::t d = cg::tensor({2, 2}, {11.0, 11.0, 11.0, 11.0});
   cg::t e = (cg::matmul(a, b) + c) * d;
-  cg::t f = cg::sum(e);
+  cg::t f = e.get()->sum();
   f.get()->backward();
 
   EXPECT_NEAR(f.get()->data_[0], 2794.0, 0.1);
@@ -373,7 +373,7 @@ TEST(Basic, ReLU) {
   */
   cg::t a = cg::tensor({2, 2}, {-1.0, -2.0, 1.0, 2.0});
   cg::t b = cg::relu(a);
-  auto l = cg::sum(b);
+  auto l = b.get()->sum();
   l.get()->backward();
 
   EXPECT_EQ(l.get()->data_[0], 3.0);
@@ -418,7 +418,7 @@ TEST(Torch, LayerManual) {
   cg::t b = cg::tensor(
       {3, 4}, {1.0, 2.0, 3.0, 4.0, 1.0, 2.0, 3.0, 4.0, 1.0, 2.0, 3.0, 4.0});
   cg::t result = cg::matmul(x, w) + b;
-  cg::t l = cg::sum(result);
+  cg::t l = result.get()->sum();
   l.get()->backward();
   auto w_g = w.get()->grad_;
   auto b_g = b.get()->grad_;

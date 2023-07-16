@@ -6,7 +6,7 @@ int main() {
   auto c = cg::tensor({2, 2}, {10.0, 10.0, 10.0, 10.0});
   auto d = cg::tensor({2, 2}, {11.0, 11.0, 11.0, 11.0});
   auto e = (cg::matmul(a, b) + c) * d;
-  auto f = cg::sum(e);
+  auto f = e.get()->sum();
   f.get()->backward();
 
   using namespace std; // NOLINT(build/namespaces)
