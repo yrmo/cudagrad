@@ -1,4 +1,4 @@
-// c++ -std=c++11 example.cpp && ./a.out
+// c++ -std=c++11 -I../src example.cpp && ./a.out
 #include "cudagrad.hpp"
 int main() {
   auto a = cg::tensor({2, 2}, {2.0, 3.0, 4.0, 5.0});
