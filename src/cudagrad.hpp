@@ -25,6 +25,8 @@
 
 namespace cg {
 
+int foo(int i) { return i + 1; }
+
 struct AutoGradBackward;
 struct AddBackward;
 struct SubBackward;

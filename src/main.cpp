@@ -1,3 +1,5 @@
+#include "cudagrad.hpp"
+
 #include <pybind11/pybind11.h>
 
 #define STRINGIFY(x) #x
@@ -33,6 +35,12 @@ PYBIND11_MODULE(cudagrad, m) {
         Subtract two numbers
 
         Some other explanation about the subtract function.
+    )pbdoc");
+
+    m.def("foo", &cg::foo, R"pbdoc(
+        Add one
+
+        Why is this here?
     )pbdoc");
 
 #ifdef VERSION_INFO
