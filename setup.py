@@ -1,13 +1,19 @@
 # Available at setup time due to pyproject.toml
-from importlib.metadata import version
 
+import toml
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 from setuptools import setup
 
-try:
-    __version__ = version(__name__)
-except:
-    __version__ = "unknown"
+
+def get_version_from_toml():
+    data = toml.load('pyproject.toml')
+    version = data.get('project', {}).get('version', None)
+    if version is None:
+        raise RuntimeError("Can't get version in TOML!")
+    else:
+        return version
+
+__version__ = get_version_from_toml()
 
 # The main interface is through Pybind11Extension.
 # * You can add cxx_std=11/14/17, and then build_ext can be removed.

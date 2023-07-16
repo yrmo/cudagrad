@@ -3,7 +3,7 @@
 #!/usr/bin/env bash
 set -eou pipefail
 
-py -m pip uninstall cudagrad
+py -m pip uninstall -y cudagrad
 pip cache purge
 rm -rf dist
 # py -m pip install --upgrade build

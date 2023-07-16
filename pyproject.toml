@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=40.8.0", "wheel", "pybind11>=2.10.1"]
+requires = ["setuptools>=40.8.0", "wheel", "pybind11>=2.10.1", "toml"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "cudagrad"
-version = "0.0.14"
+version = "0.0.15"
 authors = [
   { name="Ryan Moore", email="moorethreads@hey.com" },
 ]
