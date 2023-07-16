@@ -1,4 +1,6 @@
 #!/bin/bash
+set -eou pipefail
+
 git submodule update --init --recursive
 
 rm -rf build
@@ -8,4 +10,11 @@ cmake -DCMAKE_PREFIX_PATH=$(python -c 'import torch;print(torch.utils.cmake_pref
 cmake ..
 make
 ./cudagrad_test
+
+pip uninstall cudagrad
+pip cache purge
+cd /
+pip install cudagrad
+cd ~/cudagrad
+py tests/test.py
 # make clean
