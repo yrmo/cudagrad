@@ -132,17 +132,11 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
     for (auto x : children_) std::cout << x << std::endl;
   }
 
-  std::vector<int> get_size() const {
-      return size_;
-  }
+  std::vector<int> get_size() const { return size_; }
 
-  std::vector<float> get_data() const {
-      return data_;
-  }
+  std::vector<float> get_data() const { return data_; }
 
-  std::vector<float> get_grad() const {
-      return grad_;
-  }
+  std::vector<float> get_grad() const { return grad_; }
 
   void graph(int depth = 0) {
     auto print_if_not_leaf = [this](char c) -> const char {

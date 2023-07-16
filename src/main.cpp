@@ -53,7 +53,6 @@ PYBIND11_MODULE(cudagrad, m) {
 
     py::class_<cg::Tensor, std::shared_ptr<cg::Tensor>>(m, "Tensor")
         .def(py::init<std::vector<int>, std::vector<float>>())
-        .def(py::init<std::vector<int>, std::vector<float>, std::vector<std::shared_ptr<cg::Tensor>>, std::shared_ptr<cg::AutoGradBackward>, char>())
         .def("get_shared", &cg::Tensor::get_shared)
         .def("backward", &cg::Tensor::backward)
         .def("zero_grad", &cg::Tensor::zero_grad)
@@ -66,7 +65,8 @@ PYBIND11_MODULE(cudagrad, m) {
         .def_static("ones", &cg::Tensor::ones)
         .def_static("zeros", &cg::Tensor::zeros)
         .def_static("explode", &cg::Tensor::explode)
-        .def_static("rand", &cg::Tensor::rand);
+        .def_static("rand", &cg::Tensor::rand)
+        .def("__add__", [](std::shared_ptr<cg::Tensor> a, std::shared_ptr<cg::Tensor> b) { return a + b; });
 
     // Add the stream output operator if you want to print your Tensor object in Python.
     // py::class_<std::ostream>(m, "ostream")
