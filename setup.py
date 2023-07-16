@@ -20,7 +20,7 @@ except:
 
 ext_modules = [
     Pybind11Extension("cudagrad",
-        ["src/main.cpp"],
+        ["src/bindings.cpp"],
         # Example: passing in the version to the compiled code
         define_macros = [('VERSION_INFO', __version__)],
         ),
