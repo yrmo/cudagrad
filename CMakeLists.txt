@@ -17,7 +17,7 @@ set(USE_CUDA OFF)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/googletest)
 
 # Add the target executable
-add_executable(${PROJECT_NAME} test.cpp)
+add_executable(${PROJECT_NAME} tests/test.cpp)
 
 # Link the executable against the googletest and torch libraries
 target_link_libraries(${PROJECT_NAME} gtest gtest_main ${TORCH_LIBRARIES})
@@ -35,7 +35,7 @@ find_program(CPPLINT NAMES cpplint)
 if(CLANG_FORMAT)
   add_custom_target(
     format
-    COMMAND ${CLANG_FORMAT} -i -style=Google ${CMAKE_SOURCE_DIR}/test.cpp ${CMAKE_SOURCE_DIR}/src/cudagrad.hpp
+    COMMAND ${CLANG_FORMAT} -i -style=Google ${CMAKE_SOURCE_DIR}/tests/test.cpp ${CMAKE_SOURCE_DIR}/src/cudagrad.hpp
     COMMENT "Running clang-format on the source files"
   )
 endif()
@@ -43,7 +43,7 @@ endif()
 if(CPPLINT)
   add_custom_target(
     lint
-    COMMAND ${CPPLINT} ${CMAKE_SOURCE_DIR}/test.cpp ${CMAKE_SOURCE_DIR}/src/cudagrad.hpp
+    COMMAND ${CPPLINT} ${CMAKE_SOURCE_DIR}/tests/test.cpp ${CMAKE_SOURCE_DIR}/src/cudagrad.hpp
     COMMENT "Running cpplint on the source files"
   )
 endif()
