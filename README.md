@@ -15,7 +15,7 @@ int main() {
   auto c = cg::tensor({2, 2}, {10.0, 10.0, 10.0, 10.0});
   auto d = cg::tensor({2, 2}, {11.0, 11.0, 11.0, 11.0});
   auto e = (cg::matmul(a, b) + c) * d;
-  auto f = cg::sum(e);
+  auto f = e.get()->sum();
   f.get()->backward();
 
   using namespace std; // NOLINT(build/namespaces)
@@ -25,6 +25,8 @@ int main() {
   for (auto& x : b.get()->grad_) { cout << x << endl; } // 66 66 88 88
 }
 ```
+
+Available on [PyPI](https://pypi.org/project/cudagrad/), use `pip install cudagrad` to get the Python bindings
 
 ```py
 # pip install cudagrad; py ./examples/example.py

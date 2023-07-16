@@ -11,6 +11,8 @@ A small autograd engine
 {open('examples/example.cpp').read().strip()}
 ```
 
+Available on [PyPI](https://pypi.org/project/cudagrad/), use `pip install cudagrad` to get the Python bindings
+
 ```py
 {open('examples/example.py').read().strip()}
 ```
