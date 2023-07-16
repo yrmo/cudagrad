@@ -17,3 +17,7 @@ cd ~/cudagrad
 pip install . # hmmm, this tests local install but not pypi install...
 py tests/test.py
 # make clean
+
+cd ~/cudagrad
+c++ -std=c++11 -I./src examples/example.cpp && ./a.out
+pip install cudagrad; py ./examples/example.py
