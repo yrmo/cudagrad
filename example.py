@@ -2,10 +2,10 @@
 # pip install cudagrad; py example.py
 import cudagrad as cg
 
-a = cg.tensor({2, 2}, {2.0, 3.0, 4.0, 5.0})
-b = cg.tensor({2, 2}, {6.0, 7.0, 8.0, 9.0})
-c = cg.tensor({2, 2}, {10.0, 10.0, 10.0, 10.0})
-d = cg.tensor({2, 2}, {11.0, 11.0, 11.0, 11.0})
+a = cg.tensor([2, 2], [2.0, 3.0, 4.0, 5.0])
+b = cg.tensor([2, 2], [6.0, 7.0, 8.0, 9.0])
+c = cg.tensor([2, 2], [10.0, 10.0, 10.0, 10.0])
+d = cg.tensor([2, 2], [11.0, 11.0, 11.0, 11.0])
 e = (cg.matmul(a, b) + c) * d
 f = cg.sum(e)
 f.backward()
