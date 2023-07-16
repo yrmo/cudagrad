@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <vector>
 
-#include "cudagrad.hpp"  // NOLINT (build/include_subdir)
+#include "src/cudagrad.hpp"  // NOLINT (build/include_subdir)
 
 TEST(Basic, Shared) {
   cg::t foo = cg::tensor({1}, {42.0});
