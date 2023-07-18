@@ -44,6 +44,12 @@ PYBIND11_MODULE(cudagrad, m) {
         Why is this here?
     )pbdoc");
 
+    m.def("hello", &cg::hello, R"pbdoc(
+        Can has CUDA?
+
+        Hello!
+    )pbdoc");
+
     m.def("tensor", [](std::vector<int> sizes, std::vector<float> values) {
         // cast the function pointer to resolve the ambiguity
         auto func = static_cast<std::shared_ptr<cg::Tensor> (*)(std::vector<int>, std::vector<float>)>(&cg::tensor);
