@@ -19,8 +19,8 @@ int main() {
   f.get()->backward();
 
   using namespace std; // NOLINT(build/namespaces)
-  for (auto& x : f.get()->data_) { cout << x << endl;} // 2794
-  for (auto& x : f.get()->size_) { cout << x << endl;} // 1
+  for (auto& x : f.get()->data_) { cout << x << endl; } // 2794
+  for (auto& x : f.get()->size_) { cout << x << endl; } // 1
   for (auto& x : a.get()->grad_) { cout << x << endl; } // 143 187 143 187
   for (auto& x : b.get()->grad_) { cout << x << endl; } // 66 66 88 88
 }
