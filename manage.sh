@@ -32,6 +32,13 @@ elif [ "$1" = "test" ]; then
   cd ~/cudagrad
   c++ -std=c++11 -I./src examples/example.cpp && ./a.out
   pip install cudagrad; py ./examples/example.py
+elif [ "$1" = "publish" ]; then
+  py -m pip uninstall -y cudagrad
+  pip cache purge
+  rm -rf dist
+  py setup.py sdist
+  py -m pip install --upgrade twine
+  py -m twine upload dist/*
 else
   echo "Error: Invalid command `$1`."
   exit 1
