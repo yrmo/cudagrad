@@ -9,7 +9,7 @@ int main() {
   auto f = e.get()->sum();
   f.get()->backward();
 
-  using namespace std; // NOLINT(build/namespaces)
+  using namespace std;
   for (auto& x : f.get()->data_) {cout<<x<<" ";} // 2794
   for (auto& x : f.get()->size_) {cout<<x<<" ";} // 1
   for (auto& x : a.get()->grad_) {cout<<x<<" ";} // 143 187 143 187
