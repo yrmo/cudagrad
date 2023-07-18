@@ -1,35 +1,28 @@
 [build-system]
-requires = ["setuptools>=40.8.0", "wheel", "pybind11>=2.10.1", "toml"]
+requires = [ "setuptools>=40.8.0", "wheel", "pybind11>=2.10.1", "toml",]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "cudagrad"
-version = "0.0.16"
-authors = [
-  { name="Ryan Moore", email="moorethreads@hey.com" },
-]
+version = "0.0.17"
 description = "A small autograd engine"
 readme = "README.md"
 requires-python = ">=3.7"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "Operating System :: OS Independent",
-]
-dependencies = [
-    "micrograd",
-]
+classifiers = [ "Programming Language :: Python :: 3", "Operating System :: OS Independent",]
+dependencies = [ "micrograd",]
+[[project.authors]]
+name = "Ryan Moore"
+email = "moorethreads@hey.com"
 
 [project.urls]
-"Homepage" = "https://github.com/yrom1/cudagrad"
+Homepage = "https://github.com/yrom1/cudagrad"
 "Bug Tracker" = "https://github.com/yrom1/cudagrad/issues"
-
-[tool.pytest.ini_options]
-addopts = [
-    "--import-mode=importlib",
-]
 
 [tool.ty]
 type_checker = "mypy"
 
 [tool.mypy]
 ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts = [ "--import-mode=importlib",]
