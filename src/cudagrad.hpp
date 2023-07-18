@@ -593,6 +593,9 @@ using t = std::shared_ptr<Tensor>;
 
 namespace nn {
 
+// TODO(yrom1): nonlinearity of Neuron need to pass and drill down from MLP
+//              static_cast<bool>(vec_.size() - 1) something liek this for MLP
+
 /*
 class Neuron(Module):
     def __init__(self, nin: int, nonlin: bool = True):
@@ -700,6 +703,58 @@ struct Layer {
   void train() {
     for (auto& neuron : neurons_) {
       neuron.train();
+    }
+  }
+};
+
+/*
+class MLP(Module):
+
+    def __init__(self, nin, nouts):
+        sz = [nin] + nouts
+        self.layers = [Layer(sz[i], sz[i+1], nonlin=i!=len(nouts)-1) for i in range(len(nouts))]
+
+    def __call__(self, x):
+        for layer in self.layers:
+            x = layer(x)
+        return x
+
+    def parameters(self):
+        return [p for layer in self.layers for p in layer.parameters()]
+
+    def __repr__(self):
+        return f"MLP of [{', '.join(str(layer) for layer in self.layers)}]"
+*/
+
+struct MLP {
+  int nin_;
+  std::vector<int> nouts_;
+  float rate_;
+  std::vector<int> sz_;
+  std::vector<Layer> layers_;
+  MLP(int nin, std::vector<int> nouts, float rate) : nin_(nin), nouts_(nouts), rate_(rate) {
+    sz_.push_back(nin);
+    for (auto& x : nouts_) { // TODO extend c++?
+      sz_.push_back(x);
+    }
+
+    for (int i = 0; i < nouts_.size(); ++i) {
+      layers_.push_back(Layer(sz_[i], sz_[i + 1], rate_)); // len(sz) == len(nouts_) + 1
+    }
+  }
+
+  std::vector<std::shared_ptr<Tensor>> operator()(std::vector<std::shared_ptr<Tensor>> x) {
+    // because we didnt make things not a vector aribtarily in Layer this is easy
+    std::vector<std::shared_ptr<Tensor>> ans = x;
+    for (auto& layer : layers_) {
+      ans = layer(ans);
+    }
+    return ans;
+  }
+
+  void train() {
+    for (auto& layer : layers_) {
+      layer.train();
     }
   }
 };
