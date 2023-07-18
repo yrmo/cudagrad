@@ -39,6 +39,17 @@ elif [ "$1" = "publish" ]; then
   py setup.py sdist
   py -m pip install --upgrade twine
   py -m twine upload dist/*
+elif [ "$1" = "bump" ]; then
+  if [ "$2" = "major" ]; then
+    py -c "import toml; d = toml.load('pyproject.toml'); d['project']['version'] = '.'.join(str(int(x) + 1) if i == 0 else x for i, x in enumerate(d['project']['version'].split('.'))); toml.dump(d, open('pyproject.toml', 'w'))"
+  elif [ "$2" = "minor" ]; then
+    py -c "import toml; d = toml.load('pyproject.toml'); d['project']['version'] = '.'.join(str(int(x) + 1) if i == 1 else x for i, x in enumerate(d['project']['version'].split('.'))); toml.dump(d, open('pyproject.toml', 'w'))"
+  elif [ "$2" = "patch" ]; then
+    py -c "import toml; d = toml.load('pyproject.toml'); d['project']['version'] = '.'.join(str(int(x) + 1) if i == 2 else x for i, x in enumerate(d['project']['version'].split('.'))); toml.dump(d, open('pyproject.toml', 'w'))"
+  else
+    echo "Error: Invalid bump option: \`$2\`."
+    exit 1
+  fi
 else
   echo "Error: Invalid command \`$1\`."
   exit 1
