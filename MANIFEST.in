@@ -1,1 +1,2 @@
 include src/cudagrad.hpp
+include src/ops.cu

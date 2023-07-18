@@ -28,16 +28,10 @@ namespace cg {
 int foo(int i) { return i + 1; }
 
 #ifdef __CUDACC__
-__global__ void helloFromGPU() {
-  printf("Hello, GPU!\n");
-}
-extern "C" void hello() {
-  helloFromGPU<<<1,1>>>();
-  cudaDeviceSynchronize();
-}
+extern "C" void hello();
 #else
 extern "C" void hello() {
-  printf("Hello, CPU!\n");
+    printf("Hello, CPU!\n");
 }
 #endif
 
