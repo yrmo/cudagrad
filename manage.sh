@@ -40,6 +40,6 @@ elif [ "$1" = "publish" ]; then
   py -m pip install --upgrade twine
   py -m twine upload dist/*
 else
-  echo "Error: Invalid command `$1`."
+  echo "Error: Invalid command \`$1\`."
   exit 1
 fi
