@@ -1,3 +1,117 @@
+# wheel on macos cudagrad
+
+```
+Ryans-MacBook-Air:/ ryan$ pip purge cache
+ERROR: unknown command "purge"
+Ryans-MacBook-Air:/ ryan$ pip cache purge
+Files removed: 11
+Ryans-MacBook-Air:/ ryan$ pip install cudagrad
+Collecting cudagrad
+  Downloading cudagrad-0.0.20.tar.gz (10 kB)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Requirement already satisfied: micrograd in /Users/ryan/.pyenv/versions/3.11.1/lib/python3.11/site-packages (from cudagrad) (0.1.0)
+Building wheels for collected packages: cudagrad
+  Building wheel for cudagrad (pyproject.toml) ... done
+  Created wheel for cudagrad: filename=cudagrad-0.0.20-cp311-cp311-macosx_13_0_arm64.whl size=101718 sha256=bde2379bf3fb0e9ffbf5422ad9424e14291591e99d29a321b3bbf8b4fd1c8a8d
+  Stored in directory: /Users/ryan/Library/Caches/pip/wheels/40/95/9e/97cf5101e29c2e6ab87668f3e34a4ae8960120bdd85c6980bf
+Successfully built cudagrad
+Installing collected packages: cudagrad
+Successfully installed cudagrad-0.0.20
+
+[notice] A new release of pip is available: 23.1.2 -> 23.2
+[notice] To update, run: pip install --upgrade pip
+Ryans-MacBook-Air:/ ryan$
+```
+
+# 3 ways to optimize
+
+- nothing is faster than nothing (best fast code is no code)
+- speculation, make guesses about future behavior
+- efficient data structures (small size bytes)
+  - fewer memory reads
+  - less memory is fewer caches
+
+https://youtu.be/wyty6sFMWI0?t=315
+
+# size tensor cudagrad
+
+```py
+(main) Ryans-MacBook-Air:cudagrad ryan$ py
+Python 3.11.1 (main, Apr 19 2023, 18:41:42) [Clang 14.0.3 (clang-1403.0.22.14.1)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import cudagrad as cg
+>>> from sys import getsizeof
+>>> getsizeof(cg.tensor([1], [42]))
+56
+```
+
+??? It's the same as Foo(int a, int b)
+
+```cpp
+(main) Ryans-MacBook-Air:cudagrad ryan$ cling
+
+****************** CLING ******************
+* Type C++ code and press enter to run it *
+*             Type .q to exit             *
+*******************************************
+[cling]$ #include "src/cudagrad.hpp"
+[cling]$ auto x = cg::tensor({1}, {42})
+(std::shared_ptr<cg::Tensor> &) std::shared_ptr -> 0x6000021e8918
+[cling]$ x
+(std::shared_ptr<cg::Tensor> &) std::shared_ptr -> 0x6000021e8918
+[cling]$ getsizeof(x)
+input_line_7:2:2: error: use of undeclared identifier 'getsizeof'; did you mean 'sizeof'?
+ getsizeof(x)
+ ^
+[cling]$ sizeof(x)
+(unsigned long) 16
+```
+
+```py
+>>> import torch
+>>> getsizeof(torch.tensor((42)))
+80
+```
+
+# size of object, eg Foo(int a, int b) -> python (3.11, 56 bytes), c++ (8 bytes)
+
+```cpp
+[cling]$ struct Foo {
+[cling]$ ?   int a_;
+[cling]$ ?   int b_;
+[cling]$ ?   Foo(int a, int b) : a_(a), b_(b) {}
+[cling]$ ?   };
+[cling]$ auto x = Foo(1, 2);
+[cling]$ sizeof(x)
+(unsigned long) 8
+```
+
+```py
+(main) Ryans-MacBook-Air:cudagrad ryan$ py
+Python 3.11.1 (main, Apr 19 2023, 18:41:42) [Clang 14.0.3 (clang-1403.0.22.14.1)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> class Foo:
+...     def __init__(self, a, b):
+...             self.a = a
+...             self.b = b
+...
+>>> x = Foo(1, 2)
+>>> x
+<__main__.Foo object at 0x10458e6d0>
+>>> x.a
+1
+>>> x.b
+2
+>>> from sys import getsizeof
+>>> getsizeof(x)
+56
+>>>
+```
+
+https://youtu.be/wyty6sFMWI0?t=752
+
 # static vs dynamic autodiff
 
 ![](https://raw.githubusercontent.com/pytorch/pytorch/main/docs/source/_static/img/dynamic_graph.gif)
