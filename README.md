@@ -29,7 +29,7 @@ int main() {
 Available on [PyPI](https://pypi.org/project/cudagrad/), use `pip install cudagrad` to get the Python bindings
 
 ```py
-# pip install cudagrad; py ./examples/example.py
+# pip install cudagrad; python ./examples/example.py
 import cudagrad as cg
 
 a = cg.tensor([2, 2], [2.0, 3.0, 4.0, 5.0])

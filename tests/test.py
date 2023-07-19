@@ -1,4 +1,4 @@
-# py tests/test.py
+# python tests/test.py
 
 import cudagrad as cg
 import torch

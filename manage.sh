@@ -7,10 +7,10 @@ if [ $# -eq 0 ]; then
 fi
 
 if [ "$1" = "lint" ]; then
-  py -m mypy --ignore-missing-imports --pretty .
+  python -m mypy --ignore-missing-imports --pretty .
 elif [ "$1" = "clean" ]; then
-  py -m isort .
-  py -m black .
+  python -m isort .
+  python -m black .
 elif [ "$1" = "test" ]; then
   git submodule update --init --recursive
 
@@ -26,26 +26,26 @@ elif [ "$1" = "test" ]; then
   pip cache purge
   cd ~/cudagrad
   pip install . # hmmm, this tests local install but not pypi install...
-  py tests/test.py
+  python tests/test.py
   # make clean
 
   cd ~/cudagrad
   c++ -std=c++11 -I./src examples/example.cpp && ./a.out
-  pip install cudagrad; py ./examples/example.py
+  pip install cudagrad; python ./examples/example.py
 elif [ "$1" = "publish" ]; then
-  py -m pip uninstall -y cudagrad
+  python -m pip uninstall -y cudagrad
   pip cache purge
   rm -rf dist
-  py setup.py sdist
-  py -m pip install --upgrade twine
-  py -m twine upload dist/*
+  python setup.py sdist
+  python -m pip install --upgrade twine
+  python -m twine upload dist/*
 elif [ "$1" = "bump" ]; then
   if [ "$2" = "major" ]; then
-    py -c "import toml; d = toml.load('pyproject.toml'); d['project']['version'] = '.'.join(str(int(x) + 1) if i == 0 else x for i, x in enumerate(d['project']['version'].split('.'))); toml.dump(d, open('pyproject.toml', 'w'))"
+    python -c "import toml; d = toml.load('pyproject.toml'); d['project']['version'] = '.'.join(str(int(x) + 1) if i == 0 else x for i, x in enumerate(d['project']['version'].split('.'))); toml.dump(d, open('pyproject.toml', 'w'))"
   elif [ "$2" = "minor" ]; then
-    py -c "import toml; d = toml.load('pyproject.toml'); d['project']['version'] = '.'.join(str(int(x) + 1) if i == 1 else x for i, x in enumerate(d['project']['version'].split('.'))); toml.dump(d, open('pyproject.toml', 'w'))"
+    python -c "import toml; d = toml.load('pyproject.toml'); d['project']['version'] = '.'.join(str(int(x) + 1) if i == 1 else x for i, x in enumerate(d['project']['version'].split('.'))); toml.dump(d, open('pyproject.toml', 'w'))"
   elif [ "$2" = "patch" ]; then
-    py -c "import toml; d = toml.load('pyproject.toml'); d['project']['version'] = '.'.join(str(int(x) + 1) if i == 2 else x for i, x in enumerate(d['project']['version'].split('.'))); toml.dump(d, open('pyproject.toml', 'w'))"
+    python -c "import toml; d = toml.load('pyproject.toml'); d['project']['version'] = '.'.join(str(int(x) + 1) if i == 2 else x for i, x in enumerate(d['project']['version'].split('.'))); toml.dump(d, open('pyproject.toml', 'w'))"
   else
     echo "Error: Invalid bump option: \`$2\`."
     exit 1
