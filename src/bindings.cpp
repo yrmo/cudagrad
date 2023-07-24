@@ -83,9 +83,9 @@ PYBIND11_MODULE(cudagrad, m) {
     //     .def(py::self_ns::str(py::self_ns::self))
     //     .def(py::self_ns::repr(py::self_ns::self));
 
-    // m.def("__lshift__", [](std::ostream &os, const std::shared_ptr<cg::Tensor> &t) -> std::ostream& {
-    //     os << t; return os;
-    // }, py::is_operator());
+    m.def("__lshift__", [](std::ostream &os, const std::shared_ptr<cg::Tensor> &t) -> std::ostream& {
+        os << t; return os;
+    }, py::is_operator());
 
     // m.def("tensor", [](std::vector<int> size, std::vector<float> data) {
     //     return cg::tensor(size, data);
