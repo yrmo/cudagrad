@@ -146,7 +146,12 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
 
   std::vector<float> get_grad() const { return grad_; }
 
-  void graph(int depth = 0) {
+  void graph() {
+    // this is to compensate for no default args pybind11
+    _graph(0);
+  }
+
+  void _graph(int depth = 0) {
     auto print_if_not_leaf = [this](char c) -> const char {
       if (c != '?') return c;
       return ' ';
@@ -155,7 +160,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
     char displayed_op = print_if_not_leaf(op_);
     std::cout << tab << this << " " << displayed_op << std::endl;
     for (auto c : children_) {
-      c.get()->graph(depth + 2);
+      c.get()->_graph(depth + 2);
     }
   }
 
