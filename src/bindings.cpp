@@ -1,3 +1,4 @@
+#include <sstream>
 #include "cudagrad.hpp"
 
 #include <pybind11/stl.h>
@@ -57,6 +58,8 @@ PYBIND11_MODULE(cudagrad, m) {
     }, R"pbdoc(Magic tensor)pbdoc",
     py::arg("sizes"), py::arg("values"));
 
+    // TODO(yrom1): When doing C++ bindings does repr
+    //              override str when no str present?
     py::class_<cg::Tensor, std::shared_ptr<cg::Tensor>>(m, "Tensor")
         .def(py::init<std::vector<int>, std::vector<float>>())
         .def("get_shared", &cg::Tensor::get_shared)
@@ -76,16 +79,26 @@ PYBIND11_MODULE(cudagrad, m) {
         .def("__sub__", [](std::shared_ptr<cg::Tensor> a, std::shared_ptr<cg::Tensor> b) { return a - b; })
         .def("__mul__", [](std::shared_ptr<cg::Tensor> a, std::shared_ptr<cg::Tensor> b) { return a * b; })
         .def("__truediv__", [](std::shared_ptr<cg::Tensor> a, std::shared_ptr<cg::Tensor> b) { return a / b; })
-        .def("__matmul__", [](std::shared_ptr<cg::Tensor> a, std::shared_ptr<cg::Tensor> b) { return cg::matmul(a, b); });
+        .def("__matmul__", [](std::shared_ptr<cg::Tensor> a, std::shared_ptr<cg::Tensor> b) { return cg::matmul(a, b); })
+        .def("__str__", [](std::shared_ptr<cg::Tensor> t) {
+            std::ostringstream os;
+            os << t;
+            return os.str();
+        })
+        .def("__repr__", [](std::shared_ptr<cg::Tensor> t) {
+            std::ostringstream os;
+            os << t;
+            return os.str();
+        });
 
-    // Add the stream output operator if you want to print your Tensor object in Python.
+    // // Add the stream output operator if you want to print your Tensor object in Python.
     // py::class_<std::ostream>(m, "ostream")
     //     .def(py::self_ns::str(py::self_ns::self))
     //     .def(py::self_ns::repr(py::self_ns::self));
 
-    m.def("__lshift__", [](std::ostream &os, const std::shared_ptr<cg::Tensor> &t) -> std::ostream& {
-        os << t; return os;
-    }, py::is_operator());
+    // m.def("__lshift__", [](std::ostream &os, const std::shared_ptr<cg::Tensor> &t) -> std::ostream& {
+    //     os << t; return os;
+    // }, py::is_operator());
 
     // m.def("tensor", [](std::vector<int> size, std::vector<float> data) {
     //     return cg::tensor(size, data);
