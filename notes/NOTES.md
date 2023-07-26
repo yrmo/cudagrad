@@ -1,3 +1,22 @@
+# cg.Tensor works?
+
+```py
+>>> dir(cg)
+['Tensor', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', '__version__', 'hello', 'tensor']
+>>> cg.hello
+<built-in method hello of PyCapsule object at 0x10329bc30>
+>>> cg.hello()
+Hello, CPU!
+>>> cg.Tensor
+<class 'cudagrad.Tensor'>
+>>> cg.Tensor([1], [42])
+[42]
+[0]
+>>> cg.tensor([1], [42])
+[42]
+[0]
+```
+
 # wheel on macos cudagrad
 
 ```
