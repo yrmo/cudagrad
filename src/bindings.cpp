@@ -1,3 +1,7 @@
+// If the implementation is easy to explain, it may be a good idea.
+//
+// Tim Peters
+
 #include <sstream>
 #include "cudagrad.hpp"
 
@@ -6,10 +10,6 @@
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
-
-int add(int i, int j) {
-    return i + j;
-}
 
 namespace py = pybind11;
 
@@ -23,27 +23,10 @@ PYBIND11_MODULE(cudagrad, m) {
         .. autosummary::
            :toctree: _generate
 
-           add
-           subtract
+        hello
+        tensor
+        Tensor
     )pbdoc";
-
-    m.def("add", &add, R"pbdoc(
-        Add two numbers
-
-        Some other explanation about the add function.
-    )pbdoc");
-
-    m.def("subtract", [](int i, int j) { return i - j; }, R"pbdoc(
-        Subtract two numbers
-
-        Some other explanation about the subtract function.
-    )pbdoc");
-
-    m.def("foo", &cg::foo, R"pbdoc(
-        Add one
-
-        Why is this here?
-    )pbdoc");
 
     m.def("hello", &cg::hello, R"pbdoc(
         Can has CUDA?
@@ -90,20 +73,6 @@ PYBIND11_MODULE(cudagrad, m) {
             os << t;
             return os.str();
         });
-
-    // // Add the stream output operator if you want to print your Tensor object in Python.
-    // py::class_<std::ostream>(m, "ostream")
-    //     .def(py::self_ns::str(py::self_ns::self))
-    //     .def(py::self_ns::repr(py::self_ns::self));
-
-    // m.def("__lshift__", [](std::ostream &os, const std::shared_ptr<cg::Tensor> &t) -> std::ostream& {
-    //     os << t; return os;
-    // }, py::is_operator());
-
-    // m.def("tensor", [](std::vector<int> size, std::vector<float> data) {
-    //     return cg::tensor(size, data);
-    // }, R"pbdoc(Magic tensor)pbdoc", py::arg("sizes"), py::arg("values"));
-
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
