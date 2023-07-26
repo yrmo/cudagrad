@@ -1,3 +1,9 @@
+// Copyright 2023 Ryan Moore
+//
+// "'Generic' is the enemy of 'Efficient'"
+//
+// Tim Zaman
+
 #include <stdio.h>
 
 __global__ void helloFromGPU() {
