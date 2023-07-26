@@ -1,3 +1,5 @@
+// Copyright 2023 Ryan Moore
+//
 // If the implementation is easy to explain, it may be a good idea.
 //
 // Tim Peters

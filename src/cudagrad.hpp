@@ -1,10 +1,10 @@
 // Copyright 2023 Ryan Moore
 //
-// "If you remember just one thing out of this course, it should be this – two
+// If you remember just one thing out of this course, it should be this – two
 // pieces of advice. The first piece of advice is whenever you can, use vector.
 // The second piece of advice is if you cannot, find a way how you can. This is
 // to avoid any data structures except arrays... Vector is an array, right. Sort
-// of, you say, 'Well... Aren't there exceptions?' – Yes, not for you!"
+// of, you say, 'Well... Aren't there exceptions?' – Yes, not for you!
 //
 // Alexander Stepanov
 
