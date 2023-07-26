@@ -6,7 +6,7 @@
 // to avoid any data structures except arrays... Vector is an array, right. Sort
 // of, you say, 'Well... Aren't there exceptions?' – Yes, not for you!"
 //
-// — Alexander Stepanov
+// Alexander Stepanov
 
 #ifndef SRC_CUDAGRAD_HPP_
 #define SRC_CUDAGRAD_HPP_
@@ -609,24 +609,6 @@ namespace nn {
 // TODO(yrom1): nonlinearity of Neuron need to pass and drill down from MLP
 //              static_cast<bool>(vec_.size() - 1) something liek this for MLP
 
-/*
-class Neuron(Module):
-    def __init__(self, nin: int, nonlin: bool = True):
-        self.w = [Value(random.uniform(-1, 1)) for _ in range(nin)]
-        self.b = Value(0)
-        self.nonlin = nonlin
-
-    def __call__(self, x: Union[List[float], List[Value]]) -> Value:
-        act = sum((wi * xi for wi, xi in zip(self.w, x)), self.b)
-        return act.relu() if self.nonlin else act
-
-    def parameters(self) -> List[Value]:
-        return self.w + [self.b]
-
-    def __repr__(self) -> str:
-        return f"{'ReLU' if self.nonlin else 'Linear'}Neuron({len(self.w)})"
-*/
-
 // keep it simple to start
 class Neuron {
  public:
@@ -674,108 +656,6 @@ class Neuron {
     // std::cout << "bias after: " << bias_.get()->data_[0] << std::endl;
   }
   // TODO(yrom1) parameters, how do i make this like std iterator?
-};
-
-/*
-class Layer(Module):
-
-    def __init__(self, nin, nout, **kwargs):
-        self.neurons = [Neuron(nin, **kwargs) for _ in range(nout)]
-
-    def __call__(self, x):
-        out = [n(x) for n in self.neurons]
-        return out[0] if len(out) == 1 else out
-
-    def parameters(self):
-        return [p for n in self.neurons for p in n.parameters()]
-
-    def __repr__(self):
-        return f"Layer of [{', '.join(str(n) for n in self.neurons)}]"
-*/
-
-struct Layer {
-  int nin_;
-  int nout_;
-  float rate_;
-  std::vector<Neuron> neurons_;
-  Layer(int nin, int nout, float rate) : nin_(nin), nout_(nout), rate_(rate) {
-    for (int i = 0; i < nout_; ++i) {
-      neurons_.push_back(Neuron(nin_, rate_));
-    }
-    assert(neurons_.size() == nout_);
-  }
-
-  std::vector<std::shared_ptr<Tensor>> operator()(
-      std::vector<std::shared_ptr<Tensor>> x) {
-    std::vector<std::shared_ptr<Tensor>> ans;
-    for (auto &neuron : neurons_) {
-      ans.push_back(neuron(x));
-    }
-    return ans;
-  }
-
-  void train() {
-    for (auto &neuron : neurons_) {
-      neuron.train();
-    }
-  }
-};
-
-/*
-class MLP(Module):
-
-    def __init__(self, nin, nouts):
-        sz = [nin] + nouts
-        self.layers = [Layer(sz[i], sz[i+1], nonlin=i!=len(nouts)-1) for i in
-range(len(nouts))]
-
-    def __call__(self, x):
-        for layer in self.layers:
-            x = layer(x)
-        return x
-
-    def parameters(self):
-        return [p for layer in self.layers for p in layer.parameters()]
-
-    def __repr__(self):
-        return f"MLP of [{', '.join(str(layer) for layer in self.layers)}]"
-*/
-
-struct MLP {
-  int nin_;
-  std::vector<int> nouts_;
-  float rate_;
-  std::vector<int> sz_;
-  std::vector<Layer> layers_;
-  MLP(int nin, std::vector<int> nouts, float rate)
-      : nin_(nin), nouts_(nouts), rate_(rate) {
-    sz_.push_back(nin);
-    for (auto &x : nouts_) {  // TODO(yrom1) extend c++?
-      sz_.push_back(x);
-    }
-
-    for (int i = 0; i < nouts_.size(); ++i) {
-      layers_.push_back(
-          Layer(sz_[i], sz_[i + 1], rate_));  // len(sz) == len(nouts_) + 1
-    }
-  }
-
-  std::vector<std::shared_ptr<Tensor>> operator()(
-      std::vector<std::shared_ptr<Tensor>> x) {
-    // because we didnt make things not a vector aribtarily in Layer this is
-    // easy
-    std::vector<std::shared_ptr<Tensor>> ans = x;
-    for (auto &layer : layers_) {
-      ans = layer(ans);
-    }
-    return ans;
-  }
-
-  void train() {
-    for (auto &layer : layers_) {
-      layer.train();
-    }
-  }
 };
 
 }  // namespace nn
