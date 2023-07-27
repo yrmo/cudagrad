@@ -30,9 +30,7 @@ int foo(int i) { return i + 1; }
 #ifdef __CUDACC__
 extern "C" void hello();
 #else
-extern "C" void hello() {
-    printf("Hello, CPU!\n");
-}
+extern "C" void hello() { printf("Hello, CPU!\n"); }
 #endif
 
 struct AutoGradBackward;

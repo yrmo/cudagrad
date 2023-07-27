@@ -1,6 +1,6 @@
 // Copyright 2023 Ryan Moore
 //
-// "'Generic' is the enemy of 'Efficient'"
+// 'Generic' is the enemy of 'Efficient'
 //
 // Tim Zaman
 
