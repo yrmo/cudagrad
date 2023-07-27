@@ -3,4 +3,4 @@ from .mlp import Neuron
 
 
 def woof():
-  print("woofy!")
+    print("woofy!")
