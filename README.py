@@ -47,5 +47,5 @@ chmod +x manage.sh
 Running the tests requires: `cmake`, `make`, `torch` installed (on the version of Python accessed by the `python` command), `git`, and a C++ compiler. Note that these requirements are only for when you need to run the tests, otherwise except the C++ compiler they are not needed.
 """
 
-if __name__ == '__main__':
-  open('README.md', 'w').write(README)
+if __name__ == "__main__":
+    open("README.md", "w").write(README)

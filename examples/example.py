@@ -9,7 +9,7 @@ e = ((a @ b) + c) * d
 f = e.sum()
 f.backward()
 
-print(f.data) # [2794.0]
-print(f.size) # [1]
-print(a.grad) # [143.0, 187.0, 143.0, 187.0]
-print(b.grad) # [66.0, 66.0, 88.0, 88.0]
+print(f.data)  # [2794.0]
+print(f.size)  # [1]
+print(a.grad)  # [143.0, 187.0, 143.0, 187.0]
+print(b.grad)  # [66.0, 66.0, 88.0, 88.0]

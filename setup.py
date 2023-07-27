@@ -6,12 +6,13 @@ from setuptools import setup
 
 
 def get_version_from_toml():
-    data = toml.load('pyproject.toml')
-    version = data.get('project', {}).get('version', None)
+    data = toml.load("pyproject.toml")
+    version = data.get("project", {}).get("version", None)
     if version is None:
         raise RuntimeError("Can't get version in TOML!")
     else:
         return version
+
 
 __version__ = get_version_from_toml()
 
@@ -25,11 +26,12 @@ __version__ = get_version_from_toml()
 #   reproducible builds (https://github.com/pybind/cudagrad/pull/53)
 
 ext_modules = [
-    Pybind11Extension("cudagrad",
+    Pybind11Extension(
+        "cudagrad",
         ["src/bindings.cpp"],
         # Example: passing in the version to the compiled code
-        define_macros = [('VERSION_INFO', __version__)],
-        ),
+        define_macros=[("VERSION_INFO", __version__)],
+    ),
 ]
 
 setup(

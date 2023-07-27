@@ -7,14 +7,15 @@ import torch
 assert cg.add(1, 2) == 3
 assert cg.subtract(1, 2) == -1
 
+
 def flatten(l):
-  out = []
-  for item in l:
-    if isinstance(item, (list, tuple)):
-      out.extend(flatten(item))
-    else:
-      out.append(item)
-  return out
+    out = []
+    for item in l:
+        if isinstance(item, (list, tuple)):
+            out.extend(flatten(item))
+        else:
+            out.append(item)
+    return out
 
 
 at = torch.tensor(((2.0, 3.0), (4.0, 5.0)), requires_grad=True)
@@ -33,8 +34,8 @@ e = ((a @ b) + c) * d
 f = e.sum()
 f.backward()
 
-assert f.data == flatten([ft.data.tolist()]) # this is annoying lol
+assert f.data == flatten([ft.data.tolist()])  # this is annoying lol
 assert a.data == flatten(at.data.tolist())
 assert b.data == flatten(bt.data.tolist())
 
-print('Tests passed!')
+print("Tests passed!")

@@ -1,4 +1,5 @@
-#%%
+# type: ignore
+# %%
 import random
 from typing import *  # type: ignore
 
@@ -9,24 +10,28 @@ import numpy as np
 
 np.random.seed(1337)
 random.seed(1337)
-#%%
+# %%
 from micrograd.engine import Value
 from micrograd.nn import MLP, Layer, Neuron
 
-#%%
+# %%
 n = MLP(3, [1, 1])
 m = MLP(3, [2, 1])
 n, m
 
-#%%
-class _: # MLP
+
+# %%
+class _:  # MLP
     from typing import List
+
     def __init__(self, nin: int, nouts: List[int]):
         sz = [nin] + nouts
         self.layers = [
             Layer(sz[i], sz[i + 1], nonlin=i != len(nouts) - 1)
             for i in range(len(nouts))
         ]
+
+
 # MLP CONSTRUCTOR
 # this is straightforward right, we make layers of
 # cin, cout combos but we only make #cout of them
@@ -44,19 +49,22 @@ class _: # MLP
 #
 # without relus (or any non linear activation) nn's would be linear funtions
 
+
 #  By definition, the ReLU is 𝑚𝑎𝑥(0,𝑥). Therefore, if we split the domain from
 # (−∞,0] or [0,∞), then the function is linear. However, it's easy to see
 # that 𝑓(−1)+𝑓(1)≠𝑓(0). Hence, by definition, ReLU is not linear.
 # https://datascience.stackexchange.com/a/26481
-#%%
+# %%
 def internals(n: MLP) -> None:
-  for layer in n.layers:
-    print(layer, '---')
-    for neuron in layer.neurons:
-      print(neuron, '*')
-      for value in neuron.parameters(): # .w and [.b]
-        print(value, '.')
-#%%
+    for layer in n.layers:
+        print(layer, "---")
+        for neuron in layer.neurons:
+            print(neuron, "*")
+            for value in neuron.parameters():  # .w and [.b]
+                print(value, ".")
+
+
+# %%
 
 internals(n)
 # MLP Diagram:
@@ -69,35 +77,30 @@ internals(n)
 #       ↓
 #  Output (1 output)
 
-#%%
+# %%
 internals(m)
 # here's why this makes sense
 # you take three inputs, every neuron needs 3 weights plus a bias
 # but the number outputs of the first layer is two
 # so you need two neurons in the first layer
 # the linear layer gives two inputs and thus has two weights
-#%%
+# %%
 
-xs = [
-    [2.0, 3.0, -1.0],
-    [3.0, -1.0, 0.5],
-    [0.5, 1.0, 1.0],
-    [1.0, 1.0, -1.0]
-]
+xs = [[2.0, 3.0, -1.0], [3.0, -1.0, 0.5], [0.5, 1.0, 1.0], [1.0, 1.0, -1.0]]
 ys = [1.0, -1.0, -1.0, 1.0]
-#%%
+# %%
 
-nn = MLP(3, [4, 4, 1]) # i think this ignores our random seed sadly
+nn = MLP(3, [4, 4, 1])  # i think this ignores our random seed sadly
 for _ in range(50):
-  ypred = [nn(x) for x in xs]
-  loss = sum((a - b)**2 for a, b in zip(ypred, ys))
-  for p in nn.parameters():
-      p.grad = 0.0
-  loss.backward()
-  for p in nn.parameters():
-      p.data += -0.05 * p.grad
-  print(_+1, loss.data, [f"{x.data:1.2f}" for x in ypred])
-#%%
+    ypred = [nn(x) for x in xs]
+    loss = sum((a - b) ** 2 for a, b in zip(ypred, ys))
+    for p in nn.parameters():
+        p.grad = 0.0
+    loss.backward()
+    for p in nn.parameters():
+        p.data += -0.05 * p.grad
+    print(_ + 1, loss.data, [f"{x.data:1.2f}" for x in ypred])
+# %%
 
 import random
 
@@ -106,7 +109,6 @@ from cudagrad import Tensor, tensor
 
 
 class Module:
-
     def zero_grad(self):
         for p in self.parameters():
             p.grad = 0
@@ -114,9 +116,10 @@ class Module:
     def parameters(self):
         return []
 
+
 class Neuron(Module):
     def __init__(self, nin, nonlin=True):
-        self.w = [tensor([1], [random.uniform(-1,1)]) for _ in range(nin)]
+        self.w = [tensor([1], [random.uniform(-1, 1)]) for _ in range(nin)]
         self.b = tensor([1], [0])
         self.nonlin = nonlin
 
@@ -137,15 +140,17 @@ class Neuron(Module):
 
     def __repr__(self):
         return f"{'ReLU' if self.nonlin else 'Linear'}Neuron({len(self.w)})"
-#%%
+
+
+# %%
 print(Neuron(2)([0.5, 0.2]).data)
 print(Neuron(2)([tensor([1], [0.5]), tensor([1], [0.2])]).data)
 # Layer(1, 2)
 # MLP(2, [2, 1])
 
-#%%
-class Layer(Module):
 
+# %%
+class Layer(Module):
     def __init__(self, nin, nout, **kwargs):
         self.neurons = [Neuron(nin, **kwargs) for _ in range(nout)]
 
@@ -159,11 +164,14 @@ class Layer(Module):
     def __repr__(self):
         return f"Layer of [{', '.join(str(n) for n in self.neurons)}]"
 
-class MLP(Module):
 
+class MLP(Module):
     def __init__(self, nin, nouts):
         sz = [nin] + nouts
-        self.layers = [Layer(sz[i], sz[i+1], nonlin=i!=len(nouts)-1) for i in range(len(nouts))]
+        self.layers = [
+            Layer(sz[i], sz[i + 1], nonlin=i != len(nouts) - 1)
+            for i in range(len(nouts))
+        ]
 
     def __call__(self, x):
         for layer in self.layers:
@@ -177,14 +185,14 @@ class MLP(Module):
         return f"MLP of [{', '.join(str(layer) for layer in self.layers)}]"
 
 
-#%%
-nn = MLP(3, [4, 4, 1]) # i think this ignores our random seed sadly
+# %%
+nn = MLP(3, [4, 4, 1])  # i think this ignores our random seed sadly
 for _ in range(50):
-  ypred = [nn(x) for x in xs]
-  loss = sum((a - b)**2 for a, b in zip(ypred, ys))
-  for p in nn.parameters():
-      p.grad = 0.0
-  loss.backward()
-  for p in nn.parameters():
-      p.data += -0.05 * p.grad
-  print(_+1, loss.data, [f"{x.data:1.2f}" for x in ypred])
+    ypred = [nn(x) for x in xs]
+    loss = sum((a - b) ** 2 for a, b in zip(ypred, ys))
+    for p in nn.parameters():
+        p.grad = 0.0
+    loss.backward()
+    for p in nn.parameters():
+        p.data += -0.05 * p.grad
+    print(_ + 1, loss.data, [f"{x.data:1.2f}" for x in ypred])
