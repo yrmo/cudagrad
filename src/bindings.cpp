@@ -15,7 +15,7 @@
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(cudagrad, m) {
+PYBIND11_MODULE(cudagrad_bindings, m) {
     m.doc() = R"pbdoc(
         Pybind11 example plugin
         -----------------------
