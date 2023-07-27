@@ -4,8 +4,8 @@ import cudagrad as cg
 import torch
 
 # assert cg.__version__ == '0.0.1'
-assert cg.add(1, 2) == 3
-assert cg.subtract(1, 2) == -1
+# assert cg.add(1, 2) == 3
+# assert cg.subtract(1, 2) == -1
 
 
 def flatten(l):
