@@ -6,6 +6,8 @@ from typing import *  # type: ignore
 import matplotlib.pyplot as plt
 import numpy as np
 
+from .cudagrad_bindings import *  # type: ignore
+
 # %matplotlib inline
 
 np.random.seed(1337)
@@ -104,51 +106,51 @@ if __name__ == "__main__":
     print(_ + 1, loss.data, [f"{x.data:1.2f}" for x in ypred])
   # %%
 
-  # import random
+  import random
 
   # import cudagrad
   # from cudagrad import Tensor, tensor
 
 
-  # class Module:
-  #     def zero_grad(self):
-  #         for p in self.parameters():
-  #             p.grad = 0
+  class Module:
+      def zero_grad(self):
+          for p in self.parameters():
+              p.grad = 0
 
-  #     def parameters(self):
-  #         return []
-
-
-  # class Neuron(Module):
-  #     def __init__(self, nin, nonlin=True):
-  #         self.w = [tensor([1], [random.uniform(-1, 1)]) for _ in range(nin)]
-  #         self.b = tensor([1], [0])
-  #         self.nonlin = nonlin
-
-  #     def __call__(self, x):
-  #         ans = tensor([1], [0])
-  #         for elem_x in x:
-  #             for elem_w in self.w:
-  #                 if type(elem_x) != Tensor:
-  #                     elem_x = tensor([1], [elem_x])
-  #                 ans = ans + (elem_w * elem_x)
-  #         ans = ans + self.b
-  #         return ans
-  #         # act = sum((wi*xi for wi,xi in zip(self.w, x)), self.b)
-  #         # return act.relu() if self.nonlin else act
-
-  #     def parameters(self):
-  #         return self.w + [self.b]
-
-  #     def __repr__(self):
-  #         return f"{'ReLU' if self.nonlin else 'Linear'}Neuron({len(self.w)})"
+      def parameters(self):
+          return []
 
 
-  # # %%
-  # print(Neuron(2)([0.5, 0.2]).data)
-  # print(Neuron(2)([tensor([1], [0.5]), tensor([1], [0.2])]).data)
-  # # Layer(1, 2)
-  # # MLP(2, [2, 1])
+  class Neuron(Module):
+      def __init__(self, nin, nonlin=True):
+          self.w = [tensor([1], [random.uniform(-1, 1)]) for _ in range(nin)]
+          self.b = tensor([1], [0])
+          self.nonlin = nonlin
+
+      def __call__(self, x):
+          ans = tensor([1], [0])
+          for elem_x in x:
+              for elem_w in self.w:
+                  if type(elem_x) != Tensor:
+                      elem_x = tensor([1], [elem_x])
+                  ans = ans + (elem_w * elem_x)
+          ans = ans + self.b
+          return ans
+          # act = sum((wi*xi for wi,xi in zip(self.w, x)), self.b)
+          # return act.relu() if self.nonlin else act
+
+      def parameters(self):
+          return self.w + [self.b]
+
+      def __repr__(self):
+          return f"{'ReLU' if self.nonlin else 'Linear'}Neuron({len(self.w)})"
+
+
+  # %%
+  print(Neuron(2)([0.5, 0.2]).data)
+  print(Neuron(2)([tensor([1], [0.5]), tensor([1], [0.2])]).data)
+  # Layer(1, 2)
+  # MLP(2, [2, 1])
 
 
   # # %%
