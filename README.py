@@ -40,8 +40,7 @@ Taking inspiration from [micrograd's tests](https://github.com/karpathy/microgra
 To run the tests use:
 
 ```sh
-chmod +x manage.sh
-./manage.sh test
+python makefile.py test
 ```
 
 Running the tests requires: `cmake`, `make`, `torch` installed (on the version of Python accessed by the `python` command), `git`, and a C++ compiler. Note that these requirements are only for when you need to run the tests, otherwise except the C++ compiler they are not needed.

@@ -2,7 +2,7 @@
 
 A small autograd engine
 
-Work In Progress! TODO: CUDA operation integration and release on PyPI 🙃
+![](parallel_1_20.png)
 
 ## Example
 
@@ -40,10 +40,10 @@ e = ((a @ b) + c) * d
 f = e.sum()
 f.backward()
 
-print(f.data) # [2794.0]
-print(f.size) # [1]
-print(a.grad) # [143.0, 187.0, 143.0, 187.0]
-print(b.grad) # [66.0, 66.0, 88.0, 88.0]
+print(f.data)  # [2794.0]
+print(f.size)  # [1]
+print(a.grad)  # [143.0, 187.0, 143.0, 187.0]
+print(b.grad)  # [66.0, 66.0, 88.0, 88.0]
 ```
 
 ## Design
@@ -69,8 +69,7 @@ Taking inspiration from [micrograd's tests](https://github.com/karpathy/microgra
 To run the tests use:
 
 ```sh
-chmod +x manage.sh
-./manage.sh test
+python makefile.py test
 ```
 
 Running the tests requires: `cmake`, `make`, `torch` installed (on the version of Python accessed by the `python` command), `git`, and a C++ compiler. Note that these requirements are only for when you need to run the tests, otherwise except the C++ compiler they are not needed.

@@ -4,3 +4,4 @@ mypy
 black
 fire
 toml
+isort
