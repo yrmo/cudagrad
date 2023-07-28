@@ -3,7 +3,7 @@ README = f"""\
 
 A small autograd engine
 
-![](parallel_1_20.png)
+Work In Progress! TODO: CUDA operation integration and release on PyPI
 
 ## Example
 
