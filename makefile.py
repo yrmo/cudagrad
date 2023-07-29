@@ -3,9 +3,8 @@ import shutil
 
 import fire
 import toml
-from pip._internal.cli import main as pip_main
-
 import torch
+from pip._internal.cli import main as pip_main
 
 run = os.system
 

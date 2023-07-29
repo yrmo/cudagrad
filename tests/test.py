@@ -1,7 +1,8 @@
 # python tests/test.py
 
-import cudagrad as cg
 import torch
+
+import cudagrad as cg
 
 # assert cg.__version__ == '0.0.1'
 # assert cg.add(1, 2) == 3
