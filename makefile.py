@@ -1,26 +1,28 @@
 import os
 import shutil
+import subprocess
 
 import fire
 import toml
 import torch
-from pip._internal.cli import main as pip_main
 
-RUN = os.system
 CPP_FILES = "./tests/test.cpp ./src/cudagrad.hpp ./src/ops.cu"
 
 
 class Makefile:
     def lint(self):
+        RUN = os.system
         RUN(f"cpplint {CPP_FILES}")
         RUN("python -m mypy --ignore-missing-imports --pretty .")
 
     def clean(self):
+        RUN = os.system
         RUN("python -m isort .")
         RUN("python -m black .")
         RUN("clang-format -i -style=Google {CPP_FILES}")
 
     def test(self):
+        RUN = lambda x: subprocess.check_call(x, shell=True)
         RUN("git submodule update --init --recursive")
         if os.path.exists("build"):
             shutil.rmtree("build")
@@ -30,23 +32,24 @@ class Makefile:
         RUN("cmake ..")
         RUN("make")
         RUN("./cudagrad_test")
-        pip_main(["uninstall", "-y", "cudagrad"])
-        pip_main(["cache", "purge"])
+        RUN("pip uninstall -y cudagrad")
+        RUN("pip cache purge")
         os.chdir(os.path.expanduser("~/cudagrad"))
-        pip_main(["install", "."])
+        RUN("pip install .")
         RUN("python tests/test.py")
         os.chdir(os.path.expanduser("~/cudagrad"))
         RUN("c++ -std=c++11 -I./src examples/example.cpp && ./a.out")
-        pip_main(["install", "cudagrad"])
+        RUN("pip install cudagrad")
         RUN("python ./examples/example.py")
 
     def publish(self):
-        pip_main(["uninstall", "-y", "cudagrad"])
-        pip_main(["cache", "purge"])
+        RUN = os.system
+        RUN("pip uninstall -y cudagrad")
+        RUN("pip cache purge")
         if os.path.exists("dist"):
             shutil.rmtree("dist")
         RUN("python setup.py sdist")
-        pip_main(["install", "--upgrade", "twine"])
+        RUN("pip install --upgrade twine")
         RUN("python -m twine upload dist/*")
 
     def bump(self, version_type):
