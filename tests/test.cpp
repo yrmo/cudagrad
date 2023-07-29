@@ -190,7 +190,7 @@ TEST(Basic, MatMul) {
   */
   cg::t a = cg::tensor({2, 2}, {5.0, 4.0, 3.0, 2.0});
   cg::t b = cg::tensor({2, 2}, {2.0, 3.0, 4.0, 5.0});
-  cg::t c = cg::matmul(a, b);
+  cg::t c = a.get()->matmul(b);
   auto l = c.get()->sum();
   l.get()->backward();
 
@@ -239,8 +239,8 @@ TEST(Basic, ChainedMM) {
   */
   cg::t a = cg::tensor({2, 2}, {5.0, 4.0, 3.0, 2.0});
   cg::t b = cg::tensor({2, 2}, {2.0, 3.0, 4.0, 5.0});
-  cg::t c = cg::matmul(a, b);
-  cg::t d = cg::matmul(c, b);
+  cg::t c = a.get()->matmul(b);
+  cg::t d = c.get()->matmul(b);
   cg::t l = d.get()->sum();
   l.get()->backward();
 
@@ -322,7 +322,7 @@ TEST(Basic, ChainedComplexOperations) {
   cg::t b = cg::tensor({2, 2}, {6.0, 7.0, 8.0, 9.0});
   cg::t c = cg::tensor({2, 2}, {10.0, 10.0, 10.0, 10.0});
   cg::t d = cg::tensor({2, 2}, {11.0, 11.0, 11.0, 11.0});
-  cg::t e = (cg::matmul(a, b) + c) * d;
+  cg::t e = (a.get()->matmul(b) + c) * d;
   cg::t f = e.get()->sum();
   f.get()->backward();
 
@@ -417,7 +417,7 @@ TEST(Torch, LayerManual) {
   cg::t w = cg::tensor({2, 4}, {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0});
   cg::t b = cg::tensor(
       {3, 4}, {1.0, 2.0, 3.0, 4.0, 1.0, 2.0, 3.0, 4.0, 1.0, 2.0, 3.0, 4.0});
-  cg::t result = cg::matmul(x, w) + b;
+  cg::t result = x.get()->matmul(w) + b;
   cg::t l = result.get()->sum();
   l.get()->backward();
   auto w_g = w.get()->grad_;
