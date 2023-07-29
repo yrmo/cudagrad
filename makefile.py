@@ -1,4 +1,5 @@
 import os
+import re
 import shutil
 import subprocess
 
@@ -53,18 +54,38 @@ class Makefile:
         RUN("python -m twine upload dist/*")
 
     def bump(self, version_type):
-        d = toml.load("pyproject.toml")
-        version_list = d["project"]["version"].split(".")
-        if version_type == "major":
-            version_list[0] = str(int(version_list[0]) + 1)
-        elif version_type == "minor":
-            version_list[1] = str(int(version_list[1]) + 1)
-        elif version_type == "patch":
-            version_list[2] = str(int(version_list[2]) + 1)
-        else:
-            raise ValueError(f"Invalid bump option: `{version_type}`.")
-        d["project"]["version"] = ".".join(version_list)
-        toml.dump(d, open("pyproject.toml", "w"))
+        # __version__ is in two places for now
+        # not good, but keeps things simpleish
+
+        with open("pyproject.toml", 'r+') as f:
+            content = f.read()
+            version_match = re.search(r'version = "(\d+)\.(\d+)\.(\d+)"', content)
+            if version_match:
+                major, minor, patch = map(int, version_match.groups())
+                if version_type == "major":
+                    major += 1
+                elif version_type == "minor":
+                    minor += 1
+                elif version_type == "patch":
+                    patch += 1
+                else:
+                    raise ValueError(f"Invalid bump option: `{version_type}`.")
+                new_version = f'version = "{major}.{minor}.{patch}"'
+                content = re.sub(r'version = "\d+\.\d+\.\d+"', new_version, content)
+                f.seek(0)
+                f.write(content)
+                f.truncate()
+            else:
+                print("No version found in the file.")
+
+        version_numbers = [major, minor, patch]
+        print(version_numbers)
+        with open("./cudagrad/__init__.py", "r") as f:
+            init_contents = f.read()
+
+        with open("./cudagrad/__init__.py", "w") as f:
+            dot = '.'
+            f.write(re.sub(r'__version__ = "\d+\.\d+\.\d+"', f'__version__ = "{dot.join([str(x) for x in version_numbers])}"', init_contents))
 
 
 if __name__ == "__main__":
