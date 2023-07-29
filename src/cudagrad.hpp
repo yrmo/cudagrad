@@ -122,8 +122,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   void backward();
   void zero_grad();
   std::shared_ptr<Tensor> sum();
-  std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> lhs,
-                                 std::shared_ptr<Tensor> rhs);
+  std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> other);
 
   void size() {
     for (auto x : size_) std::cout << x << std::endl;
@@ -330,10 +329,9 @@ std::shared_ptr<Tensor> binaryForwardOperator(std::shared_ptr<Tensor> lhs,
   return (*forward)();  // forward.get()();
 }
 
-std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> lhs,
-                               std::shared_ptr<Tensor> rhs) {
-  std::shared_ptr<MatMulForward> f = std::make_shared<MatMulForward>(lhs, rhs);
-  return binaryForwardOperator<std::shared_ptr<MatMulForward>>(lhs, rhs, f);
+std::shared_ptr<Tensor> Tensor::matmul(std::shared_ptr<Tensor> other) {
+  std::shared_ptr<MatMulForward> f = std::make_shared<MatMulForward>(this->get_shared(), other);
+  return binaryForwardOperator<std::shared_ptr<MatMulForward>>(this->get_shared(), other, f);
 }
 
 std::shared_ptr<Tensor> Tensor::sum() {
