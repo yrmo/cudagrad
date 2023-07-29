@@ -27,26 +27,3 @@ target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -fsaniti
 
 # Copy headers to build directory
 configure_file(src/cudagrad.hpp cudagrad.hpp COPYONLY)
-
-# Clang-format and cpplint custom targets
-find_program(CLANG_FORMAT NAMES clang-format)
-find_program(CPPLINT NAMES cpplint)
-
-if(CLANG_FORMAT)
-  add_custom_target(
-    format
-    COMMAND ${CLANG_FORMAT} -i -style=Google ${CMAKE_SOURCE_DIR}/tests/test.cpp ${CMAKE_SOURCE_DIR}/src/cudagrad.hpp
-    COMMENT "Running clang-format on the source files"
-  )
-endif()
-
-if(CPPLINT)
-  add_custom_target(
-    lint
-    COMMAND ${CPPLINT} ${CMAKE_SOURCE_DIR}/tests/test.cpp ${CMAKE_SOURCE_DIR}/src/cudagrad.hpp
-    COMMENT "Running cpplint on the source files"
-  )
-endif()
-
-# Add the format and lint targets to the default build target
-add_dependencies(${PROJECT_NAME} format lint)

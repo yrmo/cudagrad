@@ -6,45 +6,48 @@ import toml
 import torch
 from pip._internal.cli import main as pip_main
 
-run = os.system
+RUN = os.system
+CPP_FILES = "./tests/test.cpp ./src/cudagrad.hpp ./src/ops.cu"
 
 
 class Makefile:
     def lint(self):
-        run("python -m mypy --ignore-missing-imports --pretty .")
+        RUN(f"cpplint {CPP_FILES}")
+        RUN("python -m mypy --ignore-missing-imports --pretty .")
 
     def clean(self):
-        run("python -m isort .")
-        run("python -m black .")
+        RUN("python -m isort .")
+        RUN("python -m black .")
+        RUN("clang-format -i -style=Google {CPP_FILES}")
 
     def test(self):
-        run("git submodule update --init --recursive")
+        RUN("git submodule update --init --recursive")
         if os.path.exists("build"):
             shutil.rmtree("build")
         os.makedirs("build", exist_ok=True)
         os.chdir("build")
-        run("cmake -DCMAKE_PREFIX_PATH=" + torch.utils.cmake_prefix_path + " ..")
-        run("cmake ..")
-        run("make")
-        run("./cudagrad_test")
+        RUN("cmake -DCMAKE_PREFIX_PATH=" + torch.utils.cmake_prefix_path + " ..")
+        RUN("cmake ..")
+        RUN("make")
+        RUN("./cudagrad_test")
         pip_main(["uninstall", "-y", "cudagrad"])
         pip_main(["cache", "purge"])
         os.chdir(os.path.expanduser("~/cudagrad"))
         pip_main(["install", "."])
-        run("python tests/test.py")
+        RUN("python tests/test.py")
         os.chdir(os.path.expanduser("~/cudagrad"))
-        run("c++ -std=c++11 -I./src examples/example.cpp && ./a.out")
+        RUN("c++ -std=c++11 -I./src examples/example.cpp && ./a.out")
         pip_main(["install", "cudagrad"])
-        run("python ./examples/example.py")
+        RUN("python ./examples/example.py")
 
     def publish(self):
         pip_main(["uninstall", "-y", "cudagrad"])
         pip_main(["cache", "purge"])
         if os.path.exists("dist"):
             shutil.rmtree("dist")
-        run("python setup.py sdist")
+        RUN("python setup.py sdist")
         pip_main(["install", "--upgrade", "twine"])
-        run("python -m twine upload dist/*")
+        RUN("python -m twine upload dist/*")
 
     def bump(self, version_type):
         d = toml.load("pyproject.toml")
