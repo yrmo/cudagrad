@@ -13,17 +13,32 @@ classifiers = [ "Programming Language :: Python :: 3", "Operating System :: OS I
 dependencies = [ "micrograd",]
 [[project.authors]]
 name = "Ryan Moore"
-email = "moorethreads@hey.com"
+email = "ryanm.inbox@gmail.com"
 
 [project.urls]
 Homepage = "https://github.com/yrom1/cudagrad"
 "Bug Tracker" = "https://github.com/yrom1/cudagrad/issues"
 
-[tool.ty]
-type_checker = "mypy"
-
-[tool.mypy]
-ignore_missing_imports = true
-
 [tool.pytest.ini_options]
 addopts = [ "--import-mode=importlib",]
+
+[tool.isort]
+skip_glob = ["**/examples/*", "**/examples*", "**/googletest/*", "**/googletest*"]
+
+[tool.mypy]
+pretty = true
+ignore_missing_imports = true
+exclude = "(googletest)|(examples)"
+
+[tool.black]
+exclude = '''
+(
+  /(
+      \.git
+    | \.env
+    | \.venv
+    | examples
+    | googletest
+  )/
+)
+'''
