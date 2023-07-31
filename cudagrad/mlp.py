@@ -3,14 +3,10 @@
 import random
 from typing import *  # type: ignore
 
-import matplotlib.pyplot as plt
-import numpy as np
-
 from .cudagrad_bindings import *  # type: ignore
 
 # %matplotlib inline
 
-np.random.seed(1337)
 random.seed(1337)
 
 from micrograd.engine import Value
