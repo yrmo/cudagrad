@@ -57,7 +57,7 @@ class Makefile:
         # __version__ is in two places for now
         # not good, but keeps things simpleish
 
-        with open("pyproject.toml", 'r+') as f:
+        with open("pyproject.toml", "r+") as f:
             content = f.read()
             version_match = re.search(r'version = "(\d+)\.(\d+)\.(\d+)"', content)
             if version_match:
@@ -84,8 +84,14 @@ class Makefile:
             init_contents = f.read()
 
         with open("./cudagrad/__init__.py", "w") as f:
-            dot = '.'
-            f.write(re.sub(r'__version__ = "\d+\.\d+\.\d+"', f'__version__ = "{dot.join([str(x) for x in version_numbers])}"', init_contents))
+            dot = "."
+            f.write(
+                re.sub(
+                    r'__version__ = "\d+\.\d+\.\d+"',
+                    f'__version__ = "{dot.join([str(x) for x in version_numbers])}"',
+                    init_contents,
+                )
+            )
 
 
 if __name__ == "__main__":
