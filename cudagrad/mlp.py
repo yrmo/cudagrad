@@ -1,4 +1,18 @@
 # type: ignore
+#
+# Copyright 2023 Ryan Moore
+#
+# So the magic is that there's this relatively simple algorithm called
+# backpropagation that takes the error in the output and sends that
+# error backwards through the network and computes through all the
+# connections how you should change them to improve the behavior, and
+# then you change them all a tiny bit and you just keep going with
+# another example. And surprisingly that actually works. For many years
+# people thought that would just get jammed up — it would get stuck
+# somewhere — but no it doesn't, it actually works very well.
+#
+# Geoffrey Hinton
+
 # %%
 import random
 from typing import *  # type: ignore
