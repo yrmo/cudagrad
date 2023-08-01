@@ -51,6 +51,7 @@ PYBIND11_MODULE(cudagrad_bindings, m) {
         .def("backward", &cg::Tensor::backward)
         .def("zero_grad", &cg::Tensor::zero_grad)
         .def("sum", &cg::Tensor::sum)
+        .def("relu", &cg::Tensor::relu)
         .def_property_readonly("size", &cg::Tensor::get_size)
         .def_property_readonly("data", &cg::Tensor::get_data)
         .def_property_readonly("grad", &cg::Tensor::get_grad)

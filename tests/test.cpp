@@ -372,7 +372,7 @@ TEST(Basic, ReLU) {
           [1., 1.]])
   */
   cg::t a = cg::tensor({2, 2}, {-1.0, -2.0, 1.0, 2.0});
-  cg::t b = cg::relu(a);
+  cg::t b = a.get()->relu();
   auto l = b.get()->sum();
   l.get()->backward();
 

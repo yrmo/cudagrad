@@ -122,6 +122,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   void backward();
   void zero_grad();
   std::shared_ptr<Tensor> sum();
+  std::shared_ptr<Tensor> relu();
   std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> other);
 
   void size() {
@@ -345,14 +346,14 @@ std::shared_ptr<Tensor> Tensor::sum() {
       std::make_shared<SumBackward>(), 's');
 }
 
-std::shared_ptr<Tensor> relu(std::shared_ptr<Tensor> input) {
-  std::vector<float> result_data(input.get()->data_.size());
-  for (int i = 0; i < input.get()->data_.size(); ++i) {
-    result_data[i] = std::max(0.0f, input.get()->data_[i]);
+std::shared_ptr<Tensor> Tensor::relu() {
+  std::vector<float> result_data(data_.size());
+  for (int i = 0; i < data_.size(); ++i) {
+    result_data[i] = std::max(0.0f, data_[i]);
   }
   return std::make_shared<Tensor>(
-      input.get()->size_, result_data,
-      std::vector<std::shared_ptr<Tensor>>{input.get()->get_shared()},
+      size_, result_data,
+      std::vector<std::shared_ptr<Tensor>>{get_shared()},
       std::make_shared<ReluBackward>(), 'r');
 }
 
@@ -634,7 +635,7 @@ class Neuron {
       }
     }
     ans = ans + bias_;
-    return relu(ans);
+    return ans.get()->relu();
   }
 
   void train() {
