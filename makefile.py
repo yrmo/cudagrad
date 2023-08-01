@@ -14,7 +14,7 @@ class Makefile:
     def lint(self):
         RUN = os.system
         RUN(f"cpplint {CPP_FILES}")
-        RUN("python -m mypy --ignore-missing-imports --pretty .")
+        RUN("python -m mypy --exclude build --ignore-missing-imports --pretty .")
 
     def clean(self):
         RUN = os.system
