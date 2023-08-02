@@ -60,6 +60,20 @@ class Neuron(Module):
     def parameters(self):
         return self.w + [self.b]
 
+    def zero_grad(self):
+        for tensor in self.w + [self.b]:
+            tensor.zero_grad()
+
+    def train(self, rate: float):
+        for tensor in self.w + [self.b]:
+            assert tensor.size == [1]
+            # FIXME this is a must fix, I must be able to assign to data!
+            # print('before', tensor.data)
+            # print(type(rate), type(tensor.grad[0]))
+            # print(rate * tensor.grad[0])
+            tensor.data[0] = tensor.data[0] + rate * tensor.grad[0]
+            # print('after', tensor.data[0])
+
     def __repr__(self):
         return f"{'ReLU' if self.nonlin else 'Linear'}Neuron({len(self.w)})"
 
@@ -81,6 +95,14 @@ class Layer(Module):
 
     def parameters(self):
         return [p for n in self.neurons for p in n.parameters()]
+
+    def zero_grad(self):
+        for neuron in self.neurons:
+            neuron.zero_grad()
+
+    def train(self, rate: float):
+        for neuron in self.neurons:
+            neuron.train(rate)
 
     def __repr__(self):
         return f"Layer of [{', '.join(str(n) for n in self.neurons)}]"
@@ -104,6 +126,14 @@ class MLP(Module):
     def parameters(self):
         return [p for layer in self.layers for p in layer.parameters()]
 
+    def zero_grad(self):
+        for layer in self.layers:
+            layer.zero_grad()
+
+    def train(self, rate: float):
+        for layer in self.layers:
+            layer.train(rate)
+
     def __repr__(self):
         return f"MLP of [{', '.join(str(layer) for layer in self.layers)}]"
 
@@ -119,24 +149,27 @@ ys = [1.0, -1.0, -1.0, 1.0]
 #      redoing this is annoying how does pytorch store loss functions?
 
 nn = MLP(3, [4, 4, 1])  # i think this ignores our random seed sadly
-# for _ in range(50):
+for _ in range(50):
 
-ypred = [nn(x) for x in xs]
-# print(ypred, ys)
-# print(list(zip(ypred, ys)))
+    ypred = [nn(x) for x in xs]
+    # print(ypred, ys)
+    # print(list(zip(ypred, ys)))
 
-# TODO ** POW would be nice here
-# TODO no idea why sum() doesnt work
-tensor_ys = [tensor([1], [float(y)]) for y in ys]
-loss = tensor([1], [0.0])
-for x in [(a - b) * (a - b) for a, b in zip(ypred, tensor_ys)]:
-    loss = loss + x
+    # TODO ** POW would be nice here
+    # TODO no idea why sum() doesnt work
+    tensor_ys = [tensor([1], [float(y)]) for y in ys]
+    loss = tensor([1], [0.0])
+    for x in [(a - b) * (a - b) for a, b in zip(ypred, tensor_ys)]:
+        loss = loss + x
+    # loss = sum((a - b) * (a - b) for a, b in zip(ypred, tensor_ys))
 
-# loss = sum((a - b) * (a - b) for a, b in zip(ypred, tensor_ys))
+    nn.zero_grad()
+    # for p in nn.parameters():
+    #     p.grad = 0.0
 
-# for p in nn.parameters():
-#     p.grad = 0.0
-# loss.backward()
-# for p in nn.parameters():
-#     p.data += -0.05 * p.grad
-# print(_ + 1, loss.data, [f"{x.data:1.2f}" for x in ypred])
+    loss.backward()
+    nn.train(-0.05)
+    # for p in nn.parameters():
+    #     p.data += -0.05 * p.grad
+
+    print(_ + 1, loss.data, [f"{y.data[0]:1.2f}" for y in ypred])
