@@ -68,10 +68,29 @@ class Neuron(Module):
         for tensor in self.w + [self.b]:
             assert tensor.size == [1]
             # FIXME this is a must fix, I must be able to assign to data!
-            # print('before', tensor.data)
-            # print(type(rate), type(tensor.grad[0]))
-            # print(rate * tensor.grad[0])
+            # >>> cg
+            # <module 'cudagrad' from '/Users/ryan/cudagrad/cudagrad/__init__.py'>
+            # >>> x = cg.tensor([1], [42])
+            # >>> x
+            # [42]
+            # [0]
+            # >>> x.data
+            # [42.0]
+            # >>> x.data = [1]
+            # Traceback (most recent call last):
+            # File "<stdin>", line 1, in <module>
+            # AttributeError: can't set attribute
+            # >>> x.data[0]
+            # 42.0
+            # >>> x.data[0] = 1
+            # >>> x
+            # [42]
+            # [0]
+            before = tensor.data[0]
+            update_value = tensor.data[0] + rate * tensor.grad[0]
             tensor.data[0] = tensor.data[0] + rate * tensor.grad[0]
+            print(before, '->', tensor.data[0])
+            # print(tensor.data[0])
             # print('after', tensor.data[0])
 
     def __repr__(self):
@@ -172,4 +191,4 @@ for _ in range(50):
     # for p in nn.parameters():
     #     p.data += -0.05 * p.grad
 
-    print(_ + 1, loss.data, [f"{y.data[0]:1.2f}" for y in ypred])
+    # print(_ + 1, loss.data[0], [f"{y.data[0]:1.2f}" for y in ypred])
