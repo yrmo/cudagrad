@@ -25,10 +25,6 @@ from .tensor_bindings import *  # type: ignore
 random.seed(1337)
 
 
-# import cudagrad
-# from cudagrad import Tensor, tensor
-
-
 class Module:
     def zero_grad(self):
         for p in self.parameters():
@@ -96,13 +92,6 @@ class Neuron(Module):
         return f"{'ReLU' if self.nonlin else 'Linear'}Neuron({len(self.w)})"
 
 
-# %%
-print(Neuron(2)([0.5, 0.2]).data)
-print(Neuron(2)([tensor([1], [0.5]), tensor([1], [0.2])]).data)
-# Layer(1, 2)
-# MLP(2, [2, 1])
-
-# %%
 class Layer(Module):
     def __init__(self, nin, nout, **kwargs):
         self.neurons = [Neuron(nin, **kwargs) for _ in range(nout)]
@@ -126,7 +115,6 @@ class Layer(Module):
         return f"Layer of [{', '.join(str(n) for n in self.neurons)}]"
 
 
-l = Layer(3, 2)
 
 
 class MLP(Module):
@@ -157,39 +145,47 @@ class MLP(Module):
         return f"MLP of [{', '.join(str(layer) for layer in self.layers)}]"
 
 
-# %%
+if __name__ == "__main__":
+    #%%
+    print(Neuron(2)([0.5, 0.2]).data)
+    print(Neuron(2)([tensor([1], [0.5]), tensor([1], [0.2])]).data)
+    l = Layer(3, 2)
 
-# TODO make commented out part work make it a test
+    # Layer(1, 2)
+    # MLP(2, [2, 1])
+    # %%
 
-xs = [[2.0, 3.0, -1.0], [3.0, -1.0, 0.5], [0.5, 1.0, 1.0], [1.0, 1.0, -1.0]]
-ys = [1.0, -1.0, -1.0, 1.0]
-# %%
+    # TODO make commented out part work make it a test
 
-# TODO make Mean Squared Error loss function some python function
-#      redoing this is annoying how does pytorch store loss functions?
+    xs = [[2.0, 3.0, -1.0], [3.0, -1.0, 0.5], [0.5, 1.0, 1.0], [1.0, 1.0, -1.0]]
+    ys = [1.0, -1.0, -1.0, 1.0]
+    # %%
 
-nn = MLP(3, [4, 4, 1])  # i think this ignores our random seed sadly
-for _ in range(50):
+    # TODO make Mean Squared Error loss function some python function
+    #      redoing this is annoying how does pytorch store loss functions?
 
-    ypred = [nn(x) for x in xs]
-    # print(ypred, ys)
-    # print(list(zip(ypred, ys)))
+    nn = MLP(3, [4, 4, 1])  # i think this ignores our random seed sadly
+    for _ in range(50):
 
-    # TODO ** POW would be nice here
-    # TODO no idea why sum() doesnt work
-    tensor_ys = [tensor([1], [float(y)]) for y in ys]
-    loss = tensor([1], [0.0])
-    for x in [(a - b) * (a - b) for a, b in zip(ypred, tensor_ys)]:
-        loss = loss + x
-    # loss = sum((a - b) * (a - b) for a, b in zip(ypred, tensor_ys))
+        ypred = [nn(x) for x in xs]
+        # print(ypred, ys)
+        # print(list(zip(ypred, ys)))
 
-    nn.zero_grad()
-    # for p in nn.parameters():
-    #     p.grad = 0.0
+        # TODO ** POW would be nice here
+        # TODO no idea why sum() doesnt work
+        tensor_ys = [tensor([1], [float(y)]) for y in ys]
+        loss = tensor([1], [0.0])
+        for x in [(a - b) * (a - b) for a, b in zip(ypred, tensor_ys)]:
+            loss = loss + x
+        # loss = sum((a - b) * (a - b) for a, b in zip(ypred, tensor_ys))
 
-    loss.backward()
-    nn.train(-0.05)
-    # for p in nn.parameters():
-    #     p.data += -0.05 * p.grad
+        nn.zero_grad()
+        # for p in nn.parameters():
+        #     p.grad = 0.0
 
-    # print(_ + 1, loss.data[0], [f"{y.data[0]:1.2f}" for y in ypred])
+        loss.backward()
+        nn.train(-0.05)
+        # for p in nn.parameters():
+        #     p.data += -0.05 * p.grad
+
+        # print(_ + 1, loss.data[0], [f"{y.data[0]:1.2f}" for y in ypred])
