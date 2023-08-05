@@ -25,7 +25,6 @@ from .tensor_bindings import *  # type: ignore
 random.seed(1337)
 
 
-
 # import cudagrad
 # from cudagrad import Tensor, tensor
 
@@ -89,7 +88,7 @@ class Neuron(Module):
             before = tensor.data[0]
             update_value = tensor.data[0] + rate * tensor.grad[0]
             tensor.data[0] = tensor.data[0] + rate * tensor.grad[0]
-            print(before, '->', tensor.data[0])
+            print(before, "->", tensor.data[0])
             # print(tensor.data[0])
             # print('after', tensor.data[0])
 
@@ -129,6 +128,7 @@ class Layer(Module):
 
 l = Layer(3, 2)
 
+
 class MLP(Module):
     def __init__(self, nin, nouts):
         sz = [nin] + nouts
@@ -155,6 +155,7 @@ class MLP(Module):
 
     def __repr__(self):
         return f"MLP of [{', '.join(str(layer) for layer in self.layers)}]"
+
 
 # %%
 
