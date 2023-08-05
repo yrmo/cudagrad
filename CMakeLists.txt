@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 
-project(cudagrad_test)
+project(tensor_test)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -26,4 +26,4 @@ target_link_libraries(${PROJECT_NAME} gtest gtest_main ${TORCH_LIBRARIES})
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -fsanitize=address)
 
 # Copy headers to build directory
-configure_file(src/cudagrad.hpp cudagrad.hpp COPYONLY)
+configure_file(src/tensor.hpp tensor.hpp COPYONLY)

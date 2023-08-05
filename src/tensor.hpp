@@ -8,8 +8,8 @@
 //
 // Alexander Stepanov
 
-#ifndef SRC_CUDAGRAD_HPP_
-#define SRC_CUDAGRAD_HPP_
+#ifndef SRC_TENSOR_HPP_
+#define SRC_TENSOR_HPP_
 
 #include <algorithm>
 #include <cassert>
@@ -659,4 +659,4 @@ class Neuron {
 
 }  // namespace cg
 
-#endif  // SRC_CUDAGRAD_HPP_
+#endif  // SRC_TENSOR_HPP_

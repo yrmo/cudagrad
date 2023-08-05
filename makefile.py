@@ -32,7 +32,7 @@ class Makefile:
         RUN("cmake -DCMAKE_PREFIX_PATH=" + torch.utils.cmake_prefix_path + " ..")
         RUN("cmake ..")
         RUN("make")
-        RUN("./cudagrad_test")
+        RUN("./tensor_test")
         RUN("python -m pip uninstall -y cudagrad")
         RUN("python -m pip cache purge")
         os.chdir(os.path.expanduser("~/cudagrad"))

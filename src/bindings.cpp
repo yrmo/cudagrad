@@ -5,7 +5,7 @@
 // Tim Peters
 
 #include <sstream>
-#include "cudagrad.hpp"
+#include "tensor.hpp"
 
 #include <pybind11/stl.h>
 #include <pybind11/pybind11.h>

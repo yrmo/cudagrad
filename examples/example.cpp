@@ -1,5 +1,5 @@
 // c++ -std=c++11 -I./src examples/example.cpp && ./a.out
-#include "cudagrad.hpp"
+#include "tensor.hpp"
 int main() {
   auto a = cg::tensor({2, 2}, {2.0, 3.0, 4.0, 5.0});
   auto b = cg::tensor({2, 2}, {6.0, 7.0, 8.0, 9.0});
