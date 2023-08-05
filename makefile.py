@@ -33,24 +33,24 @@ class Makefile:
         RUN("cmake ..")
         RUN("make")
         RUN("./cudagrad_test")
-        RUN("pip uninstall -y cudagrad")
-        RUN("pip cache purge")
+        RUN("python -m pip uninstall -y cudagrad")
+        RUN("python -m pip cache purge")
         os.chdir(os.path.expanduser("~/cudagrad"))
-        RUN("pip install .")
+        RUN("python -m pip install .")
         RUN("python tests/test.py")
         os.chdir(os.path.expanduser("~/cudagrad"))
         RUN("c++ -std=c++11 -I./src examples/example.cpp && ./a.out")
-        RUN("pip install cudagrad")
+        RUN("python -m pip install cudagrad")
         RUN("python ./examples/example.py")
 
     def publish(self):
         RUN = os.system
-        RUN("pip uninstall -y cudagrad")
-        RUN("pip cache purge")
+        RUN("python -m pip uninstall -y cudagrad")
+        RUN("python -m pip cache purge")
         if os.path.exists("dist"):
             shutil.rmtree("dist")
         RUN("python setup.py sdist")
-        RUN("pip install --upgrade twine")
+        RUN("python -m pip install --upgrade twine")
         RUN("python -m twine upload dist/*")
 
     def bump(self, version_type):
