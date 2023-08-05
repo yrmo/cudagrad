@@ -13,7 +13,7 @@ CPP_FILES = "./tests/test.cpp ./src/cudagrad.hpp ./src/ops.cu"
 class Makefile:
     def lint(self):
         RUN = os.system
-        RUN(f"cpplint {CPP_FILES}")
+        RUN(f"python -m cpplint {CPP_FILES}")
         RUN("python -m mypy --exclude build --ignore-missing-imports --pretty .")
 
     def clean(self):
