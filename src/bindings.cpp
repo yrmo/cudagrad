@@ -71,9 +71,7 @@ PYBIND11_MODULE(tensor_bindings, m) {
             return os.str();
         })
         .def("__repr__", [](std::shared_ptr<cg::Tensor> t) {
-            std::ostringstream os;
-            os << t;
-            return os.str();
+            return t.get()->repr();
         });
 
 #ifdef VERSION_INFO

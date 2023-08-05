@@ -18,6 +18,7 @@
 #include <memory>
 #include <numeric>
 #include <random>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -124,6 +125,24 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   std::shared_ptr<Tensor> sum();
   std::shared_ptr<Tensor> relu();
   std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> other);
+
+  std::string repr() {
+    std::ostringstream oss_s;
+    for (const auto& s : size_) {
+      oss_s << s << ", ";
+    }
+    std::string s_str = oss_s.str();
+    s_str = s_str.substr(0, s_str.length() - 2);
+
+    std::ostringstream oss_d;
+    for (const auto& d : data_) {
+      oss_d << d << ", ";
+    }
+    std::string d_str = oss_d.str();
+    d_str = d_str.substr(0, d_str.length() - 2);
+
+    return std::string("tensor([") + s_str + std::string("], [") + d_str + std::string("])");
+  }
 
   void size() {
     for (auto x : size_) std::cout << x << std::endl;
