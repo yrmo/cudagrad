@@ -2,6 +2,7 @@ import os
 import re
 import shutil
 import subprocess
+from functools import wraps
 
 import fire
 import toml
@@ -10,20 +11,37 @@ import torch
 CPP_FILES = "./tests/test.cpp ./src/cudagrad.hpp ./src/ops.cu"
 
 
+def echo(function):
+    @wraps(function)
+    def wrapper(*args, **kwargs):
+        print(args[0])
+        function(*args, **kwargs)
+
+    return wrapper
+
+
+@echo
+def RUN(input: str) -> None:
+    os.system(input)
+
+
 class Makefile:
     def lint(self):
-        RUN = os.system
+
         RUN(f"python -m cpplint {CPP_FILES}")
         RUN("python -m mypy --exclude build --ignore-missing-imports --pretty .")
 
     def clean(self):
-        RUN = os.system
+
         RUN("python -m isort .")
         RUN("python -m black .")
         RUN("clang-format -i -style=Google {CPP_FILES}")
 
     def test(self):
-        RUN = lambda x: subprocess.check_call(x, shell=True)
+        @echo
+        def RUN(input: str) -> None:
+            subprocess.check_call(input, shell=True)
+
         RUN("git submodule update --init --recursive")
         if os.path.exists("build"):
             shutil.rmtree("build")
