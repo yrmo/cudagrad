@@ -41,7 +41,7 @@ $ python -q
 tensor([1], [42])
 ```
 
-It's contains the `Tensor` class, and the `tensor` factory function. In the C++, the `tensor` factory is necessary because the constructor of a type `T` cannot have it's own constructor create `std::shared_ptr<T>`, but in Python `tensor` and `Tensor` do the same thing:
+In C++, constructors directly return an instance of the class type. However, if we want to manage the lifetime of an object using `std::shared_ptr<T>`, we typically use a factory function. In this case, the `tensor` factory function is used for creating `std::shared_ptr<Tensor>` instances in C++, but in Python, the distinction is abstracted away by the pybind11 bindings, allowing both `tensor` and `Tensor` to do the same thing.
 
 ```py
 >>> from tensor import tensor, Tensor
