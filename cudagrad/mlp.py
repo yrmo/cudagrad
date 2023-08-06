@@ -17,7 +17,7 @@
 import random
 from typing import *  # type: ignore
 
-from .tensor_bindings import *  # type: ignore
+from .tensor import *  # type: ignore
 
 # wait, can cudagrad use python's global seed randomness?
 # probably hard/impossible to comunicate back to c++

@@ -15,7 +15,7 @@
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(tensor_bindings, m) {
+PYBIND11_MODULE(tensor, m) {
     m.doc() = R"pbdoc(
         Pybind11 example plugin
         -----------------------

@@ -27,7 +27,7 @@ __version__ = get_version_from_toml()
 
 ext_modules = [
     Pybind11Extension(
-        "cudagrad.tensor_bindings",
+        "cudagrad.tensor",
         ["src/bindings.cpp"],
         # Example: passing in the version to the compiled code
         define_macros=[("VERSION_INFO", __version__)],
