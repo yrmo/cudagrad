@@ -52,6 +52,52 @@ print(b.grad)  # [66.0, 66.0, 88.0, 88.0]
 
 For simplicity, many features PyTorch has cudagrad does not, like broadcasting and views. All operations are defined only on `std::shared_ptr<Tensor>`, for now at least.
 
+### Tensor
+
+The `/cudagrad/src` folder contains the `Tensor` class written in C++ and CUDA, and it's pybind11 bindings. If you install the `cudagrad` package locally (using `python -m pip install -e .`) you will see a tensor `.so` file in the `/cudagrad/cudagrad` Python package folder, this is a normal Python package called `tensor` that you can import:
+
+```py
+$ pwd
+/Users/ryan/cudagrad/cudagrad
+$ ls
+__init__.py			mlp.py
+__pycache__			tensor.cpython-310-darwin.so
+$ python -q
+>>> from tensor import tensor
+>>> tensor
+<built-in method tensor of PyCapsule object at 0x100f81c80>
+>>> tensor([1], [42.0])
+tensor([1], [42])
+```
+
+It's contains the `Tensor` class, and the `tensor` factory function. In the C++, the `tensor` factory is necessary because the constructor of a type `T` cannot have it's own constructor create `std::shared_ptr<T>`, but in Python `tensor` and `Tensor` do the same thing:
+
+```py
+>>> from tensor import tensor, Tensor
+>>> tensor
+<built-in method tensor of PyCapsule object at 0x1015ca1f0>
+>>> Tensor
+<class 'tensor.Tensor'>
+>>> tensor([1], [42])
+tensor([1], [42])
+>>> Tensor([1], [42])
+tensor([1], [42])
+```
+
+### Neural networks
+
+To improve the `Tensor` class and it's Python bindings `cudagrad` tries to eat it's own dog food and implement the
+
+#### Multi-Layer Perceptron
+
+An MLP implementation can be found at `/cudagrad/cudagrad/mlp.py`.
+
+TODO example
+
+#### Transformer
+
+TODO
+
 ## Goals
 
 The goal of this project is to learn more about PyTorch's internals, neural networks, and C++. And some CUDA too!
@@ -61,6 +107,12 @@ To do this, I'll gradually add support to cudagrad for the mathematical operatio
 > "Maybe it's a bad idea to have really big ambitions initially. Because the bigger your ambitions, the longer they're going to take to realize, and the longer you're projecting into the future, the more likely you're going to be wrong."
 >
 > [paulg @ PyCon US 2012](https://youtu.be/R9ITLdmfdLI?t=1927)
+
+## Setup
+
+- TODO: CUDA driver setup
+- TODO: CUDA toolkit setup
+- TODO: Check all system requirements met (nvcc, git, cmake, make...)
 
 ## Running tests
 
