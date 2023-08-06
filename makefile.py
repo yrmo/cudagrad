@@ -26,6 +26,11 @@ def RUN(input: str) -> None:
 
 
 class Makefile:
+    def __init__(self):
+        global CPP_FILES
+        for file in CPP_FILES.split():
+            assert os.path.isfile(f"{file}") == True
+
     def lint(self):
 
         RUN(f"python -m cpplint {CPP_FILES}")
