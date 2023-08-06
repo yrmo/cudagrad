@@ -8,7 +8,7 @@ import fire
 import toml
 import torch
 
-CPP_FILES = "./tests/test.cpp ./src/cudagrad.hpp ./src/ops.cu"
+CPP_FILES = "./tests/test.cpp ./src/tensor.hpp ./src/ops.cu"
 
 
 def echo(function):

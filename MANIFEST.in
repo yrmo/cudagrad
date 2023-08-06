@@ -1,2 +1,2 @@
-include src/cudagrad.hpp
+include src/tensor.hpp
 include src/ops.cu

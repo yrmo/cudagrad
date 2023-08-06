@@ -1,6 +1,6 @@
 // c++ -std=c++11 -I./src examples/xor.cpp && ./a.out
 
-#include "cudagrad.hpp"
+#include "tensor.hpp"
 #include <cmath>
 
 int main() {
