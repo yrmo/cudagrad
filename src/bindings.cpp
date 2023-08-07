@@ -43,6 +43,10 @@ PYBIND11_MODULE(tensor, m) {
     }, R"pbdoc(Magic tensor)pbdoc",
     py::arg("sizes"), py::arg("values"));
 
+    py::class_<cg::TensorData>(m, "_TensorData")
+        .def("__getitem__", &cg::TensorData::get)
+        .def("__setitem__", &cg::TensorData::set);
+
     // TODO(yrom1): When doing C++ bindings does repr
     //              override str when no str present?
     py::class_<cg::Tensor, std::shared_ptr<cg::Tensor>>(m, "Tensor")
@@ -52,9 +56,11 @@ PYBIND11_MODULE(tensor, m) {
         .def("zero_grad", &cg::Tensor::zero_grad)
         .def("sum", &cg::Tensor::sum)
         .def("relu", &cg::Tensor::relu)
-        .def_property_readonly("size", &cg::Tensor::get_size)
-        .def_property_readonly("data", &cg::Tensor::get_data)
-        .def_property_readonly("grad", &cg::Tensor::get_grad)
+        .def_property_readonly("data", &cg::Tensor::data_proxy)
+       .def("__getitem__", &cg::Tensor::get_data_at)
+        .def("__setitem__", &cg::Tensor::set_data_at)
+        .def_property_readonly("size", &cg::Tensor::get_size) // do something about this
+        .def_property_readonly("grad", &cg::Tensor::get_grad) // do something about this
         .def("graph", &cg::Tensor::graph)
         .def_static("ones", &cg::Tensor::ones)
         .def_static("zeros", &cg::Tensor::zeros)
