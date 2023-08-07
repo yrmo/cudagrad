@@ -80,6 +80,8 @@ class Makefile:
         # __version__ is in two places for now
         # not good, but keeps things simpleish
 
+        # TODO check if they get out of sync because I manually changed one like an idiot
+
         with open("pyproject.toml", "r+") as f:
             content = f.read()
             version_match = re.search(r'version = "(\d+)\.(\d+)\.(\d+)"', content)
