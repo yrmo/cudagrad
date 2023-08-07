@@ -43,9 +43,9 @@ PYBIND11_MODULE(tensor, m) {
     }, R"pbdoc(Magic tensor)pbdoc",
     py::arg("sizes"), py::arg("values"));
 
-    py::class_<cg::TensorData>(m, "_TensorData")
-        .def("__getitem__", &cg::TensorData::get)
-        .def("__setitem__", &cg::TensorData::set);
+    py::class_<cg::DataProxy>(m, "_DataProxy")
+        .def("__getitem__", &cg::DataProxy::get)
+        .def("__setitem__", &cg::DataProxy::set);
 
     // TODO(yrom1): When doing C++ bindings does repr
     //              override str when no str present?
