@@ -6,3 +6,4 @@ fire
 toml
 isort
 cpplint
+torch
