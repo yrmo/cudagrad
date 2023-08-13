@@ -4,13 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cudagrad"
-version = "0.0.36"
-description = "A small autograd engine"
+version = "0.0.37"
+description = "A small tensor-valued autograd engine"
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [ "Programming Language :: Python :: 3", "Operating System :: OS Independent",]
-# TEMP while we implement mlp
-dependencies = [ "micrograd",]
 [[project.authors]]
 name = "Ryan Moore"
 email = "ryanm.inbox@gmail.com"
