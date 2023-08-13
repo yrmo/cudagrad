@@ -146,7 +146,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
     std::string d_str = oss_d.str();
     d_str = d_str.substr(0, d_str.length() - 2);
 
-    return std::string("tensor([") + s_str + std::string("], [") + d_str + std::string("])");
+    return std::string("<cudagrad.Tensor([") + s_str + std::string("], [") + d_str + std::string("]) object at " /* ??? */ + std::string(">"));
   }
 
   void size() {
