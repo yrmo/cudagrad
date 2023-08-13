@@ -66,6 +66,14 @@ class Makefile:
         RUN("python -m pip install cudagrad")
         RUN("python ./examples/example.py")
 
+    def test_python_3_7(self):
+        RUN("pyenv global 3.7")
+        RUN("pip uninstall -y cudagrad")
+        RUN("cd /")
+        RUN("pip install cudagrad")
+        RUN('python -c "import cudagrad as cg; print(cg.tensor([1], [4.2]))"')
+        RUN("cd ~/cudagrad")
+
     def publish(self):
         RUN = os.system
         RUN("python -m pip uninstall -y cudagrad")
