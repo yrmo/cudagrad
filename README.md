@@ -2,7 +2,7 @@
 
 A small autograd engine
 
-WIP! TODO: CUDA operation integration and release on PyPI
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Sphyraena_barracuda_%28great_barracuda%29_%28Little_San_Salvador_Island%2C_Bahamas%29_%2816182815352%29.jpg/320px-Sphyraena_barracuda_%28great_barracuda%29_%28Little_San_Salvador_Island%2C_Bahamas%29_%2816182815352%29.jpg)
 
 ## Example
 
@@ -25,3 +25,5 @@ print(f.size)  # [1]
 print(a.grad)  # [143.0, 187.0, 143.0, 187.0]
 print(b.grad)  # [66.0, 66.0, 88.0, 88.0]
 ```
+
+WIP! TODO: CUDA operation integration and release on PyPI
