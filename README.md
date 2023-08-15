@@ -36,12 +36,12 @@ WIP! TODO: CUDA operation integration and release on PyPI
 
 ```
 $ python -m timeit -s "import cudagrad as cg;" "a = cg.tensor([2, 2], [2.0, 3.0, 4.0, 5.0]); b = cg.tensor([2, 2], [6.0, 7.0, 8.0, 9.0]); c = a @ b"
-200000 loops, best of 5: 1.7 usec per loop
+200000 loops, best of 5: 1.77 usec per loop
 ```
 
 ```
 $ python -m timeit -s "import torch;" "a = torch.tensor(((2.0, 3.0), (4.0, 5.0))); b = torch.tensor(((6.0, 7.0), (8.0, 9.0))); c = a @ b"
-50000 loops, best of 5: 5.08 usec per loop
+50000 loops, best of 5: 5.09 usec per loop
 ```
 
 ### Tiny backward
@@ -53,7 +53,7 @@ $ python -m timeit -s "import cudagrad as cg;" "a = cg.tensor([2, 2], [2.0, 3.0,
 
 ```
 $ python -m timeit -s "import torch;" "a = torch.tensor(((2.0, 3.0), (4.0, 5.0)), requires_grad=True); b = torch.tensor(((6.0, 7.0), (8.0, 9.0)), requires_grad=True); c = a @ b; d = c.sum(); d.backward()"
-10000 loops, best of 5: 22 usec per loop
+10000 loops, best of 5: 22.3 usec per loop
 ```
 
 ## License
