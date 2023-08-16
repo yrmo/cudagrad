@@ -150,7 +150,6 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
     ss << std::hex << (uintptr_t)this;
     std::string address = ss.str();
 
-    uintptr_t addr = reinterpret_cast<uintptr_t>(this);
     return std::string("<cudagrad.Tensor([") + s_str + std::string("], [") + d_str + std::string("]) object at 0x") + address + std::string(">");
   }
 
