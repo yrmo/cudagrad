@@ -6,6 +6,7 @@ cmd1 = 'python -m timeit -s "import cudagrad as cg;" "a = cg.tensor([2, 2], [2.0
 cmd2 = 'python -m timeit -s "import torch;" "a = torch.tensor(((2.0, 3.0), (4.0, 5.0))); b = torch.tensor(((6.0, 7.0), (8.0, 9.0))); c = a @ b"'
 cmd3 = 'python -m timeit -s "import cudagrad as cg;" "a = cg.tensor([2, 2], [2.0, 3.0, 4.0, 5.0]); b = cg.tensor([2, 2], [6.0, 7.0, 8.0, 9.0]); c = a @ b; d = c.sum(); d.backward()"'
 cmd4 = 'python -m timeit -s "import torch;" "a = torch.tensor(((2.0, 3.0), (4.0, 5.0)), requires_grad=True); b = torch.tensor(((6.0, 7.0), (8.0, 9.0)), requires_grad=True); c = a @ b; d = c.sum(); d.backward()"'
+cmd5 = 'python -m timeit -s "import numpy as np" "a = np.array([[2.0, 3.0],[4.0, 5.0]]); b = np.array([[6.0, 7.0], [8.0, 9.0]]); c = a @ b;"'
 
 README = f"""\
 # cudagrad
@@ -33,6 +34,11 @@ WIP! TODO: CUDA operation integration and release on PyPI
 ```
 $ {cmd1}
 {echo(cmd1)}
+```
+
+```
+$ {cmd5}
+{echo(cmd5)}
 ```
 
 ```
