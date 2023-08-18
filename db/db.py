@@ -1,10 +1,9 @@
+import sqlite3
 from getpass import getpass
 from subprocess import run
 from timeit import timeit
 
-import boto3
 import fire
-import psycopg2
 
 # imports for timeit, possibly dynamically (?)
 import torch  # type: ignore
@@ -18,28 +17,19 @@ cmd4 = ("import torch;", "a = torch.tensor(((2.0, 3.0), (4.0, 5.0)), requires_gr
 cmd5 = ("import numpy as np", "a = np.array([[2.0, 3.0],[4.0, 5.0]]); b = np.array([[6.0, 7.0], [8.0, 9.0]]); c = a @ b;", "tiny matmul")
 TESTS = [cmd1, cmd2, cmd3, cmd4, cmd5]
 
-global PASSWORD
-
 class DB:
   def get_password(self) -> str:
     return getpass()
 
   def connect(self):
-    run(f"psql -h {HOSTNAME} -p {PORT} -U {USERNAME} -d {DATABASE} -W", shell=True)
+    run(f"sqlite3 {DATABASE}")
 
   def insert_test_record(self, *args):
-      global PASSWORD
-      connection = psycopg2.connect(
-          host=HOSTNAME,
-          port=PORT,
-          user=USERNAME,
-          password=PASSWORD,
-          dbname=DATABASE
-      )
+      connection = sqlite3.connect(DATABASE)
       cursor = connection.cursor()
       query = """
       INSERT INTO tests (key, setup, statement, version, loop_nanoseconds)
-      VALUES (%s, %s, %s, %s, %s);
+      VALUES (?, ?, ?, ?, ?);
       """
       cursor.execute(query, args)
       connection.commit()
@@ -47,25 +37,16 @@ class DB:
       connection.close()
 
   def run_tests(self) -> None:
-    global PASSWORD
-    PASSWORD = self.get_password()
     for test in TESTS:
       print(test)
       statement = test[1]
       setup = test[0]
       key = test[2]
-      version = "NULL" # TODO
+      version = None # TODO
       loop_nanoseconds = timeit(statement, setup)
       self.insert_test_record(key, setup, statement, version, loop_nanoseconds)
 
 
 if __name__ == '__main__':
-  rds_client = boto3.client('rds')
-  db_instance = rds_client.describe_db_instances(DBInstanceIdentifier='boto-postgres')['DBInstances'][0]
-
-  HOSTNAME = db_instance['Endpoint']['Address']
-  PORT = db_instance['Endpoint']['Port']
-  USERNAME = "ryan"
-  DATABASE = "performance"
-
+  DATABASE = "performance.db"
   fire.Fire(DB)

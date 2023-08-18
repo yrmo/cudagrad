@@ -7,4 +7,3 @@ toml
 isort
 cpplint
 torch
-psycopg2
