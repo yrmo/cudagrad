@@ -18,17 +18,22 @@ cmd4 = ("import torch;", "a = torch.tensor(((2.0, 3.0), (4.0, 5.0)), requires_gr
 cmd5 = ("import numpy as np", "a = np.array([[2.0, 3.0],[4.0, 5.0]]); b = np.array([[6.0, 7.0], [8.0, 9.0]]); c = a @ b;", "tiny matmul")
 TESTS = [cmd1, cmd2, cmd3, cmd4, cmd5]
 
+global PASSWORD
 
 class DB:
+  def get_password(self) -> str:
+    return getpass()
+
   def connect(self):
     run(f"psql -h {HOSTNAME} -p {PORT} -U {USERNAME} -d {DATABASE} -W", shell=True)
 
-  def insert_test_record(*args):
+  def insert_test_record(self, *args):
+      global PASSWORD
       connection = psycopg2.connect(
           host=HOSTNAME,
           port=PORT,
           user=USERNAME,
-          password=getpass(),
+          password=PASSWORD,
           dbname=DATABASE
       )
       cursor = connection.cursor()
@@ -36,21 +41,21 @@ class DB:
       INSERT INTO tests (key, setup, statement, version, loop_nanoseconds)
       VALUES (%s, %s, %s, %s, %s);
       """
-      cursor.execute(query, args[1:])
+      cursor.execute(query, args)
       connection.commit()
       cursor.close()
       connection.close()
 
   def run_tests(self) -> None:
+    global PASSWORD
+    PASSWORD = self.get_password()
     for test in TESTS:
       print(test)
       statement = test[1]
       setup = test[0]
       key = test[2]
       version = "NULL" # TODO
-      print(statement, '---------',setup)
       loop_nanoseconds = timeit(statement, setup)
-      print('---', loop_nanoseconds)
       self.insert_test_record(key, setup, statement, version, loop_nanoseconds)
 
 
