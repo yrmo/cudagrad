@@ -144,38 +144,42 @@ class Makefile:
             )
     class DB:
         """
-        create database performance;
-
-        create table tests(
-            id serial PRIMARY KEY,
-            key varchar(255),
-            setup varchar(255),
-            statement varchar(1000),
-            version varchar(255),
-            loop_nanoseconds real,
-            created_at timestamp DEFAULT current_timestamp
+        create table test (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            key VARCHAR(255),
+            setup VARCHAR(255),
+            statement VARCHAR(1000)
         );
 
-        insert into tests(key, setup, statement, version, loop_nanoseconds) values(
-            'tiny matmul'
-            ,'import cudagrad as cg'
-            ,'a = cg.tensor([2, 2], [2.0, 3.0, 4.0, 5.0]); b = cg.tensor([2, 2], [6.0, 7.0, 8.0, 9.0]); c = a @ b'
-            ,'2.0.0'
-            ,'1.77'
-        );
+            create table result (
+                id INTEGER,
+                version VARCHAR(255),
+                loop_nanoseconds REAL,
+                created_at timestamp DEFAULT current_timestamp,
+                FOREIGN KEY (id) REFERENCES test (id)
+            );
         """
-        def get_password(self) -> str:
-            return getpass()
-
         def connect(self):
             run(f"sqlite3 {DATABASE}")
 
-        def insert_test_record(self, *args):
+        def insert_into_test(self, key, setup, statement):
             connection = sqlite3.connect(DATABASE)
             cursor = connection.cursor()
             query = """
-            INSERT INTO tests (key, setup, statement, version, loop_nanoseconds)
-            VALUES (?, ?, ?, ?, ?);
+            INSERT INTO test (id, key, setup, statement)
+            VALUES (?, ?, ?, ?);
+            """
+            cursor.execute(query, (None, key, setup, statement))
+            connection.commit()
+            cursor.close()
+            connection.close()
+
+        def _insert_into_result(self, *args):
+            connection = sqlite3.connect(DATABASE)
+            cursor = connection.cursor()
+            query = """
+            INSERT INTO result (id, version, loop_nanoseconds)
+            VALUES (?, ?, ?);
             """
             cursor.execute(query, args)
             connection.commit()
@@ -183,14 +187,28 @@ class Makefile:
             connection.close()
 
         def run_tests(self) -> None:
-            for test in TESTS:
-                print(test)
-                statement = test[1]
-                setup = test[0]
-                key = test[2]
+            connection = sqlite3.connect(DATABASE)
+            cursor = connection.cursor()
+            query = """
+            SELECT *
+            FROM test
+            """
+            cursor.execute(query)
+            tests = cursor.fetchall()
+            cursor.close()
+            connection.close()
+
+            for test in tests:
+                statement = test[3]
+                setup = test[2]
+                key = test[1]
+                id = test[0]
                 version = None # TODO
+
+                print(f"Running performance test:\n{statement}")
                 loop_nanoseconds = timeit(statement, setup)
-                self.insert_test_record(key, setup, statement, version, loop_nanoseconds)
+                self._insert_into_result(id, version, loop_nanoseconds)
+
     class CheckRequirementsBroken:
         def check_program(self, program) -> None:
             """Checks if the specified program is installed"""
