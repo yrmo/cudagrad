@@ -1,6 +1,6 @@
 from subprocess import run
 
-echo = lambda x : run(x, shell=True, capture_output=True).stdout.decode('utf-8').strip()
+echo = lambda x: run(x, shell=True, capture_output=True).stdout.decode("utf-8").strip()
 
 cmd1 = 'python -m timeit -s "import cudagrad as cg;" "a = cg.tensor([2, 2], [2.0, 3.0, 4.0, 5.0]); b = cg.tensor([2, 2], [6.0, 7.0, 8.0, 9.0]); c = a @ b"'
 cmd2 = 'python -m timeit -s "import torch;" "a = torch.tensor(((2.0, 3.0), (4.0, 5.0))); b = torch.tensor(((6.0, 7.0), (8.0, 9.0))); c = a @ b"'
