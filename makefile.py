@@ -19,13 +19,6 @@ import cudagrad as cg  # type: ignore
 
 CPP_FILES = "./tests/test.cpp ./src/tensor.hpp ./src/ops.cu"
 
-cmd1 = ("import cudagrad as cg;", "a = cg.tensor([2, 2], [2.0, 3.0, 4.0, 5.0]); b = cg.tensor([2, 2], [6.0, 7.0, 8.0, 9.0]); c = a @ b", "tiny matmul")
-cmd2 = ("import torch;", "a = torch.tensor(((2.0, 3.0), (4.0, 5.0))); b = torch.tensor(((6.0, 7.0), (8.0, 9.0))); c = a @ b", "tiny matmul")
-cmd3 = ("import cudagrad as cg;", "a = cg.tensor([2, 2], [2.0, 3.0, 4.0, 5.0]); b = cg.tensor([2, 2], [6.0, 7.0, 8.0, 9.0]); c = a @ b; d = c.sum(); d.backward()", "tiny backward")
-cmd4 = ("import torch;", "a = torch.tensor(((2.0, 3.0), (4.0, 5.0)), requires_grad=True); b = torch.tensor(((6.0, 7.0), (8.0, 9.0)), requires_grad=True); c = a @ b; d = c.sum(); d.backward()", "tiny backward")
-cmd5 = ("import numpy as np", "a = np.array([[2.0, 3.0],[4.0, 5.0]]); b = np.array([[6.0, 7.0], [8.0, 9.0]]); c = a @ b;", "tiny matmul")
-TESTS = [cmd1, cmd2, cmd3, cmd4, cmd5]
-
 DATABASE = "performance.db"
 
 def echo(function):
