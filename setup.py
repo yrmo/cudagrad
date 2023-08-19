@@ -38,7 +38,7 @@ setup(
     name="cudagrad",
     version=__version__,
     author="Ryan Moore",
-    author_email="moorethreads@hey.com",
+    author_email="ryanm.inbox@gmail.com",
     url="https://github.com/yrom1/cudagrad",
     description="A small autograd engine",
     long_description="",
