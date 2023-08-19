@@ -5,6 +5,8 @@ import sqlite3
 import subprocess
 from functools import wraps
 from getpass import getpass
+from itertools import chain
+from pathlib import Path
 from subprocess import run
 from timeit import timeit
 
@@ -17,9 +19,16 @@ import torch  # type: ignore
 
 import cudagrad as cg  # type: ignore
 
-CPP_FILES = "./tests/test.cpp ./src/tensor.hpp ./src/ops.cu"
+glob_cpp = "*[.cpp|.hpp|.cu]"
+CPP_FILES = " ".join(
+    [
+        str(x)
+        for x in chain(Path("./src").glob(glob_cpp), Path("./tests").glob(glob_cpp))
+    ]
+)
 
 DATABASE = "performance.db"
+
 
 def echo(function):
     @wraps(function)
@@ -135,6 +144,7 @@ class Makefile:
                     init_contents,
                 )
             )
+
     class DB:
         """
         create table test (
@@ -152,6 +162,7 @@ class Makefile:
                 FOREIGN KEY (id) REFERENCES test (id)
             );
         """
+
         def connect(self):
             run(f"sqlite3 {DATABASE}")
 
@@ -196,7 +207,7 @@ class Makefile:
                 setup = test[2]
                 key = test[1]
                 id = test[0]
-                version = None # TODO
+                version = None  # TODO
 
                 print(f"Running performance test:\n{statement}")
                 loop_nanoseconds = timeit(statement, setup)
@@ -218,6 +229,7 @@ class Makefile:
             programs = ["clang-format", "cpplint", "cmake"]
             for program in programs:
                 self.check_program(program)
+
 
 if __name__ == "__main__":
     fire.Fire(Makefile)
