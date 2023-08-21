@@ -1,8 +1,11 @@
 // Copyright 2023 Ryan Moore
 //
-// 'Generic' is the enemy of 'Efficient'
+// Calling code “clever” is usually an insult in software engineering, since
+// it means the code’s functionality is sufficiently obscure it’ll be hard to
+// maintain. One exception is CUDA kernels, where squeezing out a bit more
+// performance is often worth some brittleness in exchange.
 //
-// Tim Zaman
+// Greg Brockman
 
 #include <stdio.h>
 
