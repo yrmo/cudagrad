@@ -36,13 +36,6 @@ PYBIND11_MODULE(tensor, m) {
         Hello!
     )pbdoc");
 
-    m.def("tensor", [](std::vector<int> sizes, std::vector<float> values) {
-        // cast the function pointer to resolve the ambiguity
-        auto func = static_cast<std::shared_ptr<cg::Tensor> (*)(std::vector<int>, std::vector<float>)>(&cg::tensor);
-        return func(sizes, values);
-    }, R"pbdoc(Magic tensor)pbdoc",
-    py::arg("sizes"), py::arg("values"));
-
     py::class_<cg::DataProxy>(m, "_DataProxy")
         .def("__getitem__", &cg::DataProxy::get)
         .def("__setitem__", &cg::DataProxy::set);
@@ -57,7 +50,7 @@ PYBIND11_MODULE(tensor, m) {
         .def("sum", &cg::Tensor::sum)
         .def("relu", &cg::Tensor::relu)
         .def_property_readonly("data", &cg::Tensor::data_proxy)
-       .def("__getitem__", &cg::Tensor::get_data_at)
+        .def("__getitem__", &cg::Tensor::get_data_at)
         .def("__setitem__", &cg::Tensor::set_data_at)
         .def_property_readonly("size", &cg::Tensor::get_size) // do something about this
         .def_property_readonly("grad", &cg::Tensor::get_grad) // do something about this
