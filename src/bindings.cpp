@@ -71,7 +71,8 @@ PYBIND11_MODULE(tensor, m) {
         })
         .def("__repr__", [](std::shared_ptr<cg::Tensor> t) {
             return t.get()->repr();
-        });
+        })
+        .attr("__module__") = "cudagrad";
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
