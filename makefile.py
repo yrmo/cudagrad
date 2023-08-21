@@ -3,6 +3,7 @@ import re
 import shutil
 import sqlite3
 import subprocess
+import time
 from functools import wraps
 from getpass import getpass
 from itertools import chain
@@ -154,17 +155,50 @@ class Makefile:
             statement VARCHAR(1000)
         );
 
-            create table result (
-                id INTEGER,
-                version VARCHAR(255),
-                loop_nanoseconds REAL,
-                created_at timestamp DEFAULT current_timestamp,
-                FOREIGN KEY (id) REFERENCES test (id)
-            );
+        create table result (
+            id INTEGER,
+            version VARCHAR(255),
+            loop_nanoseconds REAL,
+            created_at timestamp DEFAULT current_timestamp,
+            FOREIGN KEY (id) REFERENCES test (id)
+        );
+
+        create table pip_compile_speed (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            seconds REAL,
+            created_at timestamp DEFAULT current_timestamp
+        );
         """
 
         def connect(self):
             run(f"sqlite3 {DATABASE}")
+
+        def pip_speed(self):
+            start_time = time.time()
+            process = subprocess.run(['pip', 'install', '.'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            end_time = time.time()
+            elapsed_time = end_time - start_time
+            if process.returncode == 0:
+                print("Installation succeeded!")
+            else:
+                print("Installation failed!")
+                print("Error output:", process.stderr.decode())
+            print("Elapsed time:", elapsed_time, "seconds")
+            self.insert_into_pip(elapsed_time)
+
+        # we're getting close to needing generic insert for DRY, but not yet
+
+        def insert_into_pip(self, speed):
+            connection = sqlite3.connect(DATABASE)
+            cursor = connection.cursor()
+            query = """
+            INSERT INTO pip_compile_speed (id, seconds)
+            VALUES (?, ?);
+            """
+            cursor.execute(query, (None, speed))
+            connection.commit()
+            cursor.close()
+            connection.close()
 
         def insert_into_test(self, key, setup, statement):
             connection = sqlite3.connect(DATABASE)
