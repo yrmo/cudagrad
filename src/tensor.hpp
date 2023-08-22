@@ -132,20 +132,43 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   void set_data_at(int index, float value);
 
   std::string repr() {
+    // '<cudagrad.Tensor([1,], [1,]) object at 0x600001874018>'
+    // '<cudagrad.Tensor([10,], [1, 1, 1, ...]) object at 0x600001874018>'
+
+    // TODO(yrom1): Dry
+    int n = 3; // TODO(yrom1): jank
+
+    // SIZE
     std::ostringstream oss_s;
+    int i = 0;
     for (const auto& s : size_) {
+      if (i >= 3) {
+        break;
+      }
       oss_s << s << ", ";
+      ++i;
+    }
+    if (size_.size() >= 3) {
+      oss_s << "...";
     }
     std::string s_str = oss_s.str();
-    s_str = s_str.substr(0, s_str.length() - 2);
 
+    // DATA
     std::ostringstream oss_d;
+    i = 0;
     for (const auto& d : data_) {
+      if (i >= 3) {
+        break;
+      }
       oss_d << d << ", ";
+      ++i;
+    }
+    if (data_.size() >= 3) {
+      oss_d << "...";
     }
     std::string d_str = oss_d.str();
-    d_str = d_str.substr(0, d_str.length() - 2);
 
+    // ADDRESS
     std::stringstream ss;
     ss << std::hex << (uintptr_t)this;
     std::string address = ss.str();
