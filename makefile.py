@@ -147,29 +147,6 @@ class Makefile:
             )
 
     class DB:
-        """
-        create table test (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            key VARCHAR(255),
-            setup VARCHAR(255),
-            statement VARCHAR(1000)
-        );
-
-        create table result (
-            id INTEGER,
-            version VARCHAR(255),
-            loop_nanoseconds REAL,
-            created_at timestamp DEFAULT current_timestamp,
-            FOREIGN KEY (id) REFERENCES test (id)
-        );
-
-        create table pip_compile_speed (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            seconds REAL,
-            created_at timestamp DEFAULT current_timestamp
-        );
-        """
-
         def connect(self):
             run(f"sqlite3 {DATABASE}")
 
