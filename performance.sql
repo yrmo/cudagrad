@@ -6,10 +6,10 @@ CREATE TABLE test (
             setup VARCHAR(255),
             statement VARCHAR(1000)
         );
-INSERT INTO test VALUES(1,'tiny matmul','import cudagrad as cg;','a = cg.tensor([2, 2], [2.0, 3.0, 4.0, 5.0]); b = cg.tensor([2, 2], [6.0, 7.0, 8.0, 9.0]); c = a @ b');
-INSERT INTO test VALUES(2,'tiny matmul','import torch;','a = torch.tensor(((2.0, 3.0), (4.0, 5.0))); b = torch.tensor(((6.0, 7.0), (8.0, 9.0))); c = a @ b');
-INSERT INTO test VALUES(3,'tiny backward','import cudagrad as cg;','a = cg.tensor([2, 2], [2.0, 3.0, 4.0, 5.0]); b = cg.tensor([2, 2], [6.0, 7.0, 8.0, 9.0]); c = a @ b; d = c.sum(); d.backward()');
-INSERT INTO test VALUES(4,'tiny backward','import torch;','a = torch.tensor(((2.0, 3.0), (4.0, 5.0)), requires_grad=True); b = torch.tensor(((6.0, 7.0), (8.0, 9.0)), requires_grad=True); c = a @ b; d = c.sum(); d.backward()');
+INSERT INTO test VALUES(1,'tiny matmul','import cudagrad as cg;','a = cg.Tensor([2, 2], [2.0, 3.0, 4.0, 5.0]); b = cg.Tensor([2, 2], [6.0, 7.0, 8.0, 9.0]); c = a @ b');
+INSERT INTO test VALUES(2,'tiny matmul','import torch;','a = torch.Tensor(((2.0, 3.0), (4.0, 5.0))); b = torch.Tensor(((6.0, 7.0), (8.0, 9.0))); c = a @ b');
+INSERT INTO test VALUES(3,'tiny backward','import cudagrad as cg;','a = cg.Tensor([2, 2], [2.0, 3.0, 4.0, 5.0]); b = cg.Tensor([2, 2], [6.0, 7.0, 8.0, 9.0]); c = a @ b; d = c.sum(); d.backward()');
+INSERT INTO test VALUES(4,'tiny backward','import torch;','a = torch.Tensor(((2.0, 3.0), (4.0, 5.0)), requires_grad=True); b = torch.Tensor(((6.0, 7.0), (8.0, 9.0)), requires_grad=True); c = a @ b; d = c.sum(); d.backward()');
 INSERT INTO test VALUES(5,'tiny matmul','import numpy as np','a = np.array([[2.0, 3.0],[4.0, 5.0]]); b = np.array([[6.0, 7.0], [8.0, 9.0]]); c = a @ b;');
 CREATE TABLE result (
             id INTEGER,
