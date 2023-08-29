@@ -214,6 +214,7 @@ class Makefile:
             connection.close()
 
             for test in tests:
+                number = test[4]
                 statement = test[3]
                 setup = test[2]
                 key = test[1]
@@ -221,7 +222,9 @@ class Makefile:
                 version = None  # TODO
 
                 print(f"Running performance test:\n{statement}")
-                loop_nanoseconds = timeit(statement, setup)
+                print(f"{number=}!")
+                loop_nanoseconds = timeit(statement, setup, number=number) / number
+
                 self._insert_into_result(id, version, loop_nanoseconds)
 
     class CheckRequirementsBroken:

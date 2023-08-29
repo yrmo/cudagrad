@@ -1,3 +1,38 @@
+import sqlite3
+
+
+def table(tuples_list, headers):
+    output = ""
+    col_widths = [max(len(str(x)) for x in col) for col in zip(*tuples_list)]
+    col_widths = [max(col_widths[i], len(headers[i])) for i in range(len(col_widths))]
+    header_str = ""
+    for i, header in enumerate(headers):
+        header_str += header.ljust(col_widths[i] + 2)
+    output += header_str + "\n"
+    output += ('-' * sum(col_widths) + '-' * len(col_widths) * 2) + "\n"
+    for row in tuples_list:
+        row_str = ""
+        for i, cell in enumerate(row):
+            row_str += str(cell).ljust(col_widths[i] + 2)
+        output += row_str + "\n"
+    return output
+
+connection = sqlite3.connect("performance.db")
+cursor = connection.cursor()
+PERFORMANCE = """
+SELECT test.key, test.setup, MIN(result.loop_seconds) AS fastest_time -- , test.statement
+FROM test
+   INNER JOIN result
+      ON test.id = result.id
+GROUP BY test.setup, test.statement
+ORDER BY test.key DESC, test.setup
+""".strip()
+cursor.execute(PERFORMANCE)
+results = cursor.fetchall()
+table_results = table(results, ['key', 'setup', 'fastest_time']) # , 'statement'])
+cursor.close()
+connection.close()
+
 README = f"""\
 # cudagrad
 
@@ -19,35 +54,8 @@ WIP! TODO: CUDA operation integration and release on PyPI
 
 ## Performance
 
-```sql
-$ sqlite3 performance.db
-SQLite version 3.39.5 2022-10-14 20:58:05
-Enter ".help" for usage hints.
-sqlite> .headers on
-sqlite> .mode column
-sqlite> SELECT test.id, test.key, test.setup, test.statement, min(result.loop_nanoseconds) AS fastest_time
-   ...> FROM test
-   ...> INNER JOIN result ON test.id = result.id
-   ...> GROUP BY test.setup, test.statement
-   ...> ORDER BY test.key DESC, test.setup;
-id  key            setup                   statement                                                     fastest_time
---  -------------  ----------------------  ------------------------------------------------------------  ----------------
-1   tiny matmul    import cudagrad as cg;  a = cg.tensor([2, 2], [2.0, 3.0, 4.0, 5.0]); b = cg.tensor([  1.78646008399664
-                                           2, 2], [6.0, 7.0, 8.0, 9.0]); c = a @ b
-
-5   tiny matmul    import numpy as np      a = np.array([[2.0, 3.0],[4.0, 5.0]]); b = np.array([[6.0, 7  1.72451154200826
-                                           .0], [8.0, 9.0]]); c = a @ b;
-
-2   tiny matmul    import torch;           a = torch.tensor(((2.0, 3.0), (4.0, 5.0))); b = torch.tensor  5.05202025000472
-                                           (((6.0, 7.0), (8.0, 9.0))); c = a @ b
-
-3   tiny backward  import cudagrad as cg;  a = cg.tensor([2, 2], [2.0, 3.0, 4.0, 5.0]); b = cg.tensor([  2.60316520798369
-                                           2, 2], [6.0, 7.0, 8.0, 9.0]); c = a @ b; d = c.sum(); d.back
-                                           ward()
-
-4   tiny backward  import torch;           a = torch.tensor(((2.0, 3.0), (4.0, 5.0)), requires_grad=Tru  22.3807172910019
-                                           e); b = torch.tensor(((6.0, 7.0), (8.0, 9.0)), requires_grad
-                                           =True); c = a @ b; d = c.sum(); d.backward()
+```
+{table_results}
 ```
 
 ## License
