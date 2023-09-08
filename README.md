@@ -14,10 +14,10 @@ Available on [PyPI](https://pypi.org/project/cudagrad/) (`pip install cudagrad`)
 # python -m pip install cudagrad; python ./examples/example.py
 import cudagrad as cg
 
-a = cg.tensor([2, 2], [2.0, 3.0, 4.0, 5.0])
-b = cg.tensor([2, 2], [6.0, 7.0, 8.0, 9.0])
-c = cg.tensor([2, 2], [10.0, 10.0, 10.0, 10.0])
-d = cg.tensor([2, 2], [11.0, 11.0, 11.0, 11.0])
+a = cg.Tensor([2, 2], [2.0, 3.0, 4.0, 5.0])
+b = cg.Tensor([2, 2], [6.0, 7.0, 8.0, 9.0])
+c = cg.Tensor([2, 2], [10.0, 10.0, 10.0, 10.0])
+d = cg.Tensor([2, 2], [11.0, 11.0, 11.0, 11.0])
 e = ((a @ b) + c) * d
 f = e.sum()
 f.backward()
