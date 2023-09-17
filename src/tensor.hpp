@@ -136,12 +136,12 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
     // '<cudagrad.Tensor([10,], [1, 1, 1, ...]) object at 0x600001874018>'
 
     // TODO(yrom1): Dry
-    int n = 3; // TODO(yrom1): jank
+    int n = 3;  // TODO(yrom1): jank
 
     // SIZE
     std::ostringstream oss_s;
     int i = 0;
-    for (const auto& s : size_) {
+    for (const auto &s : size_) {
       if (i >= 3) {
         break;
       }
@@ -156,7 +156,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
     // DATA
     std::ostringstream oss_d;
     i = 0;
-    for (const auto& d : data_) {
+    for (const auto &d : data_) {
       if (i >= 3) {
         break;
       }
@@ -173,7 +173,8 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
     ss << std::hex << (uintptr_t)this;
     std::string address = ss.str();
 
-    return std::string("<cudagrad.Tensor([") + s_str + std::string("], [") + d_str + std::string("]) object at 0x") + address + std::string(">");
+    return std::string("<cudagrad.Tensor([") + s_str + std::string("], [") +
+           d_str + std::string("]) object at 0x") + address + std::string(">");
   }
 
   void size() {
@@ -334,24 +335,18 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
 
 // This helps pybind11 do __getitem__ __setitem__ on the .data member
 class DataProxy {
-public:
-    DataProxy(Tensor& tensor): parent_tensor(tensor) {}
+ public:
+  DataProxy(Tensor &tensor) : parent_tensor(tensor) {}
 
-    float get(int index) const {
-        return parent_tensor.get_data_at(index);
-    }
+  float get(int index) const { return parent_tensor.get_data_at(index); }
 
-    void set(int index, float value) {
-        parent_tensor.set_data_at(index, value);
-    }
+  void set(int index, float value) { parent_tensor.set_data_at(index, value); }
 
-private:
-    Tensor& parent_tensor;
+ private:
+  Tensor &parent_tensor;
 };
 
-DataProxy Tensor::data_proxy() {
-    return DataProxy(*this);
-}
+DataProxy Tensor::data_proxy() { return DataProxy(*this); }
 
 template <typename T>
 std::shared_ptr<Tensor> binaryElementwiseOperator(
@@ -403,8 +398,10 @@ std::shared_ptr<Tensor> binaryForwardOperator(std::shared_ptr<Tensor> lhs,
 }
 
 std::shared_ptr<Tensor> Tensor::matmul(std::shared_ptr<Tensor> other) {
-  std::shared_ptr<MatMulForward> f = std::make_shared<MatMulForward>(this->get_shared(), other);
-  return binaryForwardOperator<std::shared_ptr<MatMulForward>>(this->get_shared(), other, f);
+  std::shared_ptr<MatMulForward> f =
+      std::make_shared<MatMulForward>(this->get_shared(), other);
+  return binaryForwardOperator<std::shared_ptr<MatMulForward>>(
+      this->get_shared(), other, f);
 }
 
 std::shared_ptr<Tensor> Tensor::sum() {
@@ -424,8 +421,7 @@ std::shared_ptr<Tensor> Tensor::relu() {
     result_data[i] = std::max(0.0f, data_[i]);
   }
   return std::make_shared<Tensor>(
-      size_, result_data,
-      std::vector<std::shared_ptr<Tensor>>{get_shared()},
+      size_, result_data, std::vector<std::shared_ptr<Tensor>>{get_shared()},
       std::make_shared<ReluBackward>(), 'r');
 }
 
@@ -447,13 +443,9 @@ std::shared_ptr<Tensor> tensor(
   return std::make_shared<Tensor>(size, data, children, std::move(grad_fn), op);
 }
 
-float Tensor::get_data_at(int index) const {
-    return data_[index];
-}
+float Tensor::get_data_at(int index) const { return data_[index]; }
 
-void Tensor::set_data_at(int index, float value) {
-    data_[index] = value;
-}
+void Tensor::set_data_at(int index, float value) { data_[index] = value; }
 
 struct AutoGradBackward {
   AutoGradBackward() = default;
