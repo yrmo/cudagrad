@@ -1,9 +1,15 @@
 # Available at setup time due to pyproject.toml
 
+from os import environ
+from shutil import which
+
 import toml
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 from setuptools import find_packages, setup
 
+# TEMP: long term we remove this, we will not support people without nvcc
+if which('nvcc') is not None:
+    environ['CXX'] = 'nvcc'
 
 def get_version_from_toml():
     data = toml.load("pyproject.toml")
