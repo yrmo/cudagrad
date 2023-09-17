@@ -80,7 +80,7 @@ class Makefile:
 
         RUN("python -m isort .")
         RUN("python -m black .")
-        RUN("clang-format -i -style=Google {CPP_FILES}")
+        RUN(f"clang-format -i -style=Google {CPP_FILES}")
 
     def test(self):
         @echo
