@@ -34,6 +34,8 @@ extern "C" void hello();
 extern "C" void hello() { printf("Hello, CPU!\n"); }
 #endif
 
+// using using for now in case in the future during operator fusion
+// I need to know what is actually happening, maybe more clear
 struct AutoGradBackward;
 struct AddBackward;
 struct SubBackward;
@@ -42,6 +44,7 @@ struct DivBackward;
 using SumBackward = AddBackward;
 struct ReluBackward;
 struct MatMulBackward;
+using SelectBackward = AddBackward;
 
 struct AutoGradForward;
 struct MatMulForward;
@@ -128,7 +131,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   std::shared_ptr<Tensor> sum();
   std::shared_ptr<Tensor> relu();
   std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> other);
-  float get_data_at(int index) const;
+  std::shared_ptr<Tensor> get_data_at(int index);
   void set_data_at(int index, float value);
 
   std::string repr() {
@@ -338,7 +341,7 @@ class DataProxy {
  public:
   DataProxy(Tensor &tensor) : parent_tensor(tensor) {}
 
-  float get(int index) const { return parent_tensor.get_data_at(index); }
+  std::shared_ptr<Tensor> get(int index) { return parent_tensor.get_data_at(index); }
 
   void set(int index, float value) { parent_tensor.set_data_at(index, value); }
 
@@ -443,7 +446,27 @@ std::shared_ptr<Tensor> tensor(
   return std::make_shared<Tensor>(size, data, children, std::move(grad_fn), op);
 }
 
-float Tensor::get_data_at(int index) const { return data_[index]; }
+/*
+std::shared_ptr<Tensor> Tensor::sum() {
+  std::vector<float> total(1, 0.0f);
+  for (float x : data_) {
+    total[0] += x;
+  }
+  return std::make_shared<Tensor>(
+      std::vector<int>{1}, std::vector<float>{total},
+      std::vector<std::shared_ptr<Tensor>>{get_shared()},
+      std::make_shared<SumBackward>(), 's');
+}
+*/
+
+// TODO(usevector): this should be called like 'select' but whatever
+std::shared_ptr<Tensor> Tensor::get_data_at(int index) {
+  return std::make_shared<Tensor>(
+      std::vector<int>{1}, std::vector<float>{data_[index]},
+      std::vector<std::shared_ptr<Tensor>>{get_shared()},
+      std::make_shared<SelectBackward>(), '.');
+      // TODO(usevector): haha I dont know if `.` is taken already...
+}
 
 void Tensor::set_data_at(int index, float value) { data_[index] = value; }
 
