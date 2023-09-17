@@ -9,13 +9,14 @@ def table(tuples_list, headers):
     for i, header in enumerate(headers):
         header_str += header.ljust(col_widths[i] + 2)
     output += header_str + "\n"
-    output += ('-' * sum(col_widths) + '-' * len(col_widths) * 2) + "\n"
+    output += ("-" * sum(col_widths) + "-" * len(col_widths) * 2) + "\n"
     for row in tuples_list:
         row_str = ""
         for i, cell in enumerate(row):
             row_str += str(cell).ljust(col_widths[i] + 2)
         output += row_str + "\n"
     return output
+
 
 connection = sqlite3.connect("performance.db")
 cursor = connection.cursor()
@@ -29,7 +30,7 @@ ORDER BY test.key DESC, test.setup
 """.strip()
 cursor.execute(PERFORMANCE)
 results = cursor.fetchall()
-table_results = table(results, ['key', 'setup', 'fastest_time']) # , 'statement'])
+table_results = table(results, ["key", "setup", "fastest_time"])  # , 'statement'])
 cursor.close()
 connection.close()
 

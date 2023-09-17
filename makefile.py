@@ -52,22 +52,24 @@ class Makefile:
             assert os.path.isfile(f"{file}") == True
 
     def github_release(self):
-        RUN('python makefile.py bump patch')
-        RUN('version=$(python -c "import toml; print(toml.load(\'pyproject.toml\')[\'project\'][\'version\'])")')
+        RUN("python makefile.py bump patch")
+        RUN(
+            "version=$(python -c \"import toml; print(toml.load('pyproject.toml')['project']['version'])\")"
+        )
         RUN('git tag -a $version -m "Release version $version"')
-        RUN('git add cudagrad/__init__.py pyproject.toml')
-        RUN('git commit -m $version')
-        RUN('git push origin $version')
+        RUN("git add cudagrad/__init__.py pyproject.toml")
+        RUN("git commit -m $version")
+        RUN("git push origin $version")
         RUN('echo "Version $version has been tagged and pushed to GitHub."')
         RUN('file_name="release_notes.txt"')
-        RUN('code --wait $file_name')
-        RUN('release_notes=$(cat $file_name)')
+        RUN("code --wait $file_name")
+        RUN("release_notes=$(cat $file_name)")
         RUN('echo "Content captured:"')
         RUN('echo "$release_notes"')
         RUN('gh release create $version -t $version -n "$release_notes"')
         RUN('echo "GitHub release for version $version has been created."')
-        RUN('python makefile.py publish')
-        RUN('rm $file_name')
+        RUN("python makefile.py publish")
+        RUN("rm $file_name")
 
     def lint(self):
 
@@ -170,7 +172,9 @@ class Makefile:
 
         def pip_speed(self):
             start_time = time.time()
-            process = subprocess.run(['pip', 'install', '.'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            process = subprocess.run(
+                ["pip", "install", "."], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
             end_time = time.time()
             elapsed_time = end_time - start_time
             if process.returncode == 0:
