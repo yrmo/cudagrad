@@ -45,6 +45,8 @@ PYBIND11_MODULE(tensor, m) {
   //              override str when no str present?
   py::class_<cg::Tensor, std::shared_ptr<cg::Tensor>>(m, "Tensor")
       .def(py::init<std::vector<int>, std::vector<float>>())
+      .def("foo", &cg::foo)
+      .def("dummy", &cg::Tensor::get_data_at)
       .def("get_shared", &cg::Tensor::get_shared)
       .def("backward", &cg::Tensor::backward)
       .def("zero_grad", &cg::Tensor::zero_grad)

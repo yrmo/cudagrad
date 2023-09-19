@@ -341,7 +341,10 @@ class DataProxy {
  public:
   DataProxy(Tensor &tensor) : parent_tensor(tensor) {}
 
-  std::shared_ptr<Tensor> get(int index) { return parent_tensor.get_data_at(index); }
+  std::shared_ptr<Tensor> get(int index) {
+    // std::cout << "dp" << std::endl;
+    return parent_tensor.get_data_at(index);
+  }
 
   void set(int index, float value) { parent_tensor.set_data_at(index, value); }
 
@@ -461,6 +464,7 @@ std::shared_ptr<Tensor> Tensor::sum() {
 
 // TODO(usevector): this should be called like 'select' but whatever
 std::shared_ptr<Tensor> Tensor::get_data_at(int index) {
+  std::cout << "wtf" << std::endl;
   return std::make_shared<Tensor>(
       std::vector<int>{1}, std::vector<float>{data_[index]},
       std::vector<std::shared_ptr<Tensor>>{get_shared()},
