@@ -131,7 +131,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   std::shared_ptr<Tensor> sum();
   std::shared_ptr<Tensor> relu();
   std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> other);
-  std::shared_ptr<Tensor> get_data_at(int index);
+  std::shared_ptr<Tensor> select(std::vector<int> indexes);
   void set_data_at(int index, float value);
 
   std::string repr() {
@@ -326,6 +326,15 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
     return product;
   }
 
+  int _dot(std::vector<int> a, std::vector<int> b) {
+    assert(a.size() == b.size());
+    int ans = 0;
+    for (int i = 0; i < a.size(); ++i) {
+      ans += a[i] * b[i];
+    }
+    return ans;
+  }
+
   void _computeStrides() {
     strides_.resize(size_.size());
     size_t stride = 1;
@@ -341,9 +350,8 @@ class DataProxy {
  public:
   DataProxy(Tensor &tensor) : parent_tensor(tensor) {}
 
-  std::shared_ptr<Tensor> get(int index) {
-    // std::cout << "dp" << std::endl;
-    return parent_tensor.get_data_at(index);
+  std::shared_ptr<Tensor> get(std::vector<int> indexes) {
+    return parent_tensor.select(indexes);
   }
 
   void set(int index, float value) { parent_tensor.set_data_at(index, value); }
@@ -462,11 +470,10 @@ std::shared_ptr<Tensor> Tensor::sum() {
 }
 */
 
-// TODO(usevector): this should be called like 'select' but whatever
-std::shared_ptr<Tensor> Tensor::get_data_at(int index) {
-  std::cout << "wtf" << std::endl;
+std::shared_ptr<Tensor> Tensor::select(std::vector<int> indexes) {
+  int product = _dot(indexes, strides_);
   return std::make_shared<Tensor>(
-      std::vector<int>{1}, std::vector<float>{data_[index]},
+      std::vector<int>{1}, std::vector<float>{data_[product]},
       std::vector<std::shared_ptr<Tensor>>{get_shared()},
       std::make_shared<SelectBackward>(), '.');
       // TODO(usevector): haha I dont know if `.` is taken already...

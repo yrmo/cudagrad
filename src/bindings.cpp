@@ -46,14 +46,13 @@ PYBIND11_MODULE(tensor, m) {
   py::class_<cg::Tensor, std::shared_ptr<cg::Tensor>>(m, "Tensor")
       .def(py::init<std::vector<int>, std::vector<float>>())
       .def("foo", &cg::foo)
-      .def("dummy", &cg::Tensor::get_data_at)
       .def("get_shared", &cg::Tensor::get_shared)
       .def("backward", &cg::Tensor::backward)
       .def("zero_grad", &cg::Tensor::zero_grad)
       .def("sum", &cg::Tensor::sum)
       .def("relu", &cg::Tensor::relu)
       .def_property_readonly("data", &cg::Tensor::data_proxy)
-      .def("__getitem__", &cg::Tensor::get_data_at)
+      .def("__getitem__", &cg::Tensor::select)
       .def("__setitem__", &cg::Tensor::set_data_at)
       .def_property_readonly("size",
                              &cg::Tensor::get_size)  // do something about this
