@@ -53,7 +53,7 @@ PYBIND11_MODULE(tensor, m) {
       .def("relu", &cg::Tensor::relu)
       .def_property_readonly("data", &cg::Tensor::data_proxy)
       .def("__getitem__", &cg::Tensor::select)
-      .def("__setitem__", &cg::Tensor::set_data_at)
+      .def("__setitem__", &cg::Tensor::put)
       .def_property_readonly("size",
                              &cg::Tensor::get_size)  // do something about this
       .def_property_readonly("grad",

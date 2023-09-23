@@ -132,7 +132,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   std::shared_ptr<Tensor> relu();
   std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> select(std::vector<int> indexes);
-  void set_data_at(int index, float value);
+  void put(std::vector<int> indexes, float value);
 
   std::string repr() {
     // '<cudagrad.Tensor([1,], [1,]) object at 0x600001874018>'
@@ -354,7 +354,9 @@ class DataProxy {
     return parent_tensor.select(indexes);
   }
 
-  void set(int index, float value) { parent_tensor.set_data_at(index, value); }
+  void set(std::vector<int> indexes, float value) {
+    parent_tensor.put(indexes, value);
+  }
 
  private:
   Tensor &parent_tensor;
@@ -479,7 +481,9 @@ std::shared_ptr<Tensor> Tensor::select(std::vector<int> indexes) {
       // TODO(usevector): haha I dont know if `.` is taken already...
 }
 
-void Tensor::set_data_at(int index, float value) { data_[index] = value; }
+void Tensor::put(std::vector<int> indexes, float value) {
+  data_[_dot(indexes, strides_)] = value;
+}
 
 struct AutoGradBackward {
   AutoGradBackward() = default;
