@@ -36,16 +36,16 @@ class Module:
 
 class Neuron(Module):
     def __init__(self, nin, nonlin=True):
-        self.w = [tensor([1], [random.uniform(-1, 1)]) for _ in range(nin)]
-        self.b = tensor([1], [0])
+        self.w = [Tensor([1], [random.uniform(-1, 1)]) for _ in range(nin)]
+        self.b = Tensor([1], [0])
         self.nonlin = nonlin
 
     def __call__(self, x):
-        ans = tensor([1], [0])
+        ans = Tensor([1], [0])
         for elem_x in x:
             for elem_w in self.w:
                 if type(elem_x) != Tensor:
-                    elem_x = tensor([1], [elem_x])
+                    elem_x = Tensor([1], [elem_x])
                 ans = ans + (elem_w * elem_x)
         ans = ans + self.b
         return ans
@@ -56,37 +56,18 @@ class Neuron(Module):
         return self.w + [self.b]
 
     def zero_grad(self):
-        for tensor in self.w + [self.b]:
-            tensor.zero_grad()
+        for Tensor in self.w + [self.b]:
+            Tensor.zero_grad()
 
     def train(self, rate: float):
         for tensor in self.w + [self.b]:
             assert tensor.size == [1]
-            # FIXME this is a must fix, I must be able to assign to data!
-            # >>> cg
-            # <module 'cudagrad' from '/Users/ryan/cudagrad/cudagrad/__init__.py'>
-            # >>> x = cg.tensor([1], [42])
-            # >>> x
-            # [42]
-            # [0]
-            # >>> x.data
-            # [42.0]
-            # >>> x.data = [1]
-            # Traceback (most recent call last):
-            # File "<stdin>", line 1, in <module>
-            # AttributeError: can't set attribute
-            # >>> x.data[0]
-            # 42.0
-            # >>> x.data[0] = 1
-            # >>> x
-            # [42]
-            # [0]
-            before = tensor.data[0]
-            update_value = tensor.data[0] + rate * tensor.grad[0]
-            tensor.data[0] = tensor.data[0] + rate * tensor.grad[0]
-            print(before, "->", tensor.data[0])
-            # print(tensor.data[0])
-            # print('after', tensor.data[0])
+            before = tensor.data[[0]]
+            update_value = tensor.data[[0]] + rate * tensor.grad[0]
+            tensor.data[[0]] = tensor.data[[0]] + rate * tensor.grad[0]
+            print(before, "->", tensor.data[[0]])
+            # print(Tensor.data[0])
+            # print('after', Tensor.data[0])
 
     def __repr__(self):
         return f"{'ReLU' if self.nonlin else 'Linear'}Neuron({len(self.w)})"
@@ -146,7 +127,7 @@ class MLP(Module):
 if __name__ == "__main__":
     #%%
     print(Neuron(2)([0.5, 0.2]).data)
-    print(Neuron(2)([tensor([1], [0.5]), tensor([1], [0.2])]).data)
+    print(Neuron(2)([Tensor([1], [0.5]), Tensor([1], [0.2])]).data)
     l = Layer(3, 2)
 
     # Layer(1, 2)
@@ -171,11 +152,11 @@ if __name__ == "__main__":
 
         # TODO ** POW would be nice here
         # TODO no idea why sum() doesnt work
-        tensor_ys = [tensor([1], [float(y)]) for y in ys]
-        loss = tensor([1], [0.0])
-        for x in [(a - b) * (a - b) for a, b in zip(ypred, tensor_ys)]:
+        Tensor_ys = [Tensor([1], [float(y)]) for y in ys]
+        loss = Tensor([1], [0.0])
+        for x in [(a - b) * (a - b) for a, b in zip(ypred, Tensor_ys)]:
             loss = loss + x
-        # loss = sum((a - b) * (a - b) for a, b in zip(ypred, tensor_ys))
+        # loss = sum((a - b) * (a - b) for a, b in zip(ypred, Tensor_ys))
 
         nn.zero_grad()
         # for p in nn.parameters():
