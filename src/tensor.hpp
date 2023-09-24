@@ -133,6 +133,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> select(std::vector<int> indexes);
   void put(std::vector<int> indexes, float value);
+  float item();
 
   std::string repr() {
     // '<cudagrad.Tensor([1,], [1,]) object at 0x600001874018>'
@@ -698,6 +699,11 @@ void Tensor::backward() {
       child.get()->_backward();
     }
   }
+}
+
+float Tensor::item() {
+  assert(data_.size() == 1);
+  return data_[0];
 }
 
 void Tensor::zero_grad() {
