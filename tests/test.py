@@ -27,10 +27,10 @@ et = (at.matmul(bt) + ct) * dt
 ft = et.sum()
 ft.backward()
 
-a = cg.tensor([2, 2], [2.0, 3.0, 4.0, 5.0])
-b = cg.tensor([2, 2], [6.0, 7.0, 8.0, 9.0])
-c = cg.tensor([2, 2], [10.0, 10.0, 10.0, 10.0])
-d = cg.tensor([2, 2], [11.0, 11.0, 11.0, 11.0])
+a = cg.Tensor([2, 2], [2.0, 3.0, 4.0, 5.0])
+b = cg.Tensor([2, 2], [6.0, 7.0, 8.0, 9.0])
+c = cg.Tensor([2, 2], [10.0, 10.0, 10.0, 10.0])
+d = cg.Tensor([2, 2], [11.0, 11.0, 11.0, 11.0])
 e = ((a @ b) + c) * d
 f = e.sum()
 f.backward()
