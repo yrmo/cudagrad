@@ -488,17 +488,17 @@ void Tensor::put(std::vector<int> indexes, float value) {
 
 struct AutoGradBackward {
   AutoGradBackward() = default;
-  virtual ~AutoGradBackward() = default;
+  ~AutoGradBackward() = default;
 
-  virtual void apply(std::shared_ptr<Tensor> grad_output,
-                     std::vector<std::shared_ptr<Tensor>> grad_inputs) = 0;
+  void apply(std::shared_ptr<Tensor> grad_output,
+                     std::vector<std::shared_ptr<Tensor>> grad_inputs);
 };
 
 struct AddBackward : public AutoGradBackward {
   AddBackward() = default;
 
   void apply(std::shared_ptr<Tensor> grad_output,
-             std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
+             std::vector<std::shared_ptr<Tensor>> grad_inputs) {
     for (std::shared_ptr<Tensor> grad_input : grad_inputs) {
       for (int i = 0; i < grad_input.get()->grad_.size(); ++i) {
         grad_input.get()->grad_[i] += grad_output.get()->grad_[0];
@@ -511,7 +511,7 @@ struct SubBackward : public AutoGradBackward {
   SubBackward() = default;
 
   void apply(std::shared_ptr<Tensor> grad_output,
-             std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
+             std::vector<std::shared_ptr<Tensor>> grad_inputs) {
     for (int i = 0; i < grad_inputs[0].get()->grad_.size(); ++i) {
       grad_inputs[0].get()->grad_[i] += grad_output.get()->grad_[0];
     }
@@ -525,7 +525,7 @@ struct MulBackward : public AutoGradBackward {
   MulBackward() = default;
 
   void apply(std::shared_ptr<Tensor> grad_output,
-             std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
+             std::vector<std::shared_ptr<Tensor>> grad_inputs) {
     for (int i = 0; i < grad_inputs[0].get()->grad_.size(); ++i) {
       grad_inputs[0].get()->grad_[i] +=
           grad_output.get()->grad_[0] * grad_inputs[1].get()->data_[i];
@@ -541,7 +541,7 @@ struct DivBackward : public AutoGradBackward {
   DivBackward() = default;
 
   void apply(std::shared_ptr<Tensor> grad_output,
-             std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
+             std::vector<std::shared_ptr<Tensor>> grad_inputs) {
     for (int i = 0; i < grad_inputs[0].get()->grad_.size(); ++i) {
       // pro tip: don't put 1 instead of 1.0f!
       float update =
@@ -562,7 +562,7 @@ struct ReluBackward : public AutoGradBackward {
   ReluBackward() = default;
 
   void apply(std::shared_ptr<Tensor> grad_output,
-             std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
+             std::vector<std::shared_ptr<Tensor>> grad_inputs) {
     assert(grad_inputs.size() == 1);
     std::shared_ptr<Tensor> input = grad_inputs[0];
     for (int i = 0; i < input.get()->grad_.size(); ++i) {
@@ -651,7 +651,7 @@ struct MatMulBackward : public AutoGradBackward {
   MatMulBackward() = default;
 
   void apply(std::shared_ptr<Tensor> grad_output,
-             std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
+             std::vector<std::shared_ptr<Tensor>> grad_inputs) {
     auto a = grad_inputs[0];
     auto b = grad_inputs[1];
 
