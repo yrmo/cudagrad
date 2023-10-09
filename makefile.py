@@ -12,13 +12,6 @@ from subprocess import run
 from timeit import timeit
 
 import fire
-import toml
-
-# imports for timeit below
-# ignore'ing because type checkers dont know this
-import torch  # type: ignore
-
-import cudagrad as cg  # type: ignore
 
 glob_cpp = "*[.cpp|.hpp|.cu]"
 CPP_FILES = " ".join(
@@ -51,6 +44,14 @@ class Makefile:
         for file in CPP_FILES.split():
             assert os.path.isfile(f"{file}") == True
 
+    def connect(self):
+        RUN("ssh ryan@192.168.0.28")
+
+    def code(self):
+        RUN(
+            'code --folder-uri "vscode-remote://ssh-remote+ryan@192.168.0.28/home/ryan/cudagrad"'
+        )
+
     def github_release(self):
         RUN("python makefile.py bump patch")
         RUN(
@@ -72,12 +73,10 @@ class Makefile:
         RUN("rm $file_name")
 
     def lint(self):
-
         RUN(f"python -m cpplint {CPP_FILES}")
         RUN("python -m mypy --exclude build --ignore-missing-imports --pretty .")
 
     def clean(self):
-
         RUN("python -m isort .")
         RUN("python -m black .")
         RUN(f"clang-format -i -style=Google {CPP_FILES}")
