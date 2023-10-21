@@ -7,3 +7,4 @@ toml
 isort
 cpplint
 torch
+numpy
