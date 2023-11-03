@@ -16,8 +16,8 @@ name = "Ryan Moore"
 email = "ryanm.inbox@gmail.com"
 
 [project.urls]
-Homepage = "https://github.com/cudagrad/cudagrad"
-"Bug Tracker" = "https://github.com/cudagrad/cudagrad/issues"
+Homepage = "https://github.com/rv3c/cudagrad"
+"Bug Tracker" = "https://github.com/rv3c/cudagrad/issues"
 
 [tool.pytest.ini_options]
 addopts = [ "--import-mode=importlib",]
