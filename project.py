@@ -12,6 +12,7 @@ from subprocess import run
 from timeit import timeit
 
 import fire
+import torch
 
 glob_cpp = "*[.cpp|.hpp|.cu]"
 CPP_FILES = " ".join(
@@ -38,7 +39,7 @@ def RUN(input: str) -> None:
     os.system(input)
 
 
-class Makefile:
+class Project:
     def __init__(self):
         global CPP_FILES
         for file in CPP_FILES.split():
@@ -267,4 +268,4 @@ class Makefile:
 
 
 if __name__ == "__main__":
-    fire.Fire(Makefile)
+    fire.Fire(Project)
