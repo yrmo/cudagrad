@@ -16,7 +16,10 @@ add_executable(${PROJECT_NAME} tests/test.cpp)
 target_link_libraries(${PROJECT_NAME} gtest gtest_main)
 
 # Add compiler flags
-target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)
+target_compile_options(${PROJECT_NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-Wall -Wextra -Wpedantic>)
+
+# Add NVCC-specific options
+target_compile_options(${PROJECT_NAME} PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler -Wall,-Wextra,-Wpedantic>)
 
 # Copy headers to build directory
 configure_file(src/tensor.hpp tensor.hpp COPYONLY)

@@ -7,9 +7,7 @@ import toml
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 from setuptools import find_packages, setup
 
-# TEMP: long term we remove this, we will not support people without nvcc
-# if which("nvcc") is not None:
-#     environ["CXX"] = "nvcc"
+assert which("nvcc") is not None
 
 
 def get_version_from_toml():

@@ -8,7 +8,7 @@ Great barracuda photo by James St. John, [CC BY 2.0](https://creativecommons.org
 
 ## Example
 
-Available on [PyPI](https://pypi.org/project/cudagrad/) (`pip install cudagrad`)
+Available on [PyPI](https://pypi.org/project/cudagrad/) (`pip install cudagrad`), this requires the `nvcc` compiler!
 
 ```py
 # python -m pip install cudagrad; python ./examples/example.py
