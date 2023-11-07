@@ -491,10 +491,9 @@ struct AutoGradBackward {
   virtual ~AutoGradBackward() = default;
 
   virtual void apply(std::shared_ptr<Tensor> grad_output,
-                     std::vector<std::shared_ptr<Tensor>> grad_inputs) {
-    throw std::runtime_error("apply() is not implemented");
-  }
+                     std::vector<std::shared_ptr<Tensor>> grad_inputs) = 0;
 };
+
 struct AddBackward : public AutoGradBackward {
   AddBackward() = default;
 
