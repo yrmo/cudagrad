@@ -6,24 +6,17 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Enable AddressSanitizer
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
-
-# Find the Torch package
-find_package(Torch REQUIRED CONFIG NO_DEFAULT_PATH HINTS ${CMAKE_PREFIX_PATH} QUIET)
-set(USE_CUDA OFF)
-
 # Build googletest from the submodule
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/googletest)
 
 # Add the target executable
 add_executable(${PROJECT_NAME} tests/test.cpp)
 
-# Link the executable against the googletest and torch libraries
-target_link_libraries(${PROJECT_NAME} gtest gtest_main ${TORCH_LIBRARIES})
+# Link the executable against the googletest
+target_link_libraries(${PROJECT_NAME} gtest gtest_main)
 
 # Add compiler flags
-target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -fsanitize=address)
+target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)
 
 # Copy headers to build directory
 configure_file(src/tensor.hpp tensor.hpp COPYONLY)

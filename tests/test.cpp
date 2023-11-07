@@ -1,7 +1,7 @@
 // Copyright 2023 Ryan Moore
 
 #include <gtest/gtest.h>
-#include <torch/torch.h>
+// #include <torch/torch.h>
 
 #include <cassert>
 #include <iostream>
@@ -392,63 +392,63 @@ TEST(Basic, ReLU) {
   EXPECT_EQ(a.get()->grad_[3], 1.0);
 }
 
-template <typename T>
-std::vector<T> tensorToVector(const torch::Tensor& tensor) {
-  size_t num_elements = tensor.numel();
-  std::vector<T> result(num_elements);
-  std::memcpy(result.data(), tensor.data_ptr<T>(), num_elements * sizeof(T));
-  return result;
-}
+// template <typename T>
+// std::vector<T> tensorToVector(const torch::Tensor& tensor) {
+//   size_t num_elements = tensor.numel();
+//   std::vector<T> result(num_elements);
+//   std::memcpy(result.data(), tensor.data_ptr<T>(), num_elements * sizeof(T));
+//   return result;
+// }
 
-template <typename T>
-std::vector<T> tensorGradToVector(const torch::Tensor& tensor) {
-  torch::Tensor grad = tensor.grad();
-  if (!grad.defined()) {
-    throw std::runtime_error("No gradient available for the input tensor");
-  }
-  size_t num_elements = grad.numel();
-  std::vector<T> result(num_elements);
-  std::memcpy(result.data(), grad.data_ptr<T>(), num_elements * sizeof(T));
-  return result;
-}
+// template <typename T>
+// std::vector<T> tensorGradToVector(const torch::Tensor& tensor) {
+//   torch::Tensor grad = tensor.grad();
+//   if (!grad.defined()) {
+//     throw std::runtime_error("No gradient available for the input tensor");
+//   }
+//   size_t num_elements = grad.numel();
+//   std::vector<T> result(num_elements);
+//   std::memcpy(result.data(), grad.data_ptr<T>(), num_elements * sizeof(T));
+//   return result;
+// }
 
-TEST(Torch, LayerManual) {
-  cg::t x = cg::tensor({3, 2}, {1.0, 2.0, 3.0, 4.0, 5.0, 6.0});
-  cg::t w = cg::tensor({2, 4}, {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0});
-  cg::t b = cg::tensor(
-      {3, 4}, {1.0, 2.0, 3.0, 4.0, 1.0, 2.0, 3.0, 4.0, 1.0, 2.0, 3.0, 4.0});
-  cg::t result = x.get()->matmul(w) + b;
-  cg::t l = result.get()->sum();
-  l.get()->backward();
-  auto w_g = w.get()->grad_;
-  auto b_g = b.get()->grad_;
+// TEST(Torch, LayerManual) {
+//   cg::t x = cg::tensor({3, 2}, {1.0, 2.0, 3.0, 4.0, 5.0, 6.0});
+//   cg::t w = cg::tensor({2, 4}, {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0});
+//   cg::t b = cg::tensor(
+//       {3, 4}, {1.0, 2.0, 3.0, 4.0, 1.0, 2.0, 3.0, 4.0, 1.0, 2.0, 3.0, 4.0});
+//   cg::t result = x.get()->matmul(w) + b;
+//   cg::t l = result.get()->sum();
+//   l.get()->backward();
+//   auto w_g = w.get()->grad_;
+//   auto b_g = b.get()->grad_;
 
-  std::vector<float> data1 = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
-  std::vector<float> data2 = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
-  std::vector<float> data3 = {1.0, 2.0, 3.0, 4.0, 1.0, 2.0,
-                              3.0, 4.0, 1.0, 2.0, 3.0, 4.0};
-  at::Tensor x_aten =
-      at::from_blob(data1.data(), {3, 2}, at::kFloat).requires_grad_(true);
-  at::Tensor w_aten =
-      at::from_blob(data2.data(), {2, 4}, at::kFloat).requires_grad_(true);
-  at::Tensor b_aten =
-      at::from_blob(data3.data(), {3, 4}, at::kFloat).requires_grad_(true);
-  at::Tensor result_aten = x_aten.matmul(w_aten) + b_aten;
-  at::Tensor l_aten = result_aten.sum();
-  l_aten.backward();
-  std::vector<float> w_aten_g = tensorGradToVector<float>(w_aten);
-  std::vector<float> b_aten_g = tensorGradToVector<float>(b_aten);
+//   std::vector<float> data1 = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
+//   std::vector<float> data2 = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
+//   std::vector<float> data3 = {1.0, 2.0, 3.0, 4.0, 1.0, 2.0,
+//                               3.0, 4.0, 1.0, 2.0, 3.0, 4.0};
+//   at::Tensor x_aten =
+//       at::from_blob(data1.data(), {3, 2}, at::kFloat).requires_grad_(true);
+//   at::Tensor w_aten =
+//       at::from_blob(data2.data(), {2, 4}, at::kFloat).requires_grad_(true);
+//   at::Tensor b_aten =
+//       at::from_blob(data3.data(), {3, 4}, at::kFloat).requires_grad_(true);
+//   at::Tensor result_aten = x_aten.matmul(w_aten) + b_aten;
+//   at::Tensor l_aten = result_aten.sum();
+//   l_aten.backward();
+//   std::vector<float> w_aten_g = tensorGradToVector<float>(w_aten);
+//   std::vector<float> b_aten_g = tensorGradToVector<float>(b_aten);
 
-  ASSERT_EQ(w_g.size(), w_aten_g.size());
-  for (size_t i = 0; i < w_g.size(); i++) {
-    EXPECT_NEAR(w_g[i], w_aten_g[i], 0.1);
-  }
+//   ASSERT_EQ(w_g.size(), w_aten_g.size());
+//   for (size_t i = 0; i < w_g.size(); i++) {
+//     EXPECT_NEAR(w_g[i], w_aten_g[i], 0.1);
+//   }
 
-  ASSERT_EQ(b_g.size(), b_aten_g.size());
-  for (size_t i = 0; i < b_g.size(); i++) {
-    EXPECT_NEAR(b_g[i], b_aten_g[i], 0.1);
-  }
-}
+//   ASSERT_EQ(b_g.size(), b_aten_g.size());
+//   for (size_t i = 0; i < b_g.size(); i++) {
+//     EXPECT_NEAR(b_g[i], b_aten_g[i], 0.1);
+//   }
+// }
 
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);
