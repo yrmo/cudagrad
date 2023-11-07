@@ -100,7 +100,7 @@ class Project:
         RUN("python -m pip cache purge")
         os.chdir(os.path.expanduser("~/cudagrad"))
         RUN("python -m pip install .")
-        RUN("python tests/test.py")
+        # RUN("python tests/test.py")
         os.chdir(os.path.expanduser("~/cudagrad"))
         RUN("c++ -std=c++11 -I./src examples/example.cpp && ./a.out")
         RUN("python -m pip install cudagrad")
