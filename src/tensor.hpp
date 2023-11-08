@@ -28,10 +28,9 @@ namespace cg {
 
 int foo(int i) { return i + 1; }
 
+// __CUDACC__ isn't needed now, but maybe more clear
 #ifdef __CUDACC__
 extern "C" void hello();
-#else
-extern "C" void hello() { printf("Hello, CPU!\n"); }
 #endif
 
 // using using for now in case in the future during operator fusion
