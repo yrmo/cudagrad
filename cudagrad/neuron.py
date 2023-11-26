@@ -20,8 +20,8 @@ if __name__ == "__main__":
     inputs = [[0, 0], [0, 1], [1, 0], [1, 1]]
     targets = [0, 1, 1, 1]
     
-    EPOCHS = 300
-    lr = 0.001
+    EPOCHS = 100
+    lr = 0.0001
     epochs = []
     losses = []
     model = Linear(2, 1)
@@ -34,15 +34,18 @@ if __name__ == "__main__":
             model.w.data[[0, 0]] = model.w.data[[0, 0]].item() + (-lr * model.w.grad[0])
             model.w.data[[0, 1]] = model.w.data[[0, 1]].item() + (-lr * model.w.grad[1])
             model.b.data[[0, 0]] = model.b.data[[0, 0]].item() + (-lr * model.b.grad[0])
-        if epoch % (EPOCHS // 100) == 0:
+        if epoch % (EPOCHS // 10) == 0:
             print(f"{epoch=}", f"{loss.item()}")
             epochs.append(epoch)
             losses.append(loss.item())
-            print(model(Tensor([2, 1], inputs[0])).item(), round(model(Tensor([2, 1], inputs[0])).item()) == targets[0])
-            print(model(Tensor([2, 1], inputs[1])).item(), round(model(Tensor([2, 1], inputs[1])).item()) == targets[1])
-            print(model(Tensor([2, 1], inputs[2])).item(), round(model(Tensor([2, 1], inputs[2])).item()) == targets[2])
-            print(model(Tensor([2, 1], inputs[3])).item(), round(model(Tensor([2, 1], inputs[3])).item()) == targets[3])
-            # print(model(Tensor([2, 1], inputs[i])))
+            out0 = round(model(Tensor([2, 1], inputs[0])).item())
+            out1 = round(model(Tensor([2, 1], inputs[1])).item())
+            out2 = round(model(Tensor([2, 1], inputs[2])).item())
+            out3 = round(model(Tensor([2, 1], inputs[3])).item())
+            print("0 OR 0 = ", out0, "🔥" if out0 == 0 else "🌧️")
+            print("0 OR 1 = ", out1, "🔥" if out1 == 1 else "🌧️")
+            print("1 OR 0 = ", out2, "🔥" if out2 == 1 else "🌧️")
+            print("1 OR 1 = ", out3, "🔥" if out3 == 1 else "🌧️")
 
 plt.scatter(epochs, losses)
 plt.title("Neuron trained on binary OR function")
