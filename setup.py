@@ -48,7 +48,7 @@ setup(
     description="A small tensor-valued autograd engine",
     long_description="",
     ext_modules=ext_modules,
-    extras_require={"test": "pytest"},
+    # extras_require={"test": "pytest"},
     # Currently, build_ext only provides an optional "highest supported C++
     # level" feature, but in the future it may provide more features.
     cmdclass={"build_ext": build_ext},
