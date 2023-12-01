@@ -1,4 +1,7 @@
 from random import random
+from itertools import product
+from functools import reduce
+from operator import mul
 
 from cudagrad.tensor import Tensor # type: ignore
 import matplotlib.pyplot as plt
@@ -14,6 +17,16 @@ class Module:
         for parameter in self.parameters():
             assert type(parameter) == Tensor
             parameter.zero_grad()
+
+def sgd(model: Module, lr: float) -> None:
+    def positions(tensor):
+        indices = [list(range(size)) for size in tensor.size]
+        for index in product(*indices):
+            yield index
+
+    for parameter in model.parameters():
+        for position in positions(parameter):
+            parameter.data[list(position)] = parameter.data[list(position)].item() + (-lr * parameter.grad[reduce(mul, position)])
 
 class Linear(Module):
     def __init__(self, inputs: int, outputs: int):
@@ -39,9 +52,7 @@ if __name__ == "__main__":
             model.zero_grad()
             loss = mse(Tensor([1], [targets[i]]), model(Tensor([2, 1], input)))
             loss.backward()
-            model.w.data[[0, 0]] = model.w.data[[0, 0]].item() + (-lr * model.w.grad[0])
-            model.w.data[[0, 1]] = model.w.data[[0, 1]].item() + (-lr * model.w.grad[1])
-            model.b.data[[0, 0]] = model.b.data[[0, 0]].item() + (-lr * model.b.grad[0])
+            sgd(model, lr)
         if epoch % (EPOCHS // 10) == 0:
             print(f"{epoch=}", f"{loss.item()}")
             epochs.append(epoch)
