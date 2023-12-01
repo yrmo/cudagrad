@@ -3,20 +3,27 @@ from itertools import product
 from functools import reduce
 from operator import mul
 
-from cudagrad.tensor import Tensor # type: ignore
+from cudagrad.tensor import Tensor  # type: ignore
 import matplotlib.pyplot as plt
+
 
 def mse(predicted: Tensor, actual: Tensor) -> Tensor:
     return (predicted - actual) * (predicted - actual)
 
+
 class Module:
     def parameters(self):
-        return [getattr(self, attr) for attr in dir(self) if type(getattr(self, attr)) == Tensor]
+        return [
+            getattr(self, attr)
+            for attr in dir(self)
+            if type(getattr(self, attr)) == Tensor
+        ]
 
     def zero_grad(self):
         for parameter in self.parameters():
             assert type(parameter) == Tensor
             parameter.zero_grad()
+
 
 def sgd(model: Module, lr: float) -> None:
     def positions(tensor):
@@ -26,7 +33,10 @@ def sgd(model: Module, lr: float) -> None:
 
     for parameter in model.parameters():
         for position in positions(parameter):
-            parameter.data[list(position)] = parameter.data[list(position)].item() + (-lr * parameter.grad[reduce(mul, position)])
+            parameter.data[list(position)] = parameter.data[list(position)].item() + (
+                -lr * parameter.grad[reduce(mul, position)]
+            )
+
 
 class Linear(Module):
     def __init__(self, inputs: int, outputs: int):
@@ -41,7 +51,7 @@ if __name__ == "__main__":
     # OR
     inputs = [[0, 0], [0, 1], [1, 0], [1, 1]]
     targets = [0, 1, 1, 1]
-    
+
     EPOCHS = 100
     lr = 0.0001
     epochs = []
