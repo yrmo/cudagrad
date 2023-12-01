@@ -6,7 +6,16 @@ import matplotlib.pyplot as plt
 def mse(predicted: Tensor, actual: Tensor) -> Tensor:
     return (predicted - actual) * (predicted - actual)
 
-class Linear:
+class Module:
+    def parameters(self):
+        return [getattr(self, attr) for attr in dir(self) if type(getattr(self, attr)) == Tensor]
+
+    def zero_grad(self):
+        for parameter in self.parameters():
+            assert type(parameter) == Tensor
+            parameter.zero_grad()
+
+class Linear(Module):
     def __init__(self, inputs: int, outputs: int):
         self.w = Tensor([outputs, inputs], [random() for _ in range(outputs * inputs)])
         self.b = Tensor([outputs], [random() for _ in range(outputs)])
@@ -27,8 +36,7 @@ if __name__ == "__main__":
     model = Linear(2, 1)
     for epoch in range(EPOCHS + 1):
         for i, input in enumerate(inputs):
-            model.w.zero_grad()
-            model.b.zero_grad()
+            model.zero_grad()
             loss = mse(Tensor([1], [targets[i]]), model(Tensor([2, 1], input)))
             loss.backward()
             model.w.data[[0, 0]] = model.w.data[[0, 0]].item() + (-lr * model.w.grad[0])
