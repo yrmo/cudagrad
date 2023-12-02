@@ -76,8 +76,8 @@ if __name__ == "__main__":
             print("1 OR 0 = ", out2, "🔥" if out2 == 1 else "🌧️")
             print("1 OR 1 = ", out3, "🔥" if out3 == 1 else "🌧️")
 
-plt.scatter(epochs, losses)
-plt.title("Neuron trained on binary OR function")
-plt.xlabel("Epoch")
-plt.ylabel("Loss")
-plt.savefig("neuron.jpg")
+    plt.scatter(epochs, losses)
+    plt.title("Neuron trained on binary OR function")
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
+    plt.savefig("neuron.jpg")
