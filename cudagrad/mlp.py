@@ -16,6 +16,7 @@
 # %%
 from random import random
 from typing import *  # type: ignore
+from random import choice
 
 from cudagrad.tensor import Tensor  # type: ignore
 from .neuron import Module, mse, sgd
@@ -23,13 +24,13 @@ import matplotlib.pyplot as plt
 
 class MLP(Module):
     def __init__(self):
-        self.w0 = Tensor([10, 2], [random() for _ in range(10 * 2)])
-        self.b0 = Tensor([10], [random() for _ in range(10)])
-        self.w1 = Tensor([1, 10], [random() for _ in range(1 * 10)])
-        self.b1 = Tensor([1], [random() for _ in range(1)])
+        self.w0 = Tensor([10, 2], [choice([-1 * random(), random()]) for _ in range(10 * 2)])
+        self.b0 = Tensor([10], [choice([-1 * random(), random()]) for _ in range(10)])
+        self.w1 = Tensor([1, 10], [choice([-1 * random(), random()]) for _ in range(1 * 10)])
+        self.b1 = Tensor([1], [choice([-1 * random(), random()]) for _ in range(1)])
 
     def __call__(self, x: Tensor) -> Tensor:
-        return (self.w1 @ ((self.w0 @ x) + self.b0)) + self.b1
+        return self.w1 @ Tensor.relu((self.w0 @ x) + self.b0) + self.b1
 
 
 if __name__ == "__main__":
@@ -37,8 +38,8 @@ if __name__ == "__main__":
     inputs = [[0, 0], [0, 1], [1, 0], [1, 1]]
     targets = [0, 1, 1, 0]
 
-    EPOCHS = 5000
-    lr = 0.001
+    EPOCHS = 10000
+    lr = 0.000001
     epochs = []
     losses = []
     model = MLP()
@@ -56,13 +57,13 @@ if __name__ == "__main__":
             out1 = round(model(Tensor([2, 1], inputs[1])).item())
             out2 = round(model(Tensor([2, 1], inputs[2])).item())
             out3 = round(model(Tensor([2, 1], inputs[3])).item())
-            print("0 OR 0 = ", out0, "🔥" if out0 == 0 else "🌧️")
-            print("0 OR 1 = ", out1, "🔥" if out1 == 1 else "🌧️")
-            print("1 OR 0 = ", out2, "🔥" if out2 == 1 else "🌧️")
-            print("1 OR 1 = ", out3, "🔥" if out3 == 0 else "🌧️")
+            print("0 OR 0 = ", round(model(Tensor([2, 1], inputs[0])).item(), 2), "🔥" if out0 == 0 else "")
+            print("0 OR 1 = ", round(model(Tensor([2, 1], inputs[1])).item(), 2), "🔥" if out1 == 1 else "")
+            print("1 OR 0 = ", round(model(Tensor([2, 1], inputs[2])).item(), 2), "🔥" if out2 == 1 else "")
+            print("1 OR 1 = ", round(model(Tensor([2, 1], inputs[3])).item(), 2), "🔥" if out3 == 0 else "")
 
     plt.scatter(epochs, losses)
     plt.title("MLP trained on binary XOR function")
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
-    plt.savefig("mlp.jpg")
+    plt.savefig("./cudagrad/mlp.jpg")

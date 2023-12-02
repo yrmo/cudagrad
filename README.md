@@ -11,3 +11,9 @@ See `__main__` guards in `cudagrad/cudagrad/` for usages examples. Below are the
 ## Neuron/Linear
 
 ![](cudagrad/neuron.jpg)
+
+## Multilayer perceptron
+
+Work in progress!
+
+![](cudagrad/mlp.jpg)

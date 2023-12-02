@@ -52,7 +52,7 @@ if __name__ == "__main__":
     inputs = [[0, 0], [0, 1], [1, 0], [1, 1]]
     targets = [0, 1, 1, 1]
 
-    EPOCHS = 100
+    EPOCHS = 1000
     lr = 0.0001
     epochs = []
     losses = []
@@ -71,13 +71,13 @@ if __name__ == "__main__":
             out1 = round(model(Tensor([2, 1], inputs[1])).item())
             out2 = round(model(Tensor([2, 1], inputs[2])).item())
             out3 = round(model(Tensor([2, 1], inputs[3])).item())
-            print("0 OR 0 = ", out0, "🔥" if out0 == 0 else "🌧️")
-            print("0 OR 1 = ", out1, "🔥" if out1 == 1 else "🌧️")
-            print("1 OR 0 = ", out2, "🔥" if out2 == 1 else "🌧️")
-            print("1 OR 1 = ", out3, "🔥" if out3 == 1 else "🌧️")
+            print("0 OR 0 = ", round(model(Tensor([2, 1], inputs[0])).item(), 2), "🔥" if out0 == 0 else "")
+            print("0 OR 1 = ", round(model(Tensor([2, 1], inputs[1])).item(), 2), "🔥" if out1 == 1 else "")
+            print("1 OR 0 = ", round(model(Tensor([2, 1], inputs[2])).item(), 2), "🔥" if out2 == 1 else "")
+            print("1 OR 1 = ", round(model(Tensor([2, 1], inputs[3])).item(), 2), "🔥" if out3 == 1 else "")
 
     plt.scatter(epochs, losses)
     plt.title("Neuron trained on binary OR function")
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
-    plt.savefig("neuron.jpg")
+    plt.savefig("./cudagrad/neuron.jpg")
