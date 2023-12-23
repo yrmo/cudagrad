@@ -1,8 +1,8 @@
-# About 
+# [cudagrad](https://pypi.org/project/cudagrad/)
 
-[cudagrad](https://pypi.org/project/cudagrad/) is a tensor-valued autograd engine for Python
+Tensor-valued autograd engine for Python
 
-In-depth documentation hosted [here](https://9oose.com/nb/CudagradDocs)
+In-depth documentation hosted [here](https://9oose.com/nb/Tensor)
 
 # Examples
 
