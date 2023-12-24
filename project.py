@@ -119,6 +119,9 @@ class Project:
         RUN("c++ -std=c++11 -I./src examples/example.cpp && ./a.out")
         RUN("python -m pip install cudagrad")
         RUN("python ./examples/example.py")
+        RUN("python -m cudagrad.linear")
+        RUN("python -m cudagrad.mlp")
+        RUN("git restore cudagrad/*.jpg")
 
     def test_python_3_7(self):
         RUN("pyenv global 3.7")
