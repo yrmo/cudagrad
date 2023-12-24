@@ -1,6 +1,4 @@
-from functools import reduce
 from itertools import product
-from operator import mul
 
 from cudagrad.tensor import Tensor
 
@@ -32,5 +30,5 @@ def sgd(model: Module, lr: float) -> None:
     for parameter in model.parameters():
         for position in positions(parameter):
             parameter.data[list(position)] = parameter.data[list(position)].item() + (
-                -lr * parameter.grad[reduce(mul, position)]
+                -lr * parameter.grad[list(position)].item()
             )
