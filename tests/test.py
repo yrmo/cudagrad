@@ -2,7 +2,7 @@
 
 import torch
 
-import cudagrad as cg
+from cudagrad import Tensor
 
 # assert cg.__version__ == '0.0.1'
 # assert cg.add(1, 2) == 3
@@ -27,16 +27,17 @@ et = (at.matmul(bt) + ct) * dt
 ft = et.sum()
 ft.backward()
 
-a = cg.Tensor([2, 2], [2.0, 3.0, 4.0, 5.0])
-b = cg.Tensor([2, 2], [6.0, 7.0, 8.0, 9.0])
-c = cg.Tensor([2, 2], [10.0, 10.0, 10.0, 10.0])
-d = cg.Tensor([2, 2], [11.0, 11.0, 11.0, 11.0])
+a = Tensor([2, 2], [2.0, 3.0, 4.0, 5.0])
+b = Tensor([2, 2], [6.0, 7.0, 8.0, 9.0])
+c = Tensor([2, 2], [10.0, 10.0, 10.0, 10.0])
+d = Tensor([2, 2], [11.0, 11.0, 11.0, 11.0])
 e = ((a @ b) + c) * d
 f = e.sum()
 f.backward()
 
-assert f.data == flatten([ft.data.tolist()])  # this is annoying lol
-assert a.data == flatten(at.data.tolist())
-assert b.data == flatten(bt.data.tolist())
+assert f.data[[0,0]].item() == ft.data.item()
+
+assert [a.grad[[0,0]].item(), a.grad[[0,1]].item(), a.grad[[1,0]].item(), a.grad[[1,1]].item()] == flatten(at.grad.tolist())
+assert [b.grad[[0,0]].item(), b.grad[[0,1]].item(), b.grad[[1,0]].item(), b.grad[[1,1]].item()] == flatten(bt.grad.tolist())
 
 print("Tests passed!")

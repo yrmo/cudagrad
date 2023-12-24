@@ -43,6 +43,10 @@ PYBIND11_MODULE(tensor, m) {
       .def("__getitem__", &cg::DataProxy::get)
       .def("__setitem__", &cg::DataProxy::set);
 
+  py::class_<cg::GradProxy>(m, "_GradProxy")
+      .def("__getitem__", &cg::GradProxy::get)
+      .def("__setitem__", &cg::GradProxy::set);
+
   // TODO(yrmo): When doing C++ bindings does repr
   //              override str when no str present?
   py::class_<cg::Tensor, std::shared_ptr<cg::Tensor>>(m, "Tensor")
@@ -54,13 +58,12 @@ PYBIND11_MODULE(tensor, m) {
       .def("relu", &cg::Tensor::relu)
       .def("sigmoid", &cg::Tensor::sigmoid)
       .def_property_readonly("data", &cg::Tensor::data_proxy)
+      .def_property_readonly("grad", &cg::Tensor::grad_proxy)
       // .def("__getitem__", &cg::Tensor::select)
       // .def("__setitem__", &cg::Tensor::put)
       .def("item", &cg::Tensor::item)
       .def_property_readonly("size",
                              &cg::Tensor::get_size)  // do something about this
-      .def_property_readonly("grad",
-                             &cg::Tensor::get_grad)  // do something about this
       .def("graph", &cg::Tensor::graph)
       .def_static("ones", &cg::Tensor::ones)
       .def_static("zeros", &cg::Tensor::zeros)

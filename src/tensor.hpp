@@ -50,6 +50,7 @@ struct MatMulForward;
 
 class Tensor;
 class DataProxy;
+class GradProxy;
 
 std::shared_ptr<Tensor> tensor(std::initializer_list<int>,
                                std::initializer_list<float>);
@@ -124,6 +125,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   std::shared_ptr<Tensor> get_shared() { return this->shared_from_this(); }
 
   DataProxy data_proxy();
+  GradProxy grad_proxy();
 
   void backward();
   void zero_grad();
@@ -131,8 +133,12 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   std::shared_ptr<Tensor> relu();
   std::shared_ptr<Tensor> sigmoid();
   std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> other);
-  std::shared_ptr<Tensor> select(std::vector<int> indexes);
-  void put(std::vector<int> indexes, float value);
+
+  std::shared_ptr<Tensor> select_data(std::vector<int> indexes);
+  void put_data(std::vector<int> indexes, float value);
+  std::shared_ptr<Tensor> select_grad(std::vector<int> indexes);
+  void put_grad(std::vector<int> indexes, float value);
+
   float item();
 
   std::string repr() {
@@ -346,17 +352,34 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   }
 };
 
-// This helps pybind11 do __getitem__ __setitem__ on the .data member
+// Proxys help pybind11 do __getitem__ __setitem__ on the .data/.grad member
+
 class DataProxy {
  public:
   DataProxy(Tensor &tensor) : parent_tensor(tensor) {}
 
   std::shared_ptr<Tensor> get(std::vector<int> indexes) {
-    return parent_tensor.select(indexes);
+    return parent_tensor.select_data(indexes);
   }
 
   void set(std::vector<int> indexes, float value) {
-    parent_tensor.put(indexes, value);
+    parent_tensor.put_data(indexes, value);
+  }
+
+ private:
+  Tensor &parent_tensor;
+};
+
+class GradProxy {
+ public:
+  GradProxy(Tensor &tensor) : parent_tensor(tensor) {}
+
+  std::shared_ptr<Tensor> get(std::vector<int> indexes) {
+    return parent_tensor.select_grad(indexes);
+  }
+
+  void set(std::vector<int> indexes, float value) {
+    parent_tensor.put_grad(indexes, value);
   }
 
  private:
@@ -364,6 +387,7 @@ class DataProxy {
 };
 
 DataProxy Tensor::data_proxy() { return DataProxy(*this); }
+GradProxy Tensor::grad_proxy() { return GradProxy(*this); }
 
 template <typename T>
 std::shared_ptr<Tensor> binaryElementwiseOperator(
@@ -483,17 +507,33 @@ std::shared_ptr<Tensor> Tensor::sum() {
 }
 */
 
-std::shared_ptr<Tensor> Tensor::select(std::vector<int> indexes) {
+// TODO(yrmo): char indicators is a mess!
+
+std::shared_ptr<Tensor> Tensor::select_data(std::vector<int> indexes) {
   int product = _dot(indexes, strides_);
   return std::make_shared<Tensor>(
       std::vector<int>{1}, std::vector<float>{data_[product]},
       std::vector<std::shared_ptr<Tensor>>{get_shared()},
       std::make_shared<SelectBackward>(), '.');
-      // TODO(usevector): haha I dont know if `.` is taken already...
 }
 
-void Tensor::put(std::vector<int> indexes, float value) {
+std::shared_ptr<Tensor> Tensor::select_grad(std::vector<int> indexes) {
+  int product = _dot(indexes, strides_);
+  return std::make_shared<Tensor>(
+      std::vector<int>{1}, std::vector<float>{grad_[product]},
+      std::vector<std::shared_ptr<Tensor>>{get_shared()},
+      std::make_shared<SelectBackward>(), '.');
+}
+
+
+// TODO(yrmo): this is untracked, does pytorch track assignment?
+
+void Tensor::put_data(std::vector<int> indexes, float value) {
   data_[_dot(indexes, strides_)] = value;
+}
+
+void Tensor::put_grad(std::vector<int> indexes, float value) {
+  grad_[_dot(indexes, strides_)] = value;
 }
 
 struct AutoGradBackward {
