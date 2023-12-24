@@ -185,14 +185,17 @@ def positions(tensor):
         yield index
 
 
-for i in range(1):
+for i in range(4):
     print(i)
     model.zero_grad()
-    loss = mse(Tensor([1], y[i]), Tensor([2, 1], X[i]))
+    print(X[i])
+    loss = mse(Tensor([1], y[i]), model(Tensor([2, 1], y[i])))
     loss.backward()
     sgd(model, lr=0.1)
 
+    print("-" * 80)
     for p in model.parameters():
-        print("-" * 80)
+        print("-" * 20)
         for position in positions(p):
             print(p.grad[list(position)].item())
+    print("-" * 80)
