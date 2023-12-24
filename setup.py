@@ -7,8 +7,7 @@ import toml
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 from setuptools import find_packages, setup
 
-assert which("nvcc") is not None
-
+# assert which("nvcc") is not None
 
 def get_version_from_toml():
     data = toml.load("pyproject.toml")

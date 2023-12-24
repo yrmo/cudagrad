@@ -82,10 +82,17 @@ class Project:
         RUN("python -m black .")
         RUN(f"clang-format -i -style=Google {CPP_FILES}")
 
-    def test(self):
+    def test(self, processor):
         @echo
         def RUN(input: str) -> None:
             subprocess.check_call(input, shell=True)
+
+        if processor == "CPU":
+            RUN("cp CMakeListsCPU.txt CMakeLists.txt")
+        elif processor == "CUDA":
+            RUN("cp CMakeListsCUDA.txt CMakeLists.txt")
+        else:
+            raise ValueError(f"Unknown option for {processor=}!")
 
         RUN("git submodule update --init --recursive")
         if os.path.exists("build"):
