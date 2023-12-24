@@ -13,6 +13,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cmath>
 #include <functional>
 #include <iostream>
 #include <memory>
@@ -42,6 +43,7 @@ struct MulBackward;
 struct DivBackward;
 using SumBackward = AddBackward;
 struct ReluBackward;
+struct SigmoidBackward;
 struct MatMulBackward;
 using SelectBackward = AddBackward;
 
@@ -129,6 +131,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   void zero_grad();
   std::shared_ptr<Tensor> sum();
   std::shared_ptr<Tensor> relu();
+  std::shared_ptr<Tensor> sigmoid();
   std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> select(std::vector<int> indexes);
   void put(std::vector<int> indexes, float value);
@@ -441,6 +444,16 @@ std::shared_ptr<Tensor> Tensor::relu() {
       std::make_shared<ReluBackward>(), 'r');
 }
 
+std::shared_ptr<Tensor> Tensor::sigmoid() {
+  std::vector<float> result_data(data_.size());
+  for (int i = 0; i < data_.size(); ++i) {
+    result_data[i] = 1.0f / (1.0f + exp(-data_[i]));
+  }
+  return std::make_shared<Tensor>(
+      size_, result_data, std::vector<std::shared_ptr<Tensor>>{get_shared()},
+      std::make_shared<SigmoidBackward>(), 'g');
+}
+
 std::shared_ptr<Tensor> tensor(std::initializer_list<int> size,
                                std::initializer_list<float> data) {
   return std::make_shared<Tensor>(size, data);
@@ -569,6 +582,23 @@ struct ReluBackward : public AutoGradBackward {
     for (int i = 0; i < input.get()->grad_.size(); ++i) {
       input.get()->grad_[i] +=
           grad_output.get()->grad_[i] * (input.get()->data_[i] > 0 ? 1 : 0);
+    }
+  }
+};
+
+struct SigmoidBackward : public AutoGradBackward {
+  SigmoidBackward() = default;
+
+  void apply(std::shared_ptr<Tensor> grad_output,
+             std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
+    assert(grad_inputs.size() == 1);
+    std::shared_ptr<Tensor> input = grad_inputs[0];
+    for (int i = 0; i < input.get()->grad_.size(); ++i) {
+      input.get()->grad_[i] +=
+          grad_output.get()->grad_[i] * (
+            1.0f /
+          (4.0f * (std::cosh(input.get()->data_[i] / 2.0f) * std::cosh(input.get()->data_[i] / 2.0f)))
+          );
     }
   }
 };

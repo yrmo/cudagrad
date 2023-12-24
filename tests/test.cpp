@@ -392,6 +392,45 @@ TEST(Basic, ReLU) {
   EXPECT_EQ(a.get()->grad_[3], 1.0);
 }
 
+TEST(Basic, Sigmoid) {
+  /*
+  >>> import torch
+  >>> torch.__version__
+  '2.3.0a0+gitbbded92'
+  >>> a = torch.tensor(((-1.0, -2.0), (1.0, 2.0)), requires_grad=True)
+  >>> b = a.sigmoid()
+  >>> b
+  tensor([[0.2689, 0.1192],
+          [0.7311, 0.8808]], grad_fn=<SigmoidBackward0>)
+  >>> l = b.sum()
+  >>> l.backward()
+  >>> l
+  tensor(2., grad_fn=<SumBackward0>)
+  >>> a.grad
+  tensor([[0.1966, 0.1050],
+          [0.1966, 0.1050]])
+  */
+  cg::t a = cg::tensor({2, 2}, {-1.0, -2.0, 1.0, 2.0});
+  cg::t b = a.get()->sigmoid();
+  auto l = b.get()->sum();
+  l.get()->backward();
+
+  EXPECT_EQ(l.get()->data_[0], 2.0);
+  EXPECT_EQ(l.get()->grad_.size(), 1);
+
+  EXPECT_EQ(b.get()->data_.size(), 4);
+  EXPECT_NEAR(b.get()->data_[0], 0.2689, 0.01);
+  EXPECT_NEAR(b.get()->data_[1], 0.1192, 0.01);
+  EXPECT_NEAR(b.get()->data_[2], 0.7311, 0.01);
+  EXPECT_NEAR(b.get()->data_[3], 0.8808, 0.01);
+
+  EXPECT_EQ(a.get()->grad_.size(), 4);
+  EXPECT_NEAR(a.get()->grad_[0], 0.1966, 0.01);
+  EXPECT_NEAR(a.get()->grad_[1], 0.1050, 0.01);
+  EXPECT_NEAR(a.get()->grad_[2], 0.1966, 0.01);
+  EXPECT_NEAR(a.get()->grad_[3], 0.1050, 0.01);
+}
+
 // template <typename T>
 // std::vector<T> tensorToVector(const torch::Tensor& tensor) {
 //   size_t num_elements = tensor.numel();
