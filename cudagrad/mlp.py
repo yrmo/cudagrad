@@ -18,7 +18,7 @@ from random import choice, random
 from typing import *
 
 import matplotlib.pyplot as plt
-import numpy as np # just for plotting
+import numpy as np  # just for plotting
 
 from cudagrad.nn import Module, mse, sgd
 from cudagrad.tensor import Tensor
@@ -26,13 +26,19 @@ from cudagrad.tensor import Tensor
 
 class MLP(Module):
     def __init__(self):
-        self.w0 = Tensor([2, 2], [choice([-1 * random(), random()]) for _ in range(2 * 2)])
+        self.w0 = Tensor(
+            [2, 2], [choice([-1 * random(), random()]) for _ in range(2 * 2)]
+        )
         self.b0 = Tensor([2], [choice([-1 * random(), random()]) for _ in range(2)])
-        self.w1 = Tensor([1, 2], [choice([-1 * random(), random()]) for _ in range(1 * 2)])
+        self.w1 = Tensor(
+            [1, 2], [choice([-1 * random(), random()]) for _ in range(1 * 2)]
+        )
         self.b1 = Tensor([1], [choice([-1 * random(), random()]) for _ in range(1)])
 
     def __call__(self, x: Tensor) -> Tensor:
-        return Tensor.sigmoid(self.w1 @ Tensor.sigmoid((self.w0 @ x) + self.b0) + self.b1)
+        return Tensor.sigmoid(
+            self.w1 @ Tensor.sigmoid((self.w0 @ x) + self.b0) + self.b1
+        )
 
 
 if __name__ == "__main__":

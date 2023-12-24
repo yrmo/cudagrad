@@ -1,38 +1,38 @@
 # In [1]: import torch
 #    ...: import torch.nn as nn
 #    ...: import torch.optim as optim
-#    ...: 
+#    ...:
 #    ...: X = torch.tensor(
 #    ...:     [[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]], requires_grad=True
 #    ...: )
 #    ...: y = torch.tensor([[0.0], [1.0], [1.0], [0.0]], requires_grad=False)
-#    ...: 
+#    ...:
 #    ...: torch.manual_seed(1337)
-#    ...: 
-#    ...: 
+#    ...:
+#    ...:
 #    ...: class MLP(nn.Module):
 #    ...:     def __init__(self):
 #    ...:         super().__init__()
 #    ...:         self.layer1 = nn.Linear(2, 2)
 #    ...:         self.layer2 = nn.Linear(2, 1)
-#    ...: 
+#    ...:
 #    ...:     def forward(self, x):
 #    ...:         x = torch.sigmoid(self.layer1(x))
 #    ...:         x = torch.sigmoid(self.layer2(x))
 #    ...:         return x
-#    ...: 
+#    ...:
 
 # In [2]: model = MLP()
 
 # In [3]: model(X)
-# Out[3]: 
+# Out[3]:
 # tensor([[0.4216],
 #         [0.4200],
 #         [0.4205],
 #         [0.4188]], grad_fn=<SigmoidBackward0>)
 
 # In [4]: model.state_dict()
-# Out[4]: 
+# Out[4]:
 # OrderedDict([('layer1.weight',
 #               tensor([[-0.5963, -0.0062],
 #                       [ 0.1741, -0.1097]])),
@@ -44,19 +44,19 @@
 #    ...:     model = model_class()
 #    ...:     optimizer = optim.SGD(model.parameters(), lr=0.1)
 #    ...:     criterion = nn.MSELoss()
-#    ...: 
+#    ...:
 #    ...:     for epoch in range(25000):
 #    ...:         outputs = model(X)
 #    ...:         loss = criterion(outputs, y)
 #    ...:         optimizer.zero_grad()
 #    ...:         loss.backward()
 #    ...:         optimizer.step()
-#    ...: 
+#    ...:
 #    ...:         if epoch % 1000 == 0:
 #    ...:             print(f"Epoch {epoch}, Loss: {loss.item()}")
-#    ...: 
+#    ...:
 #    ...:     return model
-#    ...: 
+#    ...:
 
 # In [6]: model = train(MLP)
 # Epoch 0, Loss: 0.2516142725944519
@@ -86,14 +86,14 @@
 # Epoch 24000, Loss: 0.006018902640789747
 
 # In [7]: model(X)
-# Out[7]: 
+# Out[7]:
 # tensor([[0.0713],
 #         [0.9198],
 #         [0.9220],
 #         [0.0639]], grad_fn=<SigmoidBackward0>)
 
 # In [8]: model.state_dict()
-# Out[8]: 
+# Out[8]:
 # OrderedDict([('layer1.weight',
 #               tensor([[-6.0408,  6.1632],
 #                       [ 5.3242, -5.0834]])),
@@ -101,4 +101,4 @@
 #              ('layer2.weight', tensor([[-6.0373, -6.1604]])),
 #              ('layer2.bias', tensor([8.9376]))])
 
-# In [9]: 
+# In [9]:

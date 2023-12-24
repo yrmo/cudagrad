@@ -35,9 +35,19 @@ e = ((a @ b) + c) * d
 f = e.sum()
 f.backward()
 
-assert f.data[[0,0]].item() == ft.data.item()
+assert f.data[[0, 0]].item() == ft.data.item()
 
-assert [a.grad[[0,0]].item(), a.grad[[0,1]].item(), a.grad[[1,0]].item(), a.grad[[1,1]].item()] == flatten(at.grad.tolist())
-assert [b.grad[[0,0]].item(), b.grad[[0,1]].item(), b.grad[[1,0]].item(), b.grad[[1,1]].item()] == flatten(bt.grad.tolist())
+assert [
+    a.grad[[0, 0]].item(),
+    a.grad[[0, 1]].item(),
+    a.grad[[1, 0]].item(),
+    a.grad[[1, 1]].item(),
+] == flatten(at.grad.tolist())
+assert [
+    b.grad[[0, 0]].item(),
+    b.grad[[0, 1]].item(),
+    b.grad[[1, 0]].item(),
+    b.grad[[1, 1]].item(),
+] == flatten(bt.grad.tolist())
 
 print("Tests passed!")
