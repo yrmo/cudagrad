@@ -102,3 +102,30 @@
 #              ('layer2.bias', tensor([8.9376]))])
 
 # In [9]:
+
+from cudagrad import MLP, Tensor
+
+model = MLP()
+
+model.w0.data[[0, 0]] = -6.0408
+model.w0.data[[0, 1]] = 6.1632
+model.w0.data[[1, 0]] = 5.3242
+model.w0.data[[1, 1]] = -5.0834
+
+model.b0.data[[0, 0]] = 3.1208
+model.b0.data[[1, 0]] = 2.5703
+
+model.w1.data[[0, 0]] = -6.0373
+model.w1.data[[0, 1]] = -6.1604
+
+model.b1.data[[0, 0]] = 8.9376
+
+print(model.w0)
+print(model.b0)
+print(model.w1)
+print(model.b1)
+
+assert round(model(Tensor([2, 1], [0, 0])).item(), 3) == round(0.0713, 3)
+assert round(model(Tensor([2, 1], [0, 1])).item(), 3) == round(0.9198, 3)
+assert round(model(Tensor([2, 1], [1, 0])).item(), 3) == round(0.9220, 3)
+assert round(model(Tensor([2, 1], [1, 1])).item(), 3) == round(0.0639, 3)
