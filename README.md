@@ -1,12 +1,14 @@
-# [cudagrad](https://pypi.org/project/cudagrad/)
+# cudagrad
 
 Tensor-valued autograd engine for Python
 
-In-depth documentation hosted [here](https://9oose.com/nb/Tensor)
+# Docs
+
+In-depth `cudagrad.Tensor` documentation can be found in [Tensor.ipynb](./Tensor.ipynb)
 
 # Examples
 
-See `__main__` guards in `cudagrad/cudagrad/` for usages examples. Below are the loss function plots:
+The following examples were written purely in Python using only `cudagrad.Tensor` for learning. See `__main__` guards in `cudagrad/cudagrad/` for usage examples, below are the loss function plots:
 
 ## Neuron/Linear
 
