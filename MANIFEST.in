@@ -1,2 +1,2 @@
 include src/tensor.hpp
-include src/ops.cu
+include src/operations.cu
