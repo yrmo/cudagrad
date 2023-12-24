@@ -106,6 +106,7 @@ class Project:
         RUN("python -m pip uninstall -y cudagrad")
         RUN("python -m pip cache purge")
         os.chdir(os.path.expanduser("~/cudagrad"))
+        RUN("rm CMakeLists.txt")
         RUN("python -m pip install .")
         # RUN("python tests/test.py")
         os.chdir(os.path.expanduser("~/cudagrad"))
