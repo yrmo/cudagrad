@@ -18,6 +18,7 @@ from random import choice, random
 from typing import *
 
 import matplotlib.pyplot as plt
+import numpy as np # just for plotting
 
 from cudagrad.nn import Module, mse, sgd
 from cudagrad.tensor import Tensor
@@ -25,17 +26,13 @@ from cudagrad.tensor import Tensor
 
 class MLP(Module):
     def __init__(self):
-        self.w0 = Tensor(
-            [10, 2], [choice([-1 * random(), random()]) for _ in range(10 * 2)]
-        )
-        self.b0 = Tensor([10], [choice([-1 * random(), random()]) for _ in range(10)])
-        self.w1 = Tensor(
-            [1, 10], [choice([-1 * random(), random()]) for _ in range(1 * 10)]
-        )
+        self.w0 = Tensor([2, 2], [choice([-1 * random(), random()]) for _ in range(2 * 2)])
+        self.b0 = Tensor([2], [choice([-1 * random(), random()]) for _ in range(2)])
+        self.w1 = Tensor([1, 2], [choice([-1 * random(), random()]) for _ in range(1 * 2)])
         self.b1 = Tensor([1], [choice([-1 * random(), random()]) for _ in range(1)])
 
     def __call__(self, x: Tensor) -> Tensor:
-        return self.w1 @ Tensor.relu((self.w0 @ x) + self.b0) + self.b1
+        return Tensor.sigmoid(self.w1 @ Tensor.sigmoid((self.w0 @ x) + self.b0) + self.b1)
 
 
 if __name__ == "__main__":
@@ -43,8 +40,8 @@ if __name__ == "__main__":
     inputs = [[0, 0], [0, 1], [1, 0], [1, 1]]
     targets = [0, 1, 1, 0]
 
-    EPOCHS = 10000
-    lr = 0.000001
+    EPOCHS = 25000
+    lr = 0.1
     epochs = []
     losses = []
     model = MLP()
@@ -88,3 +85,21 @@ if __name__ == "__main__":
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
     plt.savefig("./cudagrad/mlp.jpg")
+
+    x = np.linspace(0, 1, 50)
+    y = np.linspace(0, 1, 50)
+    X, Y = np.meshgrid(x, y)
+    Z = np.zeros(X.shape)
+
+    for i in range(X.shape[0]):
+        for j in range(X.shape[1]):
+            input_data = Tensor([2, 1], [X[i, j], Y[i, j]])
+            Z[i, j] = model(input_data).item()
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection="3d")
+    ax.plot_surface(X, Y, Z, cmap="viridis")
+    plt.title("XOR MLP Visualization")
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    plt.savefig("./cudagrad/mlp-3d.jpg")

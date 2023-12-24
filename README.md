@@ -19,3 +19,4 @@ The following examples were written purely in Python using only `cudagrad.Tensor
 Work in progress!
 
 ![](cudagrad/mlp.jpg)
+![](cudagrad/mlp-3d.jpg)
