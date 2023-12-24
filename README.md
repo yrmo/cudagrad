@@ -12,7 +12,7 @@ The following examples were written purely in Python using only `cudagrad.Tensor
 
 ## Neuron/Linear
 
-![](cudagrad/neuron.jpg)
+![](cudagrad/linear.jpg)
 
 ## Multilayer perceptron
 

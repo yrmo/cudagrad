@@ -1,21 +1,4 @@
-# type: ignore
-#
-# Copyright 2023 Ryan Moore
-#
-# So the magic is that there's this relatively simple algorithm called
-# backpropagation that takes the error in the output and sends that
-# error backwards through the network and computes through all the
-# connections how you should change them to improve the behavior, and
-# then you change them all a tiny bit and you just keep going with
-# another example. And surprisingly that actually works. For many years
-# people thought that would just get jammed up — it would get stuck
-# somewhere — but no it doesn't, it actually works very well.
-#
-# Geoffrey Hinton
-
-# %%
-from random import choice, random
-from typing import *
+from random import random
 
 import matplotlib.pyplot as plt
 
@@ -23,31 +6,25 @@ from cudagrad.nn import Module, mse, sgd
 from cudagrad.tensor import Tensor
 
 
-class MLP(Module):
-    def __init__(self):
-        self.w0 = Tensor(
-            [10, 2], [choice([-1 * random(), random()]) for _ in range(10 * 2)]
-        )
-        self.b0 = Tensor([10], [choice([-1 * random(), random()]) for _ in range(10)])
-        self.w1 = Tensor(
-            [1, 10], [choice([-1 * random(), random()]) for _ in range(1 * 10)]
-        )
-        self.b1 = Tensor([1], [choice([-1 * random(), random()]) for _ in range(1)])
+class Linear(Module):
+    def __init__(self, inputs: int, outputs: int):
+        self.w = Tensor([outputs, inputs], [random() for _ in range(outputs * inputs)])
+        self.b = Tensor([outputs], [random() for _ in range(outputs)])
 
     def __call__(self, x: Tensor) -> Tensor:
-        return self.w1 @ Tensor.relu((self.w0 @ x) + self.b0) + self.b1
+        return (self.w @ x) + self.b
 
 
 if __name__ == "__main__":
-    # XOR
+    # OR
     inputs = [[0, 0], [0, 1], [1, 0], [1, 1]]
-    targets = [0, 1, 1, 0]
+    targets = [0, 1, 1, 1]
 
-    EPOCHS = 10000
-    lr = 0.000001
+    EPOCHS = 1000
+    lr = 0.0001
     epochs = []
     losses = []
-    model = MLP()
+    model = Linear(2, 1)
     for epoch in range(EPOCHS + 1):
         for i, input in enumerate(inputs):
             model.zero_grad()
@@ -80,11 +57,11 @@ if __name__ == "__main__":
             print(
                 "1 OR 1 = ",
                 round(model(Tensor([2, 1], inputs[3])).item(), 2),
-                "🔥" if out3 == 0 else "",
+                "🔥" if out3 == 1 else "",
             )
 
     plt.scatter(epochs, losses)
-    plt.title("MLP trained on binary XOR function")
+    plt.title("Neuron trained on binary OR function")
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
-    plt.savefig("./cudagrad/mlp.jpg")
+    plt.savefig("./cudagrad/linear.jpg")

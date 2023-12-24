@@ -9,6 +9,7 @@ from setuptools import find_packages, setup
 
 # assert which("nvcc") is not None
 
+
 def get_version_from_toml():
     data = toml.load("pyproject.toml")
     version = data.get("project", {}).get("version", None)

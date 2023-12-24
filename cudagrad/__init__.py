@@ -1,7 +1,3 @@
-from .tensor import *  # type: ignore
+from cudagrad.tensor import Tensor
 
 __version__ = "0.0.50"
-
-
-def woof():
-    print("woofy!")
