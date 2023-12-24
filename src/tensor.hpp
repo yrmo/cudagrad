@@ -27,8 +27,6 @@
 
 namespace cg {
 
-int foo(int i) { return i + 1; }
-
 // __CUDACC__ isn't needed now, but maybe more clear
 #ifdef __CUDACC__
 extern "C" void hello();
@@ -108,7 +106,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
         children_(children),
         grad_fn_(std::move(grad_fn)),
         op_(op),
-        offset_(0),  // TODO(yrom1) pass as variable
+        offset_(0),  // TODO(yrmo) pass as variable
         strides_(size.size(), 0) {
     _computeStrides();
   }
@@ -141,8 +139,8 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
     // '<cudagrad.Tensor([1,], [1,]) object at 0x600001874018>'
     // '<cudagrad.Tensor([10,], [1, 1, 1, ...]) object at 0x600001874018>'
 
-    // TODO(yrom1): Dry
-    int n = 3;  // TODO(yrom1): jank
+    // TODO(yrmo): Dry
+    int n = 3;  // TODO(yrmo): jank
 
     // SIZE
     std::ostringstream oss_s;
@@ -750,7 +748,7 @@ using t = std::shared_ptr<Tensor>;
 
 namespace nn {
 
-// TODO(yrom1): nonlinearity of Neuron need to pass and drill down from MLP
+// TODO(yrmo): nonlinearity of Neuron need to pass and drill down from MLP
 //              static_cast<bool>(vec_.size() - 1) something liek this for MLP
 
 // keep it simple to start
@@ -799,7 +797,7 @@ class Neuron {
         bias_.get()->data_[0] + ((-rate_) * bias_.get()->grad_[0]);
     // std::cout << "bias after: " << bias_.get()->data_[0] << std::endl;
   }
-  // TODO(yrom1) parameters, how do i make this like std iterator?
+  // TODO(yrmo) parameters, how do i make this like std iterator?
 };
 
 }  // namespace nn

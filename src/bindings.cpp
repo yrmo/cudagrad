@@ -43,16 +43,16 @@ PYBIND11_MODULE(tensor, m) {
       .def("__getitem__", &cg::DataProxy::get)
       .def("__setitem__", &cg::DataProxy::set);
 
-  // TODO(yrom1): When doing C++ bindings does repr
+  // TODO(yrmo): When doing C++ bindings does repr
   //              override str when no str present?
   py::class_<cg::Tensor, std::shared_ptr<cg::Tensor>>(m, "Tensor")
       .def(py::init<std::vector<int>, std::vector<float>>())
-      .def("foo", &cg::foo)
       .def("get_shared", &cg::Tensor::get_shared)
       .def("backward", &cg::Tensor::backward)
       .def("zero_grad", &cg::Tensor::zero_grad)
       .def("sum", &cg::Tensor::sum)
       .def("relu", &cg::Tensor::relu)
+      .def("sigmoid", &cg::Tensor::sigmoid)
       .def_property_readonly("data", &cg::Tensor::data_proxy)
       .def("__getitem__", &cg::Tensor::select)
       .def("__setitem__", &cg::Tensor::put)
