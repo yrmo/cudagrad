@@ -12,11 +12,11 @@ The following examples were written purely in Python using only `cudagrad.Tensor
 
 ## Neuron/Linear
 
-![](cudagrad/linear.jpg)
+![](cudagrad/plots/linear.jpg)
 
 ## Multilayer perceptron
 
 Work in progress!
 
-![](cudagrad/mlp.jpg)
-![](cudagrad/mlp-3d.jpg)
+![](cudagrad/plots/mlp.jpg)
+![](cudagrad/plots/mlp-3d.jpg)

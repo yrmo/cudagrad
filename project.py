@@ -119,7 +119,7 @@ class Project:
         RUN("python -m pip install cudagrad")
         RUN("python -m cudagrad.linear")
         RUN("python -m cudagrad.mlp")
-        RUN("git restore cudagrad/*.jpg")
+        RUN("git restore cudagrad/plots/*.jpg")
 
     def test_python_3_7(self):
         RUN("pyenv global 3.7")

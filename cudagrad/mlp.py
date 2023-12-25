@@ -90,7 +90,7 @@ if __name__ == "__main__":
     plt.title("MLP trained on binary XOR function")
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
-    plt.savefig("./cudagrad/mlp.jpg")
+    plt.savefig("./cudagrad/plots/mlp.jpg")
 
     x = np.linspace(0, 1, 50)
     y = np.linspace(0, 1, 50)
@@ -108,4 +108,4 @@ if __name__ == "__main__":
     plt.title("XOR MLP Visualization")
     plt.xlabel("X")
     plt.ylabel("Y")
-    plt.savefig("./cudagrad/mlp-3d.jpg")
+    plt.savefig("./cudagrad/plots/mlp-3d.jpg")

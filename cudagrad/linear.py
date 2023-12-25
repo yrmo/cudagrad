@@ -64,4 +64,4 @@ if __name__ == "__main__":
     plt.title("Neuron trained on binary OR function")
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
-    plt.savefig("./cudagrad/linear.jpg")
+    plt.savefig("./cudagrad/plots/linear.jpg")
