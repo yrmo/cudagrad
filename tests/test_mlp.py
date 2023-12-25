@@ -151,10 +151,13 @@ assert round(model(Tensor([2, 1], [1, 1])).item(), 3) == round(0.0639, 3)
 # layer2.weight tensor([[0.0556, 0.0747]])
 # layer2.bias tensor([0.2105])
 
+# %%
+
 from cudagrad.nn import mse, sgd
 
 model = MLP()
 
+# matches torch 1337 seed
 model.w0.data[[0, 0]] = -0.5963
 model.w0.data[[0, 1]] = -0.0062
 model.w0.data[[1, 0]] = 0.1741
@@ -186,16 +189,71 @@ def positions(tensor):
 
 
 for i in range(4):
-    print(i)
     model.zero_grad()
-    print(X[i])
-    loss = mse(Tensor([1], y[i]), model(Tensor([2, 1], y[i])))
+    loss = mse(Tensor([1], y[i]), model(Tensor([2, 1], X[i])))
     loss.backward()
-    sgd(model, lr=0.1)
 
+    print("*" * 80)
+    print(f"{X[i]=}", "->", f"{y[i]=}")
+    print("w0" + "-" * 20)
+    print(model.w0)
+    print("b0" + "-" * 20)
+    print(model.b0)
+    print("w1" + "-" * 20)
+    print(model.w1)
+    print("b1" + "-" * 20)
+    print(model.b1)
+
+    # for position in positions(p):
+    #     print(list(position))
+    #     print(p.grad[list(position)].item())
     print("-" * 80)
-    for p in model.parameters():
-        print("-" * 20)
-        for position in positions(p):
-            print(p.grad[list(position)].item())
-    print("-" * 80)
+
+# %%
+
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
+X = torch.tensor(
+    [[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]], requires_grad=True
+)
+y = torch.tensor([[0.0], [1.0], [1.0], [0.0]], requires_grad=False)
+
+torch.manual_seed(1337)
+
+
+class MLP(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.layer1 = nn.Linear(2, 2)
+        self.layer2 = nn.Linear(2, 1)
+
+    def forward(self, x):
+        x = torch.sigmoid(self.layer1(x))
+        x = torch.sigmoid(self.layer2(x))
+        return x
+
+
+model = MLP()
+
+model.state_dict()
+
+# optimizer = optim.SGD(model.parameters(), lr=0.1)
+criterion = nn.MSELoss()
+
+for i in range(4):
+    outputs = model(X[i])
+    loss = criterion(outputs, y[i])
+    # optimizer.zero_grad()
+    model.zero_grad()
+    loss.backward()
+    # optimizer.step()
+
+    # print(f"{model.layer1.weight.data=}")
+    print(f"{X[i]=}", "->", f"{y[i]=}")
+    print(f"{model.layer1.weight.grad}")
+    print(f"{model.layer1.bias.grad}")
+    print(f"{model.layer2.weight.grad}")
+    print(f"{model.layer2.bias.grad}")
+# %%
