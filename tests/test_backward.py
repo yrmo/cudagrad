@@ -1,4 +1,4 @@
-# python tests/test.py
+# python tests/test_backward.py
 
 import torch
 

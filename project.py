@@ -114,7 +114,7 @@ class Project:
         os.chdir(os.path.expanduser("~/cudagrad"))
         RUN("rm CMakeLists.txt")
         RUN("python -m pip install .")
-        RUN("python tests/test.py")
+        RUN("python tests/test_backward.py")
         os.chdir(os.path.expanduser("~/cudagrad"))
         RUN("python -m pip install cudagrad")
         RUN("python -m cudagrad.linear")
