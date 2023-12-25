@@ -37,7 +37,7 @@ class MLP(Module):
 
     def __call__(self, x: Tensor) -> Tensor:
         return Tensor.sigmoid(
-            self.w1 @ Tensor.sigmoid((self.w0 @ x) + self.b0) + self.b1
+            self.w1 @ Tensor.sigmoid((self.w0 @ x + self.b0)) + self.b1
         )
 
 
