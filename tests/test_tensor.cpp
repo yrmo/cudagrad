@@ -434,8 +434,10 @@ TEST(Basic, Sigmoid) {
 TEST(MLP, InnerSigmoid) {
 // Tensor.sigmoid((self.w0 @ x + self.b0))
 
+// >>> import torch
 // >>> w0 = torch.tensor([[-0.5963, -0.0062], [0.1741, -0.1097]], requires_grad=True)
-// >>> b0 = torch.tensor([-0.4237, -0.6666], requires_grad=True)
+// >>> b0 = torch.tensor([[-0.4237], [-0.6666]], requires_grad=True)
+// >>> x = tensor([[1.0], [1.0]], requires_grad=True)
 // >>> s = torch.sigmoid(w0 @ x + b0)
 // >>> l = s.sum()
 // >>> l.backward()
@@ -443,20 +445,20 @@ TEST(MLP, InnerSigmoid) {
 // tensor([[-0.5963, -0.0062],
 //         [ 0.1741, -0.1097]], requires_grad=True)
 // >>> b0
-// tensor([-0.4237, -0.6666], requires_grad=True)
+// tensor([[-0.4237],
+//         [-0.6666]], requires_grad=True)
 // >>> s
-// tensor([[0.2638, 0.2194],
-//         [0.4111, 0.3538]], grad_fn=<SigmoidBackward0>)
+// tensor([[0.2638],
+//         [0.3538]], grad_fn=<SigmoidBackward0>)
 // >>> l
-// tensor(1.2482, grad_fn=<SumBackward0>)
+// tensor(0.6177, grad_fn=<SumBackward0>)
 // >>> w0.grad
-// tensor([[0.3655, 0.3655],
-//         [0.4707, 0.4707]])
+// tensor([[0.1942, 0.1942],
+//         [0.2286, 0.2286]])
 // >>> b0.grad
-// tensor([0.4363, 0.3999])
-// >>> s.grad
-// <stdin>:1: UserWarning: The .grad attribute of a Tensor that is not a leaf Tensor is being accessed. Its .grad attribute won't be populated during autograd.backward(). If you indeed want the .grad field to be populated for a non-leaf Tensor, use .retain_grad() on the non-leaf Tensor. If you access the non-leaf Tensor by mistake, make sure you access the leaf Tensor instead. See github.com/pytorch/pytorch/pull/30531 for more informations. (Triggered internally at /Users/ryan/pytorch/build/aten/src/ATen/core/TensorBody.h:494.)
-// >>> l.grad
+// tensor([[0.1942],
+//         [0.2286]])
+
 auto w0 = cg::tensor({2, 2}, {-0.5963, -0.0062, 0.1741, -0.1097});
 auto x = cg::tensor({2, 1}, {1.0, 1.0});
 auto b0 = cg::tensor({2}, {-0.4237, -0.6666});
@@ -466,10 +468,10 @@ auto l = s.get()->sum();
 l.get()->backward();
 
 EXPECT_EQ(w0.get()->grad_.size(), 4);
-// EXPECT_NEAR(w0.get()->grad_[0], 0.3655, 0.01);
-// EXPECT_NEAR(w0.get()->grad_[1], 0.3655, 0.01);
-// EXPECT_NEAR(w0.get()->grad_[2], 0.4707, 0.01);
-// EXPECT_NEAR(w0.get()->grad_[3], 0.4707, 0.01);
+EXPECT_NEAR(w0.get()->grad_[0], 0.1942, 0.01);
+EXPECT_NEAR(w0.get()->grad_[1], 0.1942, 0.01);
+EXPECT_NEAR(w0.get()->grad_[2], 0.2286, 0.01);
+EXPECT_NEAR(w0.get()->grad_[3], 0.2286, 0.01);
 }
 
 TEST(MLP, InnerMatmul) {
