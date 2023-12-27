@@ -472,6 +472,9 @@ EXPECT_EQ(w0.get()->grad_.size(), 4);
 
 EXPECT_NEAR(l.get()->data_[0], 0.6177, 0.01);
 
+EXPECT_NEAR(s.get()->data_[0], 0.2638, 0.01);
+EXPECT_NEAR(s.get()->data_[1], 0.3538, 0.01);
+
 EXPECT_NEAR(w0.get()->grad_[0], 0.1942, 0.01);
 EXPECT_NEAR(w0.get()->grad_[1], 0.1942, 0.01);
 EXPECT_NEAR(w0.get()->grad_[2], 0.2286, 0.01);

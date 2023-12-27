@@ -632,10 +632,13 @@ struct SigmoidBackward : public AutoGradBackward {
     assert(grad_inputs.size() == 1);
     std::shared_ptr<Tensor> input = grad_inputs[0];
     for (int i = 0; i < input.get()->grad_.size(); ++i) {
-      input.get()->grad_[i] +=
-          grad_output.get()->grad_[i] * (
-            (1.0f / (1.0f + exp(-input.get()->data_[i]))) * (1 - (1.0f / (1.0f + exp(-input.get()->data_[i]))))
-          );
+      std::cout << input.get()->data_[i] << std::endl;
+      auto s = 1.0f / (1.0f + exp(-input.get()->data_[i]));
+      auto temp_debug = grad_output.get()->grad_[i] * (
+        (s) * (1 - s)
+      );
+      std::cout << temp_debug << std::endl;
+      input.get()->grad_[i] += temp_debug;          
     }
   }
 };
