@@ -1,7 +1,6 @@
 // Copyright 2023 Ryan Moore
 
 #include <gtest/gtest.h>
-// #include <torch/torch.h>
 
 #include <cassert>
 #include <iostream>
@@ -431,186 +430,136 @@ TEST(Basic, Sigmoid) {
   EXPECT_NEAR(a.get()->grad_[3], 0.1050, 0.01);
 }
 
-TEST(MLP, InnerSigmoid) {
-// Tensor.sigmoid((self.w0 @ x + self.b0))
-
-// >>> import torch
-// >>> from torch import tensor
-// >>> w0 = torch.tensor([[-0.5963, -0.0062], [0.1741, -0.1097]], requires_grad=True)
-// >>> b0 = torch.tensor([[-0.4237], [-0.6666]], requires_grad=True)
-// >>> x = tensor([[1.0], [1.0]], requires_grad=True)
-// >>> s = torch.sigmoid(w0 @ x + b0)
-// >>> l = s.sum()
-// >>> l.backward()
-// >>> w0
-// tensor([[-0.5963, -0.0062],
-//         [ 0.1741, -0.1097]], requires_grad=True)
-// >>> b0
-// tensor([[-0.4237],
-//         [-0.6666]], requires_grad=True)
-// >>> s
-// tensor([[0.2638],
-//         [0.3538]], grad_fn=<SigmoidBackward0>)
-// >>> l
-// tensor(0.6177, grad_fn=<SumBackward0>)
-// >>> w0.grad
-// tensor([[0.1942, 0.1942],
-//         [0.2286, 0.2286]])
-// >>> b0.grad
-// tensor([[0.1942],
-//         [0.2286]])
-
-auto w0 = cg::tensor({2, 2}, {-0.5963, -0.0062, 0.1741, -0.1097});
-auto x = cg::tensor({2, 1}, {1.0, 1.0});
-auto b0 = cg::tensor({2}, {-0.4237, -0.6666});
-auto muldot = w0.get()->matmul(x) + b0;
-auto s = muldot.get()->sigmoid();
-auto l = s.get()->sum();
-l.get()->backward();
-
-EXPECT_EQ(w0.get()->grad_.size(), 4);
-
-EXPECT_NEAR(l.get()->data_[0], 0.6177, 0.01);
-
-EXPECT_NEAR(s.get()->data_[0], 0.2638, 0.01);
-EXPECT_NEAR(s.get()->data_[1], 0.3538, 0.01);
-
-EXPECT_NEAR(w0.get()->grad_[0], 0.1942, 0.01);
-EXPECT_NEAR(w0.get()->grad_[1], 0.1942, 0.01);
-EXPECT_NEAR(w0.get()->grad_[2], 0.2286, 0.01);
-EXPECT_NEAR(w0.get()->grad_[3], 0.2286, 0.01);
-}
-
 TEST(MLP, InnerMatmul) {
-// >>> w0 = tensor([[-0.5963, -0.0062], [0.1741, -0.1097]], requires_grad=True)
-// >>> x = tensor([[1.0], [1.0]], requires_grad=True)
-// >>> l = (w0 @ x).sum()
-// >>> w0 @ x
-// tensor([[-0.6025],
-//         [ 0.0644]], grad_fn=<MmBackward0>)
-// >>> l.backward()
-// >>> l
-// tensor(-0.5381, grad_fn=<SumBackward0>)
-// >>> w0.grad
-// tensor([[1., 1.],
-//         [1., 1.]])
-// >>> x.grad
-// tensor([[-0.4222],
-//         [-0.1159]])
+  // w0 @ x
 
-auto w0 = cg::tensor({2, 2}, {-0.5963, -0.0062, 0.1741, -0.1097});
-auto x = cg::tensor({2, 1}, {1.0, 1.0});
-auto l = (w0.get()->matmul(x)).get()->sum();
-l.get()->backward();
+  // >>> w0 = tensor([[-0.5963, -0.0062], [0.1741, -0.1097]],
+  // requires_grad=True)
+  // >>> x = tensor([[1.0], [1.0]], requires_grad=True)
+  // >>> l = (w0 @ x).sum()
+  // >>> w0 @ x
+  // tensor([[-0.6025],
+  //         [ 0.0644]], grad_fn=<MmBackward0>)
+  // >>> l.backward()
+  // >>> l
+  // tensor(-0.5381, grad_fn=<SumBackward0>)
+  // >>> w0.grad
+  // tensor([[1., 1.],
+  //         [1., 1.]])
+  // >>> x.grad
+  // tensor([[-0.4222],
+  //         [-0.1159]])
 
-EXPECT_EQ(l.get()->data_.size(), 1);
-EXPECT_NEAR(l.get()->data_[0], -0.5381, 0.01);
+  auto w0 = cg::tensor({2, 2}, {-0.5963, -0.0062, 0.1741, -0.1097});
+  auto x = cg::tensor({2, 1}, {1.0, 1.0});
+  auto l = (w0.get()->matmul(x)).get()->sum();
+  l.get()->backward();
 
-EXPECT_EQ(w0.get()->grad_.size(), 4);
-EXPECT_NEAR(w0.get()->grad_[0], 1.0, 0.01);
-EXPECT_NEAR(w0.get()->grad_[1], 1.0, 0.01);
-EXPECT_NEAR(w0.get()->grad_[2], 1.0, 0.01);
-EXPECT_NEAR(w0.get()->grad_[3], 1.0, 0.01);
+  EXPECT_EQ(l.get()->data_.size(), 1);
+  EXPECT_NEAR(l.get()->data_[0], -0.5381, 0.01);
+
+  EXPECT_EQ(w0.get()->grad_.size(), 4);
+  EXPECT_NEAR(w0.get()->grad_[0], 1.0, 0.01);
+  EXPECT_NEAR(w0.get()->grad_[1], 1.0, 0.01);
+  EXPECT_NEAR(w0.get()->grad_[2], 1.0, 0.01);
+  EXPECT_NEAR(w0.get()->grad_[3], 1.0, 0.01);
 }
 
 TEST(MLP, InnerNeuron) {
-// (self.w0 @ x + self.b0)
+  // (w0 @ x + b0)
 
-// >>> from torch import tensor
-// >>> w0 = tensor([[-0.5963, -0.0062], [0.1741, -0.1097]], requires_grad=True)
-// >>> x
-// Traceback (most recent call last):
-//   File "<stdin>", line 1, in <module>
-// NameError: name 'x' is not defined
-// >>> x = tensor([[1.0], [1.0]], requires_grad=True)
-// >>> b0 = tensor([[-0.4237], [-0.6666]], requires_grad=True)
-// >>> l = ((w0 @ x) + b0).sum()
-// >>> l.backward()
-// >>> w0
-// tensor([[-0.5963, -0.0062],
-//         [ 0.1741, -0.1097]], requires_grad=True)
-// >>> l
-// tensor(-1.6284, grad_fn=<SumBackward0>)
-// >>> w0.grad
-// tensor([[1., 1.],
-//         [1., 1.]])
-// >>> b0.grad
-// tensor([[1.],
-//         [1.]])
+  // >>> from torch import tensor
+  // >>> w0 = tensor([[-0.5963, -0.0062], [0.1741, -0.1097]],
+  // requires_grad=True)
+  // >>> x
+  // Traceback (most recent call last):
+  //   File "<stdin>", line 1, in <module>
+  // NameError: name 'x' is not defined
+  // >>> x = tensor([[1.0], [1.0]], requires_grad=True)
+  // >>> b0 = tensor([[-0.4237], [-0.6666]], requires_grad=True)
+  // >>> l = ((w0 @ x) + b0).sum()
+  // >>> l.backward()
+  // >>> w0
+  // tensor([[-0.5963, -0.0062],
+  //         [ 0.1741, -0.1097]], requires_grad=True)
+  // >>> l
+  // tensor(-1.6284, grad_fn=<SumBackward0>)
+  // >>> w0.grad
+  // tensor([[1., 1.],
+  //         [1., 1.]])
+  // >>> b0.grad
+  // tensor([[1.],
+  //         [1.]])
 
-auto w0 = cg::tensor({2, 2}, {-0.5963, -0.0062, 0.1741, -0.1097});
-auto x = cg::tensor({2, 1}, {1.0, 1.0});
-auto b0 = cg::tensor({2}, {-0.4237, -0.6666});
-auto l = (w0.get()->matmul(x) + b0).get()->sum();
-l.get()->backward();
+  auto w0 = cg::tensor({2, 2}, {-0.5963, -0.0062, 0.1741, -0.1097});
+  auto x = cg::tensor({2, 1}, {1.0, 1.0});
+  auto b0 = cg::tensor({2}, {-0.4237, -0.6666});
+  auto l = (w0.get()->matmul(x) + b0).get()->sum();
+  l.get()->backward();
 
-EXPECT_EQ(l.get()->data_.size(), 1);
-EXPECT_NEAR(l.get()->data_[0], -1.6284, 0.01);
+  EXPECT_EQ(l.get()->data_.size(), 1);
+  EXPECT_NEAR(l.get()->data_[0], -1.6284, 0.01);
 
-EXPECT_EQ(w0.get()->grad_.size(), 4);
-EXPECT_NEAR(w0.get()->grad_[0], 1.0, 0.01);
-EXPECT_NEAR(w0.get()->grad_[1], 1.0, 0.01);
-EXPECT_NEAR(w0.get()->grad_[2], 1.0, 0.01);
-EXPECT_NEAR(w0.get()->grad_[3], 1.0, 0.01);
+  EXPECT_EQ(w0.get()->grad_.size(), 4);
+  EXPECT_NEAR(w0.get()->grad_[0], 1.0, 0.01);
+  EXPECT_NEAR(w0.get()->grad_[1], 1.0, 0.01);
+  EXPECT_NEAR(w0.get()->grad_[2], 1.0, 0.01);
+  EXPECT_NEAR(w0.get()->grad_[3], 1.0, 0.01);
 }
 
-// template <typename T>
-// std::vector<T> tensorToVector(const torch::Tensor& tensor) {
-//   size_t num_elements = tensor.numel();
-//   std::vector<T> result(num_elements);
-//   std::memcpy(result.data(), tensor.data_ptr<T>(), num_elements * sizeof(T));
-//   return result;
-// }
+TEST(MLP, InnerSigmoid) {
+  // Tensor.sigmoid(w0 @ x + b0)
 
-// template <typename T>
-// std::vector<T> tensorGradToVector(const torch::Tensor& tensor) {
-//   torch::Tensor grad = tensor.grad();
-//   if (!grad.defined()) {
-//     throw std::runtime_error("No gradient available for the input tensor");
-//   }
-//   size_t num_elements = grad.numel();
-//   std::vector<T> result(num_elements);
-//   std::memcpy(result.data(), grad.data_ptr<T>(), num_elements * sizeof(T));
-//   return result;
-// }
+  // >>> import torch
+  // >>> from torch import tensor
+  // >>> w0 = torch.tensor([[-0.5963, -0.0062], [0.1741, -0.1097]],
+  // requires_grad=True)
+  // >>> b0 = torch.tensor([[-0.4237], [-0.6666]], requires_grad=True)
+  // >>> x = tensor([[1.0], [1.0]], requires_grad=True)
+  // >>> s = torch.sigmoid(w0 @ x + b0)
+  // >>> l = s.sum()
+  // >>> l.backward()
+  // >>> w0
+  // tensor([[-0.5963, -0.0062],
+  //         [ 0.1741, -0.1097]], requires_grad=True)
+  // >>> b0
+  // tensor([[-0.4237],
+  //         [-0.6666]], requires_grad=True)
+  // >>> s
+  // tensor([[0.2638],
+  //         [0.3538]], grad_fn=<SigmoidBackward0>)
+  // >>> l
+  // tensor(0.6177, grad_fn=<SumBackward0>)
+  // >>> w0.grad
+  // tensor([[0.1942, 0.1942],
+  //         [0.2286, 0.2286]])
+  // >>> b0.grad
+  // tensor([[0.1942],
+  //         [0.2286]])
 
-// TEST(Torch, LayerManual) {
-//   cg::t x = cg::tensor({3, 2}, {1.0, 2.0, 3.0, 4.0, 5.0, 6.0});
-//   cg::t w = cg::tensor({2, 4}, {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0});
-//   cg::t b = cg::tensor(
-//       {3, 4}, {1.0, 2.0, 3.0, 4.0, 1.0, 2.0, 3.0, 4.0, 1.0, 2.0, 3.0, 4.0});
-//   cg::t result = x.get()->matmul(w) + b;
-//   cg::t l = result.get()->sum();
-//   l.get()->backward();
-//   auto w_g = w.get()->grad_;
-//   auto b_g = b.get()->grad_;
+  auto w0 = cg::tensor({2, 2}, {-0.5963, -0.0062, 0.1741, -0.1097});
+  auto x = cg::tensor({2, 1}, {1.0, 1.0});
+  auto b0 = cg::tensor({2, 1}, {-0.4237, -0.6666});
+  auto muldot = w0.get()->matmul(x) + b0;
+  auto s = muldot.get()->sigmoid();
+  auto l = s.get()->sum();
+  l.get()->backward();
 
-//   std::vector<float> data1 = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
-//   std::vector<float> data2 = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
-//   std::vector<float> data3 = {1.0, 2.0, 3.0, 4.0, 1.0, 2.0,
-//                               3.0, 4.0, 1.0, 2.0, 3.0, 4.0};
-//   at::Tensor x_aten =
-//       at::from_blob(data1.data(), {3, 2}, at::kFloat).requires_grad_(true);
-//   at::Tensor w_aten =
-//       at::from_blob(data2.data(), {2, 4}, at::kFloat).requires_grad_(true);
-//   at::Tensor b_aten =
-//       at::from_blob(data3.data(), {3, 4}, at::kFloat).requires_grad_(true);
-//   at::Tensor result_aten = x_aten.matmul(w_aten) + b_aten;
-//   at::Tensor l_aten = result_aten.sum();
-//   l_aten.backward();
-//   std::vector<float> w_aten_g = tensorGradToVector<float>(w_aten);
-//   std::vector<float> b_aten_g = tensorGradToVector<float>(b_aten);
+  EXPECT_EQ(w0.get()->grad_.size(), 4);
 
-//   ASSERT_EQ(w_g.size(), w_aten_g.size());
-//   for (size_t i = 0; i < w_g.size(); i++) {
-//     EXPECT_NEAR(w_g[i], w_aten_g[i], 0.1);
-//   }
+  EXPECT_NEAR(l.get()->data_[0], 0.6177, 0.01);
 
-//   ASSERT_EQ(b_g.size(), b_aten_g.size());
-//   for (size_t i = 0; i < b_g.size(); i++) {
-//     EXPECT_NEAR(b_g[i], b_aten_g[i], 0.1);
-//   }
-// }
+  EXPECT_NEAR(s.get()->data_[0], 0.2638, 0.01);
+  EXPECT_NEAR(s.get()->data_[1], 0.3538, 0.01);
+
+  EXPECT_NEAR(b0.get()->grad_[0], 0.1942, 0.01);
+  EXPECT_NEAR(b0.get()->grad_[1], 0.2286, 0.01);
+
+  EXPECT_NEAR(w0.get()->grad_[0], 0.1942, 0.01);
+  EXPECT_NEAR(w0.get()->grad_[1], 0.1942, 0.01);
+  EXPECT_NEAR(w0.get()->grad_[2], 0.2286, 0.01);
+  EXPECT_NEAR(w0.get()->grad_[3], 0.2286, 0.01);
+}
 
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);
