@@ -473,8 +473,6 @@ EXPECT_EQ(w0.get()->grad_.size(), 4);
 }
 
 TEST(MLP, InnerMatmul) {
-// (self.w0 @ x + self.b0)
-
 // >>> w0 = tensor([[-0.5963, -0.0062], [0.1741, -0.1097]], requires_grad=True)
 // >>> x = tensor([[1.0], [1.0]], requires_grad=True)
 // >>> l = (w0 @ x).sum()
@@ -511,20 +509,25 @@ TEST(MLP, InnerNeuron) {
 
 // >>> from torch import tensor
 // >>> w0 = tensor([[-0.5963, -0.0062], [0.1741, -0.1097]], requires_grad=True)
+// >>> x
+// Traceback (most recent call last):
+//   File "<stdin>", line 1, in <module>
+// NameError: name 'x' is not defined
 // >>> x = tensor([[1.0], [1.0]], requires_grad=True)
-// >>> b0 = tensor([-0.4237, -0.6666], requires_grad=True)
+// >>> b0 = tensor([[-0.4237], [-0.6666]], requires_grad=True)
 // >>> l = ((w0 @ x) + b0).sum()
 // >>> l.backward()
 // >>> w0
 // tensor([[-0.5963, -0.0062],
 //         [ 0.1741, -0.1097]], requires_grad=True)
 // >>> l
-// tensor(-3.2568, grad_fn=<SumBackward0>)
+// tensor(-1.6284, grad_fn=<SumBackward0>)
 // >>> w0.grad
-// tensor([[2., 2.],
-//         [2., 2.]])
+// tensor([[1., 1.],
+//         [1., 1.]])
 // >>> b0.grad
-// tensor([2., 2.])
+// tensor([[1.],
+//         [1.]])
 
 auto w0 = cg::tensor({2, 2}, {-0.5963, -0.0062, 0.1741, -0.1097});
 auto x = cg::tensor({2, 1}, {1.0, 1.0});
@@ -533,13 +536,13 @@ auto l = (w0.get()->matmul(x) + b0).get()->sum();
 l.get()->backward();
 
 EXPECT_EQ(l.get()->data_.size(), 1);
-// EXPECT_NEAR(l.get()->data_[0], -3.2568, 0.01);
+EXPECT_NEAR(l.get()->data_[0], -1.6284, 0.01);
 
-// EXPECT_EQ(w0.get()->grad_.size(), 4);
-// EXPECT_NEAR(w0.get()->grad_[0], 2.0, 0.01);
-// EXPECT_NEAR(w0.get()->grad_[1], 2.0, 0.01);
-// EXPECT_NEAR(w0.get()->grad_[2], 2.0, 0.01);
-// EXPECT_NEAR(w0.get()->grad_[3], 2.0, 0.01);
+EXPECT_EQ(w0.get()->grad_.size(), 4);
+EXPECT_NEAR(w0.get()->grad_[0], 1.0, 0.01);
+EXPECT_NEAR(w0.get()->grad_[1], 1.0, 0.01);
+EXPECT_NEAR(w0.get()->grad_[2], 1.0, 0.01);
+EXPECT_NEAR(w0.get()->grad_[3], 1.0, 0.01);
 }
 
 // template <typename T>
