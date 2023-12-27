@@ -435,6 +435,7 @@ TEST(MLP, InnerSigmoid) {
 // Tensor.sigmoid((self.w0 @ x + self.b0))
 
 // >>> import torch
+// >>> from torch import tensor
 // >>> w0 = torch.tensor([[-0.5963, -0.0062], [0.1741, -0.1097]], requires_grad=True)
 // >>> b0 = torch.tensor([[-0.4237], [-0.6666]], requires_grad=True)
 // >>> x = tensor([[1.0], [1.0]], requires_grad=True)
@@ -468,6 +469,9 @@ auto l = s.get()->sum();
 l.get()->backward();
 
 EXPECT_EQ(w0.get()->grad_.size(), 4);
+
+EXPECT_NEAR(l.get()->data_[0], 0.6177, 0.01);
+
 EXPECT_NEAR(w0.get()->grad_[0], 0.1942, 0.01);
 EXPECT_NEAR(w0.get()->grad_[1], 0.1942, 0.01);
 EXPECT_NEAR(w0.get()->grad_[2], 0.2286, 0.01);
