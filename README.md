@@ -1,6 +1,6 @@
 # cudagrad
 
-Tensor-valued autograd engine for Python
+A tensor-valued autograd engine for Python
 
 # Docs
 

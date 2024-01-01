@@ -45,7 +45,7 @@ setup(
     author="Ryan Moore",
     author_email="ryanm.inbox@gmail.com",
     url="https://github.com/cudagrad/cudagrad",
-    description="A small tensor-valued autograd engine",
+    description="A tensor-valued autograd engine for Python",
     long_description="",
     ext_modules=ext_modules,
     # extras_require={"test": "pytest"},
