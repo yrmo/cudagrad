@@ -46,6 +46,7 @@ y = [[0.0], [1.0], [1.0], [0.0]]
 
 from itertools import product
 
+
 def positions(tensor):
     indices = [list(range(size)) for size in tensor.size]
     for index in product(*indices):
@@ -79,9 +80,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-X = torch.tensor(
-    [[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]], requires_grad=True
-)
+X = torch.tensor([[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]], requires_grad=True)
 y = torch.tensor([[0.0], [1.0], [1.0], [0.0]], requires_grad=False)
 
 torch.manual_seed(1337)

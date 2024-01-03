@@ -1,8 +1,9 @@
 from itertools import product
 
-from cudagrad.nn import mse, sgd
 from cudagrad.mlp import MLP
+from cudagrad.nn import mse, sgd
 from cudagrad.tensor import Tensor
+
 
 def leet_mlp():
     model = MLP()
@@ -23,20 +24,23 @@ def leet_mlp():
 
     return model
 
+
 model = leet_mlp()
 x = [1.0, 1.0]
 y = 0.0
+
 
 def positions(tensor):
     indices = [list(range(size)) for size in tensor.size]
     for index in product(*indices):
         yield index
 
+
 epsilon = 0.1
 out = model(Tensor([2, 1], x))
 out.backward()
 
-model.w0.data[[0, 0]] = model.w0.data[[0, 0]].item() + epsilon 
+model.w0.data[[0, 0]] = model.w0.data[[0, 0]].item() + epsilon
 plus_case = model(Tensor([2, 1], x)).item()
 
 # double minus because cancel out plus epsilon

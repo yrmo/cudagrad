@@ -104,7 +104,7 @@
 # In [9]:
 
 from cudagrad import MLP, Tensor
-from cudagrad.nn import sgd, mse
+from cudagrad.nn import mse, sgd
 
 model = MLP()
 

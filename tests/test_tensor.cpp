@@ -210,7 +210,6 @@ TEST(Basic, MatMul) {
   EXPECT_NEAR(b.get()->grad_[3], 6.0, 0.1);
 }
 
-
 TEST(Basic, MatMulAdd) {
   /*
 >>> a = torch.tensor(((5.0, 4.0), (3.0, 2.0)), requires_grad=True)
@@ -242,7 +241,7 @@ tensor([[8.],
         [6.]])
 >>> c.grad
 tensor([[1.],
-        [1.]])  
+        [1.]])
 >>> d
 tensor([[37.],
         [24.]], grad_fn=<AddBackward0>)

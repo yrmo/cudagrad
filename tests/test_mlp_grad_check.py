@@ -7,6 +7,7 @@ import torch.optim as optim
 import cudagrad.mlp
 from cudagrad import Tensor
 
+
 def torch_mlp():
     X = torch.tensor(
         [[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]], requires_grad=True
@@ -35,7 +36,10 @@ def torch_mlp():
         return ans
 
     print(model.state_dict())
-    print(len(flatten([model.state_dict()[key].tolist() for key in model.state_dict()])))
+    print(
+        len(flatten([model.state_dict()[key].tolist() for key in model.state_dict()]))
+    )
+
 
 model = cudagrad.mlp.MLP()
 PARAMS = [-0.5963, -0.0062, 0.1741, -0.1097, -0.4237, -0.6666, 0.1204, 0.2781, -0.4580]

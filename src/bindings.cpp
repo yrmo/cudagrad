@@ -31,14 +31,14 @@ PYBIND11_MODULE(tensor, m) {
         Tensor
     )pbdoc";
 
-  #ifdef __CUDACC__
+#ifdef __CUDACC__
   m.def("hello", &cg::hello, R"pbdoc(
         Can has CUDA?
 
         Hello!
     )pbdoc");
-  #endif
-  
+#endif
+
   py::class_<cg::DataProxy>(m, "_DataProxy")
       .def("__getitem__", &cg::DataProxy::get)
       .def("__setitem__", &cg::DataProxy::set);

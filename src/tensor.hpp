@@ -525,7 +525,6 @@ std::shared_ptr<Tensor> Tensor::select_grad(std::vector<int> indexes) {
       std::make_shared<SelectBackward>(), '.');
 }
 
-
 // TODO(yrmo): this is untracked, does pytorch track assignment?
 
 void Tensor::put_data(std::vector<int> indexes, float value) {
@@ -543,7 +542,7 @@ struct AutoGradBackward {
   virtual void apply(std::shared_ptr<Tensor> grad_output,
                      std::vector<std::shared_ptr<Tensor>> grad_inputs) {
     throw std::runtime_error("apply() is not implemented");
-  }                     
+  }
 };
 
 struct AddBackward : public AutoGradBackward {
@@ -636,11 +635,9 @@ struct SigmoidBackward : public AutoGradBackward {
     for (int i = 0; i < input.get()->grad_.size(); ++i) {
       std::cout << input.get()->data_[i] << std::endl;
       auto s = 1.0f / (1.0f + exp(-input.get()->data_[i]));
-      auto temp_debug = grad_output.get()->grad_[i] * (
-        (s) * (1 - s)
-      );
+      auto temp_debug = grad_output.get()->grad_[i] * ((s) * (1 - s));
       std::cout << temp_debug << std::endl;
-      input.get()->grad_[i] += temp_debug;          
+      input.get()->grad_[i] += temp_debug;
     }
   }
 };
