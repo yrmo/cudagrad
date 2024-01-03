@@ -606,7 +606,6 @@ TEST(SigmoidGauntlet, MatmulAddSigmoid0) {
   EXPECT_NEAR(b0.get()->grad_[1], 0.2350, 0.01);
 }
 
-
 TEST(SigmoidGauntlet, MatmulAddSigmoid1) {
   // Tensor.sigmoid(w0 @ x + b0)
 
@@ -656,6 +655,58 @@ TEST(SigmoidGauntlet, MatmulAddSigmoid1) {
   EXPECT_NEAR(x.get()->grad_[1], 0.1491, 0.01);
 
   EXPECT_NEAR(b0.get()->grad_[0], 0.1491, 0.01);
+  EXPECT_NEAR(b0.get()->grad_[1], 0.1491, 0.01);
+}
+
+TEST(SigmoidGauntlet, MatmulAddSigmoid2) {
+  // Tensor.sigmoid(w0 @ x + b0)
+
+  // >>> import torch
+  // >>> w0 = torch.tensor([[-0.5, 0.5], [0.5, 0.5]], requires_grad=True)
+  // >>> x = torch.tensor([[1.0], [1.0]], requires_grad=True)
+  // >>> b0 = torch.tensor([[0.5], [0.5]], requires_grad=True) 
+  // >>> s = torch.sigmoid(w0 @ x + b0)
+  // >>> s
+  // tensor([[0.6225],
+  //         [0.8176]], grad_fn=<SigmoidBackward0>)
+  // >>> l = s.sum()
+  // >>> l
+  // tensor(1.4400, grad_fn=<SumBackward0>)
+  // >>> l.backward()
+  // >>> w0.grad
+  // tensor([[0.2350, 0.2350],
+  //         [0.1491, 0.1491]])
+  // >>> x.grad
+  // tensor([[-0.0429],
+  //         [ 0.1921]])
+  // >>> b0.grad
+  // tensor([[0.2350],
+  //         [0.1491]])
+
+  auto w0 = cg::tensor({2, 2}, {-0.5, 0.5, 0.5, 0.5});
+  auto x = cg::tensor({2, 1}, {1.0, 1.0});
+  auto b0 = cg::tensor({2, 1}, {0.5, 0.5});
+  auto muldot = w0.get()->matmul(x) + b0;
+  auto s = muldot.get()->sigmoid();
+  auto l = s.get()->sum();
+  l.get()->backward();
+
+  EXPECT_EQ(w0.get()->grad_.size(), 4);
+
+  EXPECT_NEAR(l.get()->data_[0], 1.4400, 0.01);
+
+  EXPECT_NEAR(s.get()->data_[0], 0.6225, 0.01);
+  EXPECT_NEAR(s.get()->data_[1], 0.8176, 0.01);
+
+  EXPECT_NEAR(w0.get()->grad_[0], 0.2350, 0.01);
+  EXPECT_NEAR(w0.get()->grad_[1], 0.2350, 0.01);
+  EXPECT_NEAR(w0.get()->grad_[2], 0.1491, 0.01);
+  EXPECT_NEAR(w0.get()->grad_[3], 0.1491, 0.01);
+
+  EXPECT_NEAR(x.get()->grad_[0], -0.0429, 0.01);
+  EXPECT_NEAR(x.get()->grad_[1], 0.1921, 0.01);
+
+  EXPECT_NEAR(b0.get()->grad_[0], 0.2350, 0.01);
   EXPECT_NEAR(b0.get()->grad_[1], 0.1491, 0.01);
 }
 
