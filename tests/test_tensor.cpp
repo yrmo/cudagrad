@@ -210,6 +210,70 @@ TEST(Basic, MatMul) {
   EXPECT_NEAR(b.get()->grad_[3], 6.0, 0.1);
 }
 
+
+TEST(Basic, MatMulAdd) {
+  /*
+>>> a = torch.tensor(((5.0, 4.0), (3.0, 2.0)), requires_grad=True)
+>>> b = torch.tensor( [[3.0], [4.0]], requires_grad=True)
+>>> c = torch.tensor([[6.0], [7.0]], requires_grad=True)
+>>> a
+tensor([[5., 4.],
+        [3., 2.]], requires_grad=True)
+>>> b
+tensor([[3.],
+        [4.]], requires_grad=True)
+>>> c
+tensor([[6.],
+        [7.]], requires_grad=True)
+>>> a @ b
+tensor([[31.],
+        [17.]], grad_fn=<MmBackward0>)
+>>> (a @ b) + c
+tensor([[37.],
+        [24.]], grad_fn=<AddBackward0>)
+>>> d = (a @ b) + c
+>>> l = d.sum()
+>>> l.backward()
+>>> a.grad
+tensor([[3., 4.],
+        [3., 4.]])
+>>> b.grad
+tensor([[8.],
+        [6.]])
+>>> c.grad
+tensor([[1.],
+        [1.]])  
+>>> d
+tensor([[37.],
+        [24.]], grad_fn=<AddBackward0>)
+>>> l
+tensor(61., grad_fn=<SumBackward0>)
+  */
+  cg::t a = cg::tensor({2, 2}, {5.0, 4.0, 3.0, 2.0});
+  cg::t b = cg::tensor({2, 1}, {3.0, 4.0});
+  cg::t c = cg::tensor({2, 1}, {6.0, 7.0});
+  cg::t d = (a.get()->matmul(b) + c);
+  auto l = d.get()->sum();
+  l.get()->backward();
+
+  EXPECT_EQ(l.get()->grad_.size(), 1);
+  EXPECT_NEAR(l.get()->data_[0], 61.0, 0.1);
+
+  EXPECT_EQ(a.get()->grad_.size(), 4);
+  EXPECT_NEAR(a.get()->grad_[0], 3.0, 0.1);
+  EXPECT_NEAR(a.get()->grad_[1], 4.0, 0.1);
+  EXPECT_NEAR(a.get()->grad_[2], 3.0, 0.1);
+  EXPECT_NEAR(a.get()->grad_[3], 4.0, 0.1);
+
+  EXPECT_EQ(b.get()->grad_.size(), 2);
+  EXPECT_NEAR(b.get()->grad_[0], 8.0, 0.1);
+  EXPECT_NEAR(b.get()->grad_[1], 6.0, 0.1);
+
+  EXPECT_EQ(c.get()->grad_.size(), 2);
+  EXPECT_NEAR(c.get()->grad_[0], 1.0, 0.1);
+  EXPECT_NEAR(c.get()->grad_[1], 1.0, 0.1);
+}
+
 TEST(Basic, ChainedMM) {
   /*
   >>> import torch

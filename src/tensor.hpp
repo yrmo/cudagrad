@@ -553,6 +553,8 @@ struct AddBackward : public AutoGradBackward {
              std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
     for (std::shared_ptr<Tensor> grad_input : grad_inputs) {
       for (int i = 0; i < grad_input.get()->grad_.size(); ++i) {
+        // std::cout << grad_input.get()->grad_[i] << std::endl;
+        // std::cout << grad_output.get()->grad_[i] << std::endl;
         grad_input.get()->grad_[i] += grad_output.get()->grad_[0];
       }
     }
@@ -723,6 +725,15 @@ struct MatMulBackward : public AutoGradBackward {
 
   void apply(std::shared_ptr<Tensor> grad_output,
              std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
+    // std::cout << std::string("matmulbackward") << std::endl;
+    // for (std::shared_ptr<Tensor> grad_input : grad_inputs) {
+    //   std::cout << std::string("input") << std::endl;
+    //   for (int i = 0; i < grad_output.get()->grad_.size(); ++i) {
+    //     // std::cout << grad_input.get()->grad_[i] << std::endl;
+    //     std::cout << grad_output.get()->grad_[i] << std::endl;
+    //   }
+    // }
+
     auto a = grad_inputs[0];
     auto b = grad_inputs[1];
 
