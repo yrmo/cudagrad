@@ -273,6 +273,67 @@ tensor(61., grad_fn=<SumBackward0>)
   EXPECT_NEAR(c.get()->grad_[1], 1.0, 0.1);
 }
 
+TEST(Basic, MatMulAddSigmoid) {
+  /*
+  >>> a = torch.tensor(((0.1, 0.2), (-0.3, 0.4)), requires_grad=True)
+  >>> b = torch.tensor( [[0.5], [0.6]], requires_grad=True)
+  >>> c = torch.tensor([[0.8], [0.9]], requires_grad=True)
+  >>> a
+  tensor([[ 0.1000,  0.2000],
+          [-0.3000,  0.4000]], requires_grad=True)
+  >>> b
+  tensor([[0.5000],
+          [0.6000]], requires_grad=True)
+  >>> c
+  tensor([[0.8000],
+          [0.9000]], requires_grad=True)
+  >>> a @ b
+  tensor([[0.1700],
+          [0.0900]], grad_fn=<MmBackward0>)
+  >>> (a @ b) + c
+  tensor([[0.9700],
+          [0.9900]], grad_fn=<AddBackward0>)
+  >>> torch.sigmoid((a @ b) + c)
+  tensor([[0.7251],
+          [0.7291]], grad_fn=<SigmoidBackward0>)
+  >>> l = torch.sigmoid((a @ b) + c).sum()
+  >>> l
+  tensor(1.4542, grad_fn=<SumBackward0>)
+  >>> l.backward()
+  >>> a.grad
+  tensor([[0.0997, 0.1196],
+          [0.0988, 0.1185]])
+  >>> b.grad
+  tensor([[-0.0393],
+          [ 0.1189]])
+  >>> c.grad
+  tensor([[0.1993],
+          [0.1975]])
+  */
+  cg::t a = cg::tensor({2, 2}, {0.1, 0.2, -0.3, 0.4});
+  cg::t b = cg::tensor({2, 1}, {0.5, 0.6});
+  cg::t c = cg::tensor({2, 1}, {0.8, 0.9});
+  auto l = (a.get()->matmul(b) + c).get()->sigmoid().get()->sum();
+  l.get()->backward();
+
+  EXPECT_EQ(l.get()->grad_.size(), 1);
+  EXPECT_NEAR(l.get()->data_[0], 1.4542, 0.1);
+
+  EXPECT_EQ(a.get()->grad_.size(), 4);
+  EXPECT_NEAR(a.get()->grad_[0], 0.0997, 0.1);
+  EXPECT_NEAR(a.get()->grad_[1], 0.1196, 0.1);
+  EXPECT_NEAR(a.get()->grad_[2], 0.0988, 0.1);
+  EXPECT_NEAR(a.get()->grad_[3], 0.1185, 0.1);
+
+  EXPECT_EQ(b.get()->grad_.size(), 2);
+  EXPECT_NEAR(b.get()->grad_[0], -0.0393, 0.1);
+  EXPECT_NEAR(b.get()->grad_[1], 0.1189, 0.1);
+
+  EXPECT_EQ(c.get()->grad_.size(), 2);
+  EXPECT_NEAR(c.get()->grad_[0], 0.1993, 0.1);
+  EXPECT_NEAR(c.get()->grad_[1], 0.1975, 0.1);
+}
+
 TEST(Basic, ChainedMM) {
   /*
   >>> import torch
