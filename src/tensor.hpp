@@ -794,8 +794,6 @@ void Tensor::zero_grad() {
   }
 }
 
-using t = std::shared_ptr<Tensor>;
-
 namespace nn {
 
 // TODO(yrmo): nonlinearity of Neuron need to pass and drill down from MLP

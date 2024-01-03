@@ -10,15 +10,15 @@
 #include "../src/tensor.hpp"  // NOLINT (build/include_subdir)
 
 TEST(Basic, Shared) {
-  cg::t foo = cg::tensor({1}, {42.0});
-  cg::t bar = foo->get_shared();
+  auto foo = cg::tensor({1}, {42.0});
+  auto bar = foo->get_shared();
 
   EXPECT_EQ(foo, bar);
 }
 
 TEST(Basic, Add) {
-  cg::t a = cg::tensor({1}, {42.0});
-  cg::t b = cg::tensor({1}, {42.0});
+  auto a = cg::tensor({1}, {42.0});
+  auto b = cg::tensor({1}, {42.0});
   auto c = a + b;
   c.get()->backward();
 
@@ -38,7 +38,7 @@ TEST(Basic, Sum) {
   >>> a.grad
   tensor([1., 1., 1.])
   */
-  cg::t a = cg::tensor({3}, {42.0, 24.0, 12.0});
+  auto a = cg::tensor({3}, {42.0, 24.0, 12.0});
   auto l = a.get()->sum();
   l.get()->backward();
 
@@ -68,9 +68,9 @@ TEST(Basic, Minus) {
   >>> b.grad
   tensor([-1., -1., -1., -1.])
   */
-  cg::t a = cg::tensor({4}, {5.0, 4.0, 3.0, 2.0});
-  cg::t b = cg::tensor({4}, {2.0, 3.0, 4.0, 5.0});
-  cg::t c = a - b;
+  auto a = cg::tensor({4}, {5.0, 4.0, 3.0, 2.0});
+  auto b = cg::tensor({4}, {2.0, 3.0, 4.0, 5.0});
+  auto c = a - b;
   auto l = c.get()->sum();
   l.get()->backward();
 
@@ -107,9 +107,9 @@ TEST(Basic, Multiply) {
   >>> b.grad
   tensor([5., 4., 3., 2.])
   */
-  cg::t a = cg::tensor({4}, {5.0, 4.0, 3.0, 2.0});
-  cg::t b = cg::tensor({4}, {2.0, 3.0, 4.0, 5.0});
-  cg::t c = a * b;
+  auto a = cg::tensor({4}, {5.0, 4.0, 3.0, 2.0});
+  auto b = cg::tensor({4}, {2.0, 3.0, 4.0, 5.0});
+  auto c = a * b;
   auto l = c.get()->sum();
   l.get()->backward();
 
@@ -148,9 +148,9 @@ TEST(Basic, Divide) {
   >>> b.grad
   tensor([-1.2500, -0.4444, -0.1875, -0.0800])
   */
-  cg::t a = cg::tensor({4}, {5.0, 4.0, 3.0, 2.0});
-  cg::t b = cg::tensor({4}, {2.0, 3.0, 4.0, 5.0});
-  cg::t c = a / b;
+  auto a = cg::tensor({4}, {5.0, 4.0, 3.0, 2.0});
+  auto b = cg::tensor({4}, {2.0, 3.0, 4.0, 5.0});
+  auto c = a / b;
   auto l = c.get()->sum();
   l.get()->backward();
 
@@ -187,9 +187,9 @@ TEST(Basic, MatMul) {
   tensor([[8., 8.],
           [6., 6.]])
   */
-  cg::t a = cg::tensor({2, 2}, {5.0, 4.0, 3.0, 2.0});
-  cg::t b = cg::tensor({2, 2}, {2.0, 3.0, 4.0, 5.0});
-  cg::t c = a.get()->matmul(b);
+  auto a = cg::tensor({2, 2}, {5.0, 4.0, 3.0, 2.0});
+  auto b = cg::tensor({2, 2}, {2.0, 3.0, 4.0, 5.0});
+  auto c = a.get()->matmul(b);
   auto l = c.get()->sum();
   l.get()->backward();
 
@@ -248,10 +248,10 @@ tensor([[37.],
 >>> l
 tensor(61., grad_fn=<SumBackward0>)
   */
-  cg::t a = cg::tensor({2, 2}, {5.0, 4.0, 3.0, 2.0});
-  cg::t b = cg::tensor({2, 1}, {3.0, 4.0});
-  cg::t c = cg::tensor({2, 1}, {6.0, 7.0});
-  cg::t d = (a.get()->matmul(b) + c);
+  auto a = cg::tensor({2, 2}, {5.0, 4.0, 3.0, 2.0});
+  auto b = cg::tensor({2, 1}, {3.0, 4.0});
+  auto c = cg::tensor({2, 1}, {6.0, 7.0});
+  auto d = (a.get()->matmul(b) + c);
   auto l = d.get()->sum();
   l.get()->backward();
 
@@ -310,9 +310,9 @@ TEST(Basic, MatMulAddSigmoid) {
   tensor([[0.1993],
           [0.1975]])
   */
-  cg::t a = cg::tensor({2, 2}, {0.1, 0.2, -0.3, 0.4});
-  cg::t b = cg::tensor({2, 1}, {0.5, 0.6});
-  cg::t c = cg::tensor({2, 1}, {0.8, 0.9});
+  auto a = cg::tensor({2, 2}, {0.1, 0.2, -0.3, 0.4});
+  auto b = cg::tensor({2, 1}, {0.5, 0.6});
+  auto c = cg::tensor({2, 1}, {0.8, 0.9});
   auto l = (a.get()->matmul(b) + c).get()->sigmoid().get()->sum();
   l.get()->backward();
 
@@ -360,11 +360,11 @@ TEST(Basic, ChainedMM) {
   tensor([[ 80., 112.],
           [ 84., 108.]])
   */
-  cg::t a = cg::tensor({2, 2}, {5.0, 4.0, 3.0, 2.0});
-  cg::t b = cg::tensor({2, 2}, {2.0, 3.0, 4.0, 5.0});
-  cg::t c = a.get()->matmul(b);
-  cg::t d = c.get()->matmul(b);
-  cg::t l = d.get()->sum();
+  auto a = cg::tensor({2, 2}, {5.0, 4.0, 3.0, 2.0});
+  auto b = cg::tensor({2, 2}, {2.0, 3.0, 4.0, 5.0});
+  auto c = a.get()->matmul(b);
+  auto d = c.get()->matmul(b);
+  auto l = d.get()->sum();
   l.get()->backward();
 
   EXPECT_NEAR(l.get()->data_[0], 686.0, 0.01);
@@ -398,8 +398,8 @@ TEST(Basic, ScalarComplexAB) {
   >>> b.grad
   tensor(0.5000)
   */
-  cg::t a = cg::tensor({1}, {2.0});
-  cg::t b = cg::tensor({1}, {43.0});
+  auto a = cg::tensor({1}, {2.0});
+  auto b = cg::tensor({1}, {43.0});
   auto l = (a * b) - ((b / a) + b);  // NOTE im calling this l not c lazy
   l.get()->backward();
 
@@ -441,12 +441,12 @@ TEST(Basic, ChainedComplexOperations) {
   >>> f
   tensor(2794., grad_fn=<SumBackward0>)
   */
-  cg::t a = cg::tensor({2, 2}, {2.0, 3.0, 4.0, 5.0});
-  cg::t b = cg::tensor({2, 2}, {6.0, 7.0, 8.0, 9.0});
-  cg::t c = cg::tensor({2, 2}, {10.0, 10.0, 10.0, 10.0});
-  cg::t d = cg::tensor({2, 2}, {11.0, 11.0, 11.0, 11.0});
-  cg::t e = (a.get()->matmul(b) + c) * d;
-  cg::t f = e.get()->sum();
+  auto a = cg::tensor({2, 2}, {2.0, 3.0, 4.0, 5.0});
+  auto b = cg::tensor({2, 2}, {6.0, 7.0, 8.0, 9.0});
+  auto c = cg::tensor({2, 2}, {10.0, 10.0, 10.0, 10.0});
+  auto d = cg::tensor({2, 2}, {11.0, 11.0, 11.0, 11.0});
+  auto e = (a.get()->matmul(b) + c) * d;
+  auto f = e.get()->sum();
   f.get()->backward();
 
   EXPECT_NEAR(f.get()->data_[0], 2794.0, 0.01);
@@ -494,8 +494,8 @@ TEST(Basic, ReLU) {
   tensor([[0., 0.],
           [1., 1.]])
   */
-  cg::t a = cg::tensor({2, 2}, {-1.0, -2.0, 1.0, 2.0});
-  cg::t b = a.get()->relu();
+  auto a = cg::tensor({2, 2}, {-1.0, -2.0, 1.0, 2.0});
+  auto b = a.get()->relu();
   auto l = b.get()->sum();
   l.get()->backward();
 
@@ -533,8 +533,8 @@ TEST(Basic, Sigmoid) {
   tensor([[0.1966, 0.1050],
           [0.1966, 0.1050]])
   */
-  cg::t a = cg::tensor({2, 2}, {-1.0, -2.0, 1.0, 2.0});
-  cg::t b = a.get()->sigmoid();
+  auto a = cg::tensor({2, 2}, {-1.0, -2.0, 1.0, 2.0});
+  auto b = a.get()->sigmoid();
   auto l = b.get()->sum();
   l.get()->backward();
 
