@@ -716,10 +716,6 @@ TEST(SigmoidGauntlet, MatmulAddSigmoid3) {
   // >>> import torch
   // >>> w0 = torch.tensor([[-0.5, 0.5], [0.5, 0.5]], requires_grad=True)
   // >>> x = torch.tensor([[1.0], [1.0]], requires_grad=True)
-  // >>> b0 = torch.tensor([[1], [1]], requires_grad=True) 
-  // Traceback (most recent call last):
-  //   File "<stdin>", line 1, in <module>
-  // RuntimeError: Only Tensors of floating point and complex dtype can require gradients
   // >>> b0 = torch.tensor([[1.0], [1.0]], requires_grad=True)
   // >>> s = torch.sigmoid(w0 @ x + b0)
   // >>> s
@@ -764,6 +760,60 @@ TEST(SigmoidGauntlet, MatmulAddSigmoid3) {
 
   EXPECT_NEAR(b0.get()->grad_[0], 0.1966, 0.01);
   EXPECT_NEAR(b0.get()->grad_[1], 0.1050, 0.01);
+}
+
+
+TEST(SigmoidGauntlet, MatmulAddSigmoid4) {
+  // Tensor.sigmoid(w0 @ x + b0)
+
+  // >>> import torch
+  // >>> w0 = torch.tensor([[-1.0, 1.0], [1.0, 1.0]], requires_grad=True)
+  // >>> x = torch.tensor([[1.0], [1.0]], requires_grad=True)
+  // >>> b0 = torch.tensor([[1.0], [1.0]], requires_grad=True) 
+  // >>> s = torch.sigmoid(w0 @ x + b0)
+  // >>> s
+  // tensor([[0.7311],
+  //         [0.9526]], grad_fn=<SigmoidBackward0>)
+  // >>> l = s.sum()
+  // >>> l
+  // tensor(1.6836, grad_fn=<SumBackward0>)
+  // >>> w0.grad
+  // >>> l.backward()
+  // >>> w0.grad
+  // tensor([[0.1966, 0.1966],
+  //         [0.0452, 0.0452]])
+  // >>> x.grad
+  // tensor([[-0.1514],
+  //         [ 0.2418]])
+  // >>> b0.grad
+  // tensor([[0.1966],
+  //         [0.0452]])
+
+  auto w0 = cg::tensor({2, 2}, {-1.0, 1.0, 1.0, 1.0});
+  auto x = cg::tensor({2, 1}, {1.0, 1.0});
+  auto b0 = cg::tensor({2, 1}, {1.0, 1.0});
+  auto muldot = w0.get()->matmul(x) + b0;
+  auto s = muldot.get()->sigmoid();
+  auto l = s.get()->sum();
+  l.get()->backward();
+
+  EXPECT_EQ(w0.get()->grad_.size(), 4);
+
+  EXPECT_NEAR(l.get()->data_[0], 1.6836, 0.01);
+
+  EXPECT_NEAR(s.get()->data_[0], 0.7311, 0.01);
+  EXPECT_NEAR(s.get()->data_[1], 0.9526, 0.01);
+
+  EXPECT_NEAR(w0.get()->grad_[0], 0.1966, 0.01);
+  EXPECT_NEAR(w0.get()->grad_[1], 0.1966, 0.01);
+  EXPECT_NEAR(w0.get()->grad_[2], 0.0452, 0.01);
+  EXPECT_NEAR(w0.get()->grad_[3], 0.0452, 0.01);
+
+  EXPECT_NEAR(x.get()->grad_[0], -0.1514, 0.01);
+  EXPECT_NEAR(x.get()->grad_[1], 0.2418, 0.01);
+
+  EXPECT_NEAR(b0.get()->grad_[0], 0.1966, 0.01);
+  EXPECT_NEAR(b0.get()->grad_[1], 0.0452, 0.01);
 }
 
 TEST(MLP, InnerMatmul) {
