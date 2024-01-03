@@ -154,21 +154,21 @@ TEST(Basic, Divide) {
   auto l = c.get()->sum();
   l.get()->backward();
 
-  EXPECT_NEAR(l.get()->data_[0], 4.9833, 0.1);
+  EXPECT_NEAR(l.get()->data_[0], 4.9833, 0.01);
   EXPECT_EQ(l.get()->grad_.size(), 1);
 
   EXPECT_EQ(a.get()->grad_.size(), 4);
   EXPECT_EQ(b.get()->grad_.size(), 4);
 
-  EXPECT_NEAR(a.get()->grad_[0], 0.5, 0.1);
-  EXPECT_NEAR(a.get()->grad_[1], 0.3333, 0.1);
-  EXPECT_NEAR(a.get()->grad_[2], 0.25, 0.1);
-  EXPECT_NEAR(a.get()->grad_[3], 0.2, 0.1);
+  EXPECT_NEAR(a.get()->grad_[0], 0.5, 0.01);
+  EXPECT_NEAR(a.get()->grad_[1], 0.3333, 0.01);
+  EXPECT_NEAR(a.get()->grad_[2], 0.25, 0.01);
+  EXPECT_NEAR(a.get()->grad_[3], 0.2, 0.01);
 
-  EXPECT_NEAR(b.get()->grad_[0], -1.25, 0.1);
-  EXPECT_NEAR(b.get()->grad_[1], -0.444, 0.1);
-  EXPECT_NEAR(b.get()->grad_[2], -0.1875, 0.1);
-  EXPECT_NEAR(b.get()->grad_[3], -0.08, 0.1);
+  EXPECT_NEAR(b.get()->grad_[0], -1.25, 0.01);
+  EXPECT_NEAR(b.get()->grad_[1], -0.444, 0.01);
+  EXPECT_NEAR(b.get()->grad_[2], -0.1875, 0.01);
+  EXPECT_NEAR(b.get()->grad_[3], -0.08, 0.01);
 }
 
 TEST(Basic, MatMul) {
@@ -193,21 +193,21 @@ TEST(Basic, MatMul) {
   auto l = c.get()->sum();
   l.get()->backward();
 
-  EXPECT_NEAR(l.get()->data_[0], 94.0, 0.1);
+  EXPECT_NEAR(l.get()->data_[0], 94.0, 0.01);
   EXPECT_EQ(l.get()->grad_.size(), 1);
 
   EXPECT_EQ(a.get()->grad_.size(), 4);
   EXPECT_EQ(b.get()->grad_.size(), 4);
 
-  EXPECT_NEAR(a.get()->grad_[0], 5.0, 0.1);
-  EXPECT_NEAR(a.get()->grad_[1], 9.0, 0.1);
-  EXPECT_NEAR(a.get()->grad_[2], 5.0, 0.1);
-  EXPECT_NEAR(a.get()->grad_[3], 9.0, 0.1);
+  EXPECT_NEAR(a.get()->grad_[0], 5.0, 0.01);
+  EXPECT_NEAR(a.get()->grad_[1], 9.0, 0.01);
+  EXPECT_NEAR(a.get()->grad_[2], 5.0, 0.01);
+  EXPECT_NEAR(a.get()->grad_[3], 9.0, 0.01);
 
-  EXPECT_NEAR(b.get()->grad_[0], 8.0, 0.1);
-  EXPECT_NEAR(b.get()->grad_[1], 8.0, 0.1);
-  EXPECT_NEAR(b.get()->grad_[2], 6.0, 0.1);
-  EXPECT_NEAR(b.get()->grad_[3], 6.0, 0.1);
+  EXPECT_NEAR(b.get()->grad_[0], 8.0, 0.01);
+  EXPECT_NEAR(b.get()->grad_[1], 8.0, 0.01);
+  EXPECT_NEAR(b.get()->grad_[2], 6.0, 0.01);
+  EXPECT_NEAR(b.get()->grad_[3], 6.0, 0.01);
 }
 
 TEST(Basic, MatMulAdd) {
@@ -256,21 +256,21 @@ tensor(61., grad_fn=<SumBackward0>)
   l.get()->backward();
 
   EXPECT_EQ(l.get()->grad_.size(), 1);
-  EXPECT_NEAR(l.get()->data_[0], 61.0, 0.1);
+  EXPECT_NEAR(l.get()->data_[0], 61.0, 0.01);
 
   EXPECT_EQ(a.get()->grad_.size(), 4);
-  EXPECT_NEAR(a.get()->grad_[0], 3.0, 0.1);
-  EXPECT_NEAR(a.get()->grad_[1], 4.0, 0.1);
-  EXPECT_NEAR(a.get()->grad_[2], 3.0, 0.1);
-  EXPECT_NEAR(a.get()->grad_[3], 4.0, 0.1);
+  EXPECT_NEAR(a.get()->grad_[0], 3.0, 0.01);
+  EXPECT_NEAR(a.get()->grad_[1], 4.0, 0.01);
+  EXPECT_NEAR(a.get()->grad_[2], 3.0, 0.01);
+  EXPECT_NEAR(a.get()->grad_[3], 4.0, 0.01);
 
   EXPECT_EQ(b.get()->grad_.size(), 2);
-  EXPECT_NEAR(b.get()->grad_[0], 8.0, 0.1);
-  EXPECT_NEAR(b.get()->grad_[1], 6.0, 0.1);
+  EXPECT_NEAR(b.get()->grad_[0], 8.0, 0.01);
+  EXPECT_NEAR(b.get()->grad_[1], 6.0, 0.01);
 
   EXPECT_EQ(c.get()->grad_.size(), 2);
-  EXPECT_NEAR(c.get()->grad_[0], 1.0, 0.1);
-  EXPECT_NEAR(c.get()->grad_[1], 1.0, 0.1);
+  EXPECT_NEAR(c.get()->grad_[0], 1.0, 0.01);
+  EXPECT_NEAR(c.get()->grad_[1], 1.0, 0.01);
 }
 
 TEST(Basic, MatMulAddSigmoid) {
@@ -317,21 +317,21 @@ TEST(Basic, MatMulAddSigmoid) {
   l.get()->backward();
 
   EXPECT_EQ(l.get()->grad_.size(), 1);
-  EXPECT_NEAR(l.get()->data_[0], 1.4542, 0.1);
+  EXPECT_NEAR(l.get()->data_[0], 1.4542, 0.01);
 
   EXPECT_EQ(a.get()->grad_.size(), 4);
-  EXPECT_NEAR(a.get()->grad_[0], 0.0997, 0.1);
-  EXPECT_NEAR(a.get()->grad_[1], 0.1196, 0.1);
-  EXPECT_NEAR(a.get()->grad_[2], 0.0988, 0.1);
-  EXPECT_NEAR(a.get()->grad_[3], 0.1185, 0.1);
+  EXPECT_NEAR(a.get()->grad_[0], 0.0997, 0.01);
+  EXPECT_NEAR(a.get()->grad_[1], 0.1196, 0.01);
+  EXPECT_NEAR(a.get()->grad_[2], 0.0988, 0.01);
+  EXPECT_NEAR(a.get()->grad_[3], 0.1185, 0.01);
 
   EXPECT_EQ(b.get()->grad_.size(), 2);
-  EXPECT_NEAR(b.get()->grad_[0], -0.0393, 0.1);
-  EXPECT_NEAR(b.get()->grad_[1], 0.1189, 0.1);
+  EXPECT_NEAR(b.get()->grad_[0], -0.0393, 0.01);
+  EXPECT_NEAR(b.get()->grad_[1], 0.1189, 0.01);
 
   EXPECT_EQ(c.get()->grad_.size(), 2);
-  EXPECT_NEAR(c.get()->grad_[0], 0.1993, 0.1);
-  EXPECT_NEAR(c.get()->grad_[1], 0.1975, 0.1);
+  EXPECT_NEAR(c.get()->grad_[0], 0.1993, 0.01);
+  EXPECT_NEAR(c.get()->grad_[1], 0.1975, 0.01);
 }
 
 TEST(Basic, ChainedMM) {
@@ -367,21 +367,21 @@ TEST(Basic, ChainedMM) {
   cg::t l = d.get()->sum();
   l.get()->backward();
 
-  EXPECT_NEAR(l.get()->data_[0], 686.0, 0.1);
+  EXPECT_NEAR(l.get()->data_[0], 686.0, 0.01);
   EXPECT_EQ(l.get()->grad_.size(), 1);
 
   EXPECT_EQ(a.get()->grad_.size(), 4);
   EXPECT_EQ(b.get()->grad_.size(), 4);
 
-  EXPECT_NEAR(a.get()->grad_[0], 37.0, 0.1);
-  EXPECT_NEAR(a.get()->grad_[1], 65.0, 0.1);
-  EXPECT_NEAR(a.get()->grad_[2], 37.0, 0.1);
-  EXPECT_NEAR(a.get()->grad_[3], 65.0, 0.1);
+  EXPECT_NEAR(a.get()->grad_[0], 37.0, 0.01);
+  EXPECT_NEAR(a.get()->grad_[1], 65.0, 0.01);
+  EXPECT_NEAR(a.get()->grad_[2], 37.0, 0.01);
+  EXPECT_NEAR(a.get()->grad_[3], 65.0, 0.01);
 
-  EXPECT_NEAR(b.get()->grad_[0], 80.0, 0.1);
-  EXPECT_NEAR(b.get()->grad_[1], 112.0, 0.1);
-  EXPECT_NEAR(b.get()->grad_[2], 84.0, 0.1);
-  EXPECT_NEAR(b.get()->grad_[3], 108.0, 0.1);
+  EXPECT_NEAR(b.get()->grad_[0], 80.0, 0.01);
+  EXPECT_NEAR(b.get()->grad_[1], 112.0, 0.01);
+  EXPECT_NEAR(b.get()->grad_[2], 84.0, 0.01);
+  EXPECT_NEAR(b.get()->grad_[3], 108.0, 0.01);
 }
 
 TEST(Basic, ScalarComplexAB) {
@@ -403,15 +403,15 @@ TEST(Basic, ScalarComplexAB) {
   auto l = (a * b) - ((b / a) + b);  // NOTE im calling this l not c lazy
   l.get()->backward();
 
-  EXPECT_NEAR(l.get()->data_[0], 21.5, 0.1);
+  EXPECT_NEAR(l.get()->data_[0], 21.5, 0.01);
   EXPECT_EQ(l.get()->grad_.size(), 1);
 
   EXPECT_EQ(a.get()->grad_.size(), 1);
   EXPECT_EQ(b.get()->grad_.size(), 1);
 
-  EXPECT_NEAR(a.get()->grad_[0], 53.7500, 0.1);
+  EXPECT_NEAR(a.get()->grad_[0], 53.7500, 0.01);
 
-  EXPECT_NEAR(b.get()->grad_[0], 0.5000, 0.1);
+  EXPECT_NEAR(b.get()->grad_[0], 0.5000, 0.01);
 }
 
 TEST(Basic, ChainedComplexOperations) {
@@ -449,7 +449,7 @@ TEST(Basic, ChainedComplexOperations) {
   cg::t f = e.get()->sum();
   f.get()->backward();
 
-  EXPECT_NEAR(f.get()->data_[0], 2794.0, 0.1);
+  EXPECT_NEAR(f.get()->data_[0], 2794.0, 0.01);
   EXPECT_EQ(f.get()->grad_.size(), 1);
 
   EXPECT_EQ(a.get()->grad_.size(), 4);
@@ -457,25 +457,25 @@ TEST(Basic, ChainedComplexOperations) {
   EXPECT_EQ(c.get()->grad_.size(), 4);
   EXPECT_EQ(d.get()->grad_.size(), 4);
 
-  EXPECT_NEAR(a.get()->grad_[0], 143.0, 0.1);
-  EXPECT_NEAR(a.get()->grad_[1], 187.0, 0.1);
-  EXPECT_NEAR(a.get()->grad_[2], 143.0, 0.1);
-  EXPECT_NEAR(a.get()->grad_[3], 187.0, 0.1);
+  EXPECT_NEAR(a.get()->grad_[0], 143.0, 0.01);
+  EXPECT_NEAR(a.get()->grad_[1], 187.0, 0.01);
+  EXPECT_NEAR(a.get()->grad_[2], 143.0, 0.01);
+  EXPECT_NEAR(a.get()->grad_[3], 187.0, 0.01);
 
-  EXPECT_NEAR(b.get()->grad_[0], 66.0, 0.1);
-  EXPECT_NEAR(b.get()->grad_[1], 66.0, 0.1);
-  EXPECT_NEAR(b.get()->grad_[2], 88.0, 0.1);
-  EXPECT_NEAR(b.get()->grad_[3], 88.0, 0.1);
+  EXPECT_NEAR(b.get()->grad_[0], 66.0, 0.01);
+  EXPECT_NEAR(b.get()->grad_[1], 66.0, 0.01);
+  EXPECT_NEAR(b.get()->grad_[2], 88.0, 0.01);
+  EXPECT_NEAR(b.get()->grad_[3], 88.0, 0.01);
 
-  EXPECT_NEAR(c.get()->grad_[0], 11.0, 0.1);
-  EXPECT_NEAR(c.get()->grad_[1], 11.0, 0.1);
-  EXPECT_NEAR(c.get()->grad_[2], 11.0, 0.1);
-  EXPECT_NEAR(c.get()->grad_[3], 11.0, 0.1);
+  EXPECT_NEAR(c.get()->grad_[0], 11.0, 0.01);
+  EXPECT_NEAR(c.get()->grad_[1], 11.0, 0.01);
+  EXPECT_NEAR(c.get()->grad_[2], 11.0, 0.01);
+  EXPECT_NEAR(c.get()->grad_[3], 11.0, 0.01);
 
-  EXPECT_NEAR(d.get()->grad_[0], 46.0, 0.1);
-  EXPECT_NEAR(d.get()->grad_[1], 51.0, 0.1);
-  EXPECT_NEAR(d.get()->grad_[2], 74.0, 0.1);
-  EXPECT_NEAR(d.get()->grad_[3], 83.0, 0.1);
+  EXPECT_NEAR(d.get()->grad_[0], 46.0, 0.01);
+  EXPECT_NEAR(d.get()->grad_[1], 51.0, 0.01);
+  EXPECT_NEAR(d.get()->grad_[2], 74.0, 0.01);
+  EXPECT_NEAR(d.get()->grad_[3], 83.0, 0.01);
 }
 
 TEST(Basic, ReLU) {
