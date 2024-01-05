@@ -1,4 +1,4 @@
-# cudagrad
+# cudagrad 🐟∇
 
 A tensor-valued autograd engine for Python
 
