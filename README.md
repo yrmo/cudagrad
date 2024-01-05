@@ -1,7 +1,5 @@
 # cudagrad
 
-![](logo.png)
-
 A tensor-valued autograd engine for Python
 
 # Docs
