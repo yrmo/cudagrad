@@ -478,7 +478,7 @@ TEST(Basic, ChainedComplexOperations) {
   EXPECT_NEAR(d.get()->grad_[3], 83.0, 0.01);
 }
 
-TEST(Basic, DISABLED_ReLU) {
+TEST(Basic, ReLU) {
   /*
   >>> import torch
   >>> a = torch.tensor(((-1.0, -2.0), (1.0, 2.0)), requires_grad=True)
@@ -515,7 +515,7 @@ TEST(Basic, DISABLED_ReLU) {
   EXPECT_EQ(a.get()->grad_[3], 1.0);
 }
 
-TEST(Basic, DISABLED_Sigmoid) {
+TEST(Basic, Sigmoid) {
   /*
   >>> import torch
   >>> torch.__version__
@@ -554,7 +554,7 @@ TEST(Basic, DISABLED_Sigmoid) {
   EXPECT_NEAR(a.get()->grad_[3], 0.1050, 0.01);
 }
 
-TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid0) {
+TEST(SigmoidGauntlet, MatmulAddSigmoid0) {
   // Tensor.sigmoid(w0 @ x + b0)
 
   // >>> import torch
@@ -606,7 +606,7 @@ TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid0) {
   EXPECT_NEAR(b0.get()->grad_[1], 0.2350, 0.01);
 }
 
-TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid1) {
+TEST(SigmoidGauntlet, MatmulAddSigmoid1) {
   // Tensor.sigmoid(w0 @ x + b0)
 
   // >>> import torch
@@ -658,7 +658,7 @@ TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid1) {
   EXPECT_NEAR(b0.get()->grad_[1], 0.1491, 0.01);
 }
 
-TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid2) {
+TEST(SigmoidGauntlet, MatmulAddSigmoid2) {
   // Tensor.sigmoid(w0 @ x + b0)
 
   // >>> import torch
@@ -710,7 +710,7 @@ TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid2) {
   EXPECT_NEAR(b0.get()->grad_[1], 0.1491, 0.01);
 }
 
-TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid3) {
+TEST(SigmoidGauntlet, MatmulAddSigmoid3) {
   // Tensor.sigmoid(w0 @ x + b0)
 
   // >>> import torch
@@ -762,7 +762,7 @@ TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid3) {
   EXPECT_NEAR(b0.get()->grad_[1], 0.1050, 0.01);
 }
 
-TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid4) {
+TEST(SigmoidGauntlet, MatmulAddSigmoid4) {
   // Tensor.sigmoid(w0 @ x + b0)
 
   // >>> import torch
@@ -815,7 +815,7 @@ TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid4) {
   EXPECT_NEAR(b0.get()->grad_[1], 0.0452, 0.01);
 }
 
-TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid5) {
+TEST(SigmoidGauntlet, MatmulAddSigmoid5) {
   // Tensor.sigmoid(w0 @ x + b0)
 
   // >>> import torch
