@@ -580,7 +580,28 @@ std::vector<float> broadcast(std::vector<int> from, std::vector<float> data, std
     if (from.size() == 1 && to.size() == 2 && from[0] == 1) {
       return std::vector<float>(to[0] * to[1], data[0]);
     }
-
+    // 2D -> 2D
+    // e.g. {1, m} -> {m, m}
+    if (from.size() == 2 && to.size() == 2 && from[0] == 1) {
+      std::vector<float> result;
+      result.reserve(to[0] * to[1]);
+      for (int i = 0; i < to[0]; ++i) {
+        result.insert(result.end(), data.begin(), data.end());
+      }
+      return result;
+    }
+    // 2D -> 2D
+    // e.g. {n, 1} -> {n, n}
+    if (from.size() == 2 && to.size() == 2 && from[1] == 1) {
+      std::vector<float> result;
+      result.reserve(to[0] * to[1]);
+      for (int i = 0; i < to[0]; ++i) {
+        for (int j = 0; j < to[1]; ++j) {
+          result.push_back(data[i]);
+        }
+      }
+      return result;
+    }
     throw std::runtime_error("Invalid broadcast");
 }
 

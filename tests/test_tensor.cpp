@@ -210,7 +210,7 @@ TEST(Basic, MatMul) {
   EXPECT_NEAR(b.get()->grad_[3], 6.0, 0.01);
 }
 
-TEST(Basic, DISABLED_MatMulAdd) {
+TEST(Basic, MatMulAdd) {
   /*
 >>> a = torch.tensor(((5.0, 4.0), (3.0, 2.0)), requires_grad=True)
 >>> b = torch.tensor( [[3.0], [4.0]], requires_grad=True)
