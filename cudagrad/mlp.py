@@ -46,8 +46,8 @@ if __name__ == "__main__":
     inputs = [[0, 0], [0, 1], [1, 0], [1, 1]]
     targets = [0, 1, 1, 0]
 
-    EPOCHS = 25000
-    lr = 0.1
+    EPOCHS = 5000
+    lr = 0.05
     epochs = []
     losses = []
     model = MLP()
