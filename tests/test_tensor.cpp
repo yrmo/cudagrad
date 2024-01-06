@@ -171,7 +171,7 @@ TEST(Basic, Divide) {
   EXPECT_NEAR(b.get()->grad_[3], -0.08, 0.01);
 }
 
-TEST(Basic, DISABLED_MatMul) {
+TEST(Basic, MatMul) {
   /*
   >>> a = torch.tensor(((5.0, 4.0), (3.0, 2.0)), requires_grad=True)
   >>> b = torch.tensor(((2.0, 3.0), (4.0, 5.0)), requires_grad=True)

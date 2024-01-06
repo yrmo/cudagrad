@@ -566,10 +566,22 @@ struct AutoGradBackward {
 };
 
 std::vector<float> broadcast(std::vector<int> from, std::vector<float> data, std::vector<int> to) {
-    assert(from.size() == 1);
-    assert(from[0] == 1);
-    assert(to.size() == 1);
-    return std::vector<float>(to[0], from[0]);
+    // TODO(yrmo) only scalar, vector, and matrix until a nn needs rank > 2
+    assert(from.size() < 3);
+    assert(to.size() < 3);
+
+    // 1D (scalar) -> 1D
+    // e.g. {1} -> {3}
+    if (from.size() == 1 && to.size() == 1 && from[0] == 1) {
+      return std::vector<float>(to[0], data[0]);
+    }
+    // 1D (scalar) -> 2D
+    // e.g. {1} -> {2, 2}
+    if (from.size() == 1 && to.size() == 2 && from[0] == 1) {
+      return std::vector<float>(to[0] * to[1], data[0]);
+    }
+
+    throw std::runtime_error("Invalid broadcast");
 }
 
 struct AddBackward : public AutoGradBackward {
