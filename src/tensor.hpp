@@ -573,7 +573,7 @@ struct AddBackward : public AutoGradBackward {
   debug_inputs(grad_output, grad_inputs, "AddBackward");
     for (std::shared_ptr<Tensor> grad_input : grad_inputs) {
       for (int i = 0; i < grad_input.get()->grad_.size(); ++i) {
-        grad_input.get()->grad_[i] += grad_output.get()->grad_[0];
+        grad_input.get()->grad_[i] += grad_output.get()->grad_[i];
       }
     }
   debug_outputs(grad_output, grad_inputs, "AddBackward");

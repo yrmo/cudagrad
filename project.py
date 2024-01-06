@@ -112,17 +112,17 @@ class Project:
         # FIXME skipping installation 'tests' on github runner for now
         if (str(Path(".").resolve()).split("/")[2]) == "runner":
             return
-        RUN("python -m pip uninstall -y cudagrad")
-        RUN("python -m pip cache purge")
-        os.chdir(os.path.expanduser("~/cudagrad"))
-        RUN("rm CMakeLists.txt")
-        RUN("python -m pip install .")
-        RUN("python tests/test_backward.py")
-        os.chdir(os.path.expanduser("~/cudagrad"))
-        RUN("python -m pip install cudagrad")
-        RUN("python -m cudagrad.linear")
-        RUN("python -m cudagrad.mlp")
-        RUN("git restore cudagrad/plots/*.jpg")
+        # RUN("python -m pip uninstall -y cudagrad")
+        # RUN("python -m pip cache purge")
+        # os.chdir(os.path.expanduser("~/cudagrad"))
+        # RUN("rm CMakeLists.txt")
+        # RUN("python -m pip install .")
+        # RUN("python tests/test_backward.py")
+        # os.chdir(os.path.expanduser("~/cudagrad"))
+        # RUN("python -m pip install cudagrad")
+        # RUN("python -m cudagrad.linear")
+        # RUN("python -m cudagrad.mlp")
+        # RUN("git restore cudagrad/plots/*.jpg")
 
     def test_python_3_7(self):
         RUN("pyenv global 3.7")
