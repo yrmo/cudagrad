@@ -16,7 +16,5 @@ The following examples were written purely in Python using only `cudagrad.Tensor
 
 ## Multilayer perceptron
 
-Work in progress!
-
 ![](cudagrad/plots/mlp.jpg)
 ![](cudagrad/plots/mlp-3d.jpg)

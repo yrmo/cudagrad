@@ -537,22 +537,22 @@ void Tensor::put_grad(std::vector<int> indexes, float value) {
 
 void debug_inputs(std::shared_ptr<Tensor> grad_output,
              std::vector<std::shared_ptr<Tensor>> grad_inputs, std::string operation) {
-  std::cout << std::string("--------------------") << std::string("INPUT") << std::string("--------------------") << std::endl;
-  std::cout << std::string("--------------------") << operation << std::string("--------------------") << std::endl;
-  std::cout << grad_output << std::endl;
-  for (auto grad_input : grad_inputs) {
-    std::cout << grad_input << std::endl;
-  }
+  // std::cout << std::string("--------------------") << std::string("INPUT") << std::string("--------------------") << std::endl;
+  // std::cout << std::string("--------------------") << operation << std::string("--------------------") << std::endl;
+  // std::cout << grad_output << std::endl;
+  // for (auto grad_input : grad_inputs) {
+  //   std::cout << grad_input << std::endl;
+  // }
 }
 
 void debug_outputs(std::shared_ptr<Tensor> grad_output,
              std::vector<std::shared_ptr<Tensor>> grad_inputs, std::string operation) {
-  std::cout << std::string("--------------------") << std::string("OUTPUT") << std::string("--------------------") << std::endl;
-  std::cout << std::string("--------------------") << operation << std::string("--------------------") << std::endl;
-  std::cout << grad_output << std::endl;
-  for (auto grad_input : grad_inputs) {
-    std::cout << grad_input << std::endl;
-  }
+  // std::cout << std::string("--------------------") << std::string("OUTPUT") << std::string("--------------------") << std::endl;
+  // std::cout << std::string("--------------------") << operation << std::string("--------------------") << std::endl;
+  // std::cout << grad_output << std::endl;
+  // for (auto grad_input : grad_inputs) {
+  //   std::cout << grad_input << std::endl;
+  // }
 }
 
 struct AutoGradBackward {
@@ -580,6 +580,20 @@ std::vector<float> broadcast(std::vector<int> from, std::vector<float> data, std
     if (from.size() == 1 && to.size() == 2 && from[0] == 1) {
       return std::vector<float>(to[0] * to[1], data[0]);
     }
+
+    // 2D -> 1D
+    // e.g. {1, 2} -> {2}
+    if (from.size() == 2 && to.size() == 1 && from[0] == 1) {
+        assert(from[1] == to[0]);
+        return std::vector<float>(data.begin(), data.end());
+    }
+    // 2D -> 1D
+    // e.g. {2, 1} -> {2}
+    if (from.size() == 2 && to.size() == 1 && from[1] == 1) {
+        assert(from[0] == to[0]);
+        return std::vector<float>(data.begin(), data.end());
+    }
+
     // 2D -> 2D
     // e.g. {1, m} -> {m, m}
     if (from.size() == 2 && to.size() == 2 && from[0] == 1) {
