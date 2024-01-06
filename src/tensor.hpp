@@ -565,6 +565,13 @@ struct AutoGradBackward {
   }
 };
 
+std::vector<float> broadcast(std::vector<int> from, std::vector<float> data, std::vector<int> to) {
+    assert(from.size() == 1);
+    assert(from[0] == 1);
+    assert(to.size() == 1);
+    return std::vector<float>(to[0], from[0]);
+}
+
 struct AddBackward : public AutoGradBackward {
   AddBackward() = default;
 
@@ -572,8 +579,9 @@ struct AddBackward : public AutoGradBackward {
              std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
   debug_inputs(grad_output, grad_inputs, "AddBackward");
     for (std::shared_ptr<Tensor> grad_input : grad_inputs) {
+      std::vector<float> broadcast_output_grad = broadcast(grad_output.get()->size_, grad_output.get()->grad_, grad_input.get()->size_);
       for (int i = 0; i < grad_input.get()->grad_.size(); ++i) {
-        grad_input.get()->grad_[i] += grad_output.get()->grad_[i];
+        grad_input.get()->grad_[i] += broadcast_output_grad[i]; // grad_output.get()->grad_[i];
       }
     }
   debug_outputs(grad_output, grad_inputs, "AddBackward");
