@@ -565,6 +565,66 @@ struct AutoGradBackward {
   }
 };
 
+std::vector<float> broadcast(std::vector<int> from, std::vector<float> data, std::vector<int> to) {
+    // TODO(yrmo) only scalar, vector, and matrix until a nn needs rank > 2
+    assert(from.size() < 3);
+    assert(to.size() < 3);
+
+    // 1D (scalar) -> 1D
+    // e.g. {1} -> {3}
+    if (from.size() == 1 && to.size() == 1 && from[0] == 1) {
+      return std::vector<float>(to[0], data[0]);
+    }
+    // 1D (scalar) -> 2D
+    // e.g. {1} -> {2, 2}
+    if (from.size() == 1 && to.size() == 2 && from[0] == 1) {
+      return std::vector<float>(to[0] * to[1], data[0]);
+    }
+
+    // 2D -> 1D
+    // e.g. {1, 2} -> {2}
+    if (from.size() == 2 && to.size() == 1 && from[0] == 1) {
+        assert(from[1] == to[0]);
+        return std::vector<float>(data.begin(), data.end());
+    }
+    // 2D -> 1D
+    // e.g. {2, 1} -> {2}
+    if (from.size() == 2 && to.size() == 1 && from[1] == 1) {
+        assert(from[0] == to[0]);
+        return std::vector<float>(data.begin(), data.end());
+    }
+
+    // 2D -> 2D
+    // e.g. {1, m} -> {m, m}
+    if (from.size() == 2 && to.size() == 2 && from[0] == 1) {
+      std::vector<float> result;
+      result.reserve(to[0] * to[1]);
+      for (int i = 0; i < to[0]; ++i) {
+        result.insert(result.end(), data.begin(), data.end());
+      }
+      return result;
+    }
+    // 2D -> 2D
+    // e.g. {n, 1} -> {n, n}
+    else if (from.size() == 2 && to.size() == 2 && from[1] == 1) {
+      std::vector<float> result;
+      result.reserve(to[0] * to[1]);
+      for (int i = 0; i < to[0]; ++i) {
+        for (int j = 0; j < to[1]; ++j) {
+          result.push_back(data[i]);
+        }
+      }
+      return result;
+    }
+    // 2D -> 2D (NOOP)
+    // e.g. {n, m} -> {n, m} 
+    else if (from.size() == 2 && to.size() == 2 && to[0] == from[0] && to[1] == from[1]) {
+      return data;
+    }
+
+    throw std::runtime_error("Invalid broadcast");
+}
+
 struct AddBackward : public AutoGradBackward {
   AddBackward() = default;
 
@@ -572,8 +632,9 @@ struct AddBackward : public AutoGradBackward {
              std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
   debug_inputs(grad_output, grad_inputs, "AddBackward");
     for (std::shared_ptr<Tensor> grad_input : grad_inputs) {
+      std::vector<float> broadcast_output_grad = broadcast(grad_output.get()->size_, grad_output.get()->grad_, grad_input.get()->size_);
       for (int i = 0; i < grad_input.get()->grad_.size(); ++i) {
-        grad_input.get()->grad_[i] += grad_output.get()->grad_[0];
+        grad_input.get()->grad_[i] += broadcast_output_grad[i]; // grad_output.get()->grad_[i];
       }
     }
   debug_outputs(grad_output, grad_inputs, "AddBackward");

@@ -29,7 +29,7 @@ class MLP(Module):
         self.w0 = Tensor(
             [2, 2], [choice([-1 * random(), random()]) for _ in range(2 * 2)]
         )
-        self.b0 = Tensor([2], [choice([-1 * random(), random()]) for _ in range(2)])
+        self.b0 = Tensor([2, 1], [choice([-1 * random(), random()]) for _ in range(2)])
         self.w1 = Tensor(
             [1, 2], [choice([-1 * random(), random()]) for _ in range(1 * 2)]
         )

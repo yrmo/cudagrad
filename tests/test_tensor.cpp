@@ -554,7 +554,7 @@ TEST(Basic, Sigmoid) {
   EXPECT_NEAR(a.get()->grad_[3], 0.1050, 0.01);
 }
 
-TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid0) {
+TEST(SigmoidGauntlet, MatmulAddSigmoid0) {
   // Tensor.sigmoid(w0 @ x + b0)
 
   // >>> import torch
@@ -606,7 +606,7 @@ TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid0) {
   EXPECT_NEAR(b0.get()->grad_[1], 0.2350, 0.01);
 }
 
-TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid1) {
+TEST(SigmoidGauntlet, MatmulAddSigmoid1) {
   // Tensor.sigmoid(w0 @ x + b0)
 
   // >>> import torch
@@ -658,13 +658,13 @@ TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid1) {
   EXPECT_NEAR(b0.get()->grad_[1], 0.1491, 0.01);
 }
 
-TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid2) {
+TEST(SigmoidGauntlet, MatmulAddSigmoid2) {
   // Tensor.sigmoid(w0 @ x + b0)
 
   // >>> import torch
   // >>> w0 = torch.tensor([[-0.5, 0.5], [0.5, 0.5]], requires_grad=True)
   // >>> x = torch.tensor([[1.0], [1.0]], requires_grad=True)
-  // >>> b0 = torch.tensor([[0.5], [0.5]], requires_grad=True) 
+  // >>> b0 = torch.tensor([[0.5], [0.5]], requires_grad=True)
   // >>> s = torch.sigmoid(w0 @ x + b0)
   // >>> s
   // tensor([[0.6225],
@@ -710,7 +710,7 @@ TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid2) {
   EXPECT_NEAR(b0.get()->grad_[1], 0.1491, 0.01);
 }
 
-TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid3) {
+TEST(SigmoidGauntlet, MatmulAddSigmoid3) {
   // Tensor.sigmoid(w0 @ x + b0)
 
   // >>> import torch
@@ -762,14 +762,13 @@ TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid3) {
   EXPECT_NEAR(b0.get()->grad_[1], 0.1050, 0.01);
 }
 
-
-TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid4) {
+TEST(SigmoidGauntlet, MatmulAddSigmoid4) {
   // Tensor.sigmoid(w0 @ x + b0)
 
   // >>> import torch
   // >>> w0 = torch.tensor([[-1.0, 1.0], [1.0, 1.0]], requires_grad=True)
   // >>> x = torch.tensor([[1.0], [1.0]], requires_grad=True)
-  // >>> b0 = torch.tensor([[1.0], [1.0]], requires_grad=True) 
+  // >>> b0 = torch.tensor([[1.0], [1.0]], requires_grad=True)
   // >>> s = torch.sigmoid(w0 @ x + b0)
   // >>> s
   // tensor([[0.7311],
@@ -816,14 +815,13 @@ TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid4) {
   EXPECT_NEAR(b0.get()->grad_[1], 0.0452, 0.01);
 }
 
-
-TEST(SigmoidGauntlet, DISABLED_MatmulAddSigmoid5) {
+TEST(SigmoidGauntlet, MatmulAddSigmoid5) {
   // Tensor.sigmoid(w0 @ x + b0)
 
   // >>> import torch
   // >>> w0 = torch.tensor([[1.0, 1.0], [1.0, 1.0]], requires_grad=True)
   // >>> x = torch.tensor([[1.0], [1.0]], requires_grad=True)
-  // >>> b0 = torch.tensor([[1.0], [1.0]], requires_grad=True) 
+  // >>> b0 = torch.tensor([[1.0], [1.0]], requires_grad=True)
   // >>> s = torch.sigmoid(w0 @ x + b0)
   // >>> s
   // tensor([[0.9526],
@@ -932,7 +930,7 @@ TEST(MLP, InnerNeuron) {
 
   auto w0 = cg::tensor({2, 2}, {-0.5963, -0.0062, 0.1741, -0.1097});
   auto x = cg::tensor({2, 1}, {1.0, 1.0});
-  auto b0 = cg::tensor({2}, {-0.4237, -0.6666});
+  auto b0 = cg::tensor({2, 1}, {-0.4237, -0.6666});
   auto l = (w0.get()->matmul(x) + b0).get()->sum();
   l.get()->backward();
 
@@ -946,7 +944,7 @@ TEST(MLP, InnerNeuron) {
   EXPECT_NEAR(w0.get()->grad_[3], 1.0, 0.01);
 }
 
-TEST(MLP, DISABLED_InnerSigmoid) {
+TEST(MLP, InnerSigmoid) {
   // Tensor.sigmoid(w0 @ x + b0)
 
   // >>> import torch
@@ -978,7 +976,7 @@ TEST(MLP, DISABLED_InnerSigmoid) {
 
   auto w0 = cg::tensor({2, 2}, {-0.5963, -0.0062, 0.1741, -0.1097});
   auto x = cg::tensor({2, 1}, {1.0, 1.0});
-  auto b0 = cg::tensor({2, 1}, {-0.4237, -0.6666});
+  auto b0 = cg::tensor({2}, {-0.4237, -0.6666});
   auto muldot = w0.get()->matmul(x) + b0;
   auto s = muldot.get()->sigmoid();
   auto l = s.get()->sum();
