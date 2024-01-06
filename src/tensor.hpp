@@ -537,22 +537,22 @@ void Tensor::put_grad(std::vector<int> indexes, float value) {
 
 void debug_inputs(std::shared_ptr<Tensor> grad_output,
              std::vector<std::shared_ptr<Tensor>> grad_inputs, std::string operation) {
-  std::cout << std::string("--------------------") << std::string("INPUT") << std::string("--------------------") << std::endl;
-  std::cout << std::string("--------------------") << operation << std::string("--------------------") << std::endl;
-  std::cout << grad_output << std::endl;
-  for (auto grad_input : grad_inputs) {
-    std::cout << grad_input << std::endl;
-  }
+  // std::cout << std::string("--------------------") << std::string("INPUT") << std::string("--------------------") << std::endl;
+  // std::cout << std::string("--------------------") << operation << std::string("--------------------") << std::endl;
+  // std::cout << grad_output << std::endl;
+  // for (auto grad_input : grad_inputs) {
+  //   std::cout << grad_input << std::endl;
+  // }
 }
 
 void debug_outputs(std::shared_ptr<Tensor> grad_output,
              std::vector<std::shared_ptr<Tensor>> grad_inputs, std::string operation) {
-  std::cout << std::string("--------------------") << std::string("OUTPUT") << std::string("--------------------") << std::endl;
-  std::cout << std::string("--------------------") << operation << std::string("--------------------") << std::endl;
-  std::cout << grad_output << std::endl;
-  for (auto grad_input : grad_inputs) {
-    std::cout << grad_input << std::endl;
-  }
+  // std::cout << std::string("--------------------") << std::string("OUTPUT") << std::string("--------------------") << std::endl;
+  // std::cout << std::string("--------------------") << operation << std::string("--------------------") << std::endl;
+  // std::cout << grad_output << std::endl;
+  // for (auto grad_input : grad_inputs) {
+  //   std::cout << grad_input << std::endl;
+  // }
 }
 
 struct AutoGradBackward {
