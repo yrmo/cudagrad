@@ -930,7 +930,7 @@ TEST(MLP, InnerNeuron) {
 
   auto w0 = cg::tensor({2, 2}, {-0.5963, -0.0062, 0.1741, -0.1097});
   auto x = cg::tensor({2, 1}, {1.0, 1.0});
-  auto b0 = cg::tensor({2}, {-0.4237, -0.6666});
+  auto b0 = cg::tensor({2, 1}, {-0.4237, -0.6666});
   auto l = (w0.get()->matmul(x) + b0).get()->sum();
   l.get()->backward();
 
@@ -944,7 +944,7 @@ TEST(MLP, InnerNeuron) {
   EXPECT_NEAR(w0.get()->grad_[3], 1.0, 0.01);
 }
 
-TEST(MLP, DISABLED_InnerSigmoid) {
+TEST(MLP, InnerSigmoid) {
   // Tensor.sigmoid(w0 @ x + b0)
 
   // >>> import torch
