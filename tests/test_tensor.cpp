@@ -867,7 +867,7 @@ TEST(SigmoidGauntlet, MatmulAddSigmoid5) {
   EXPECT_NEAR(b0.get()->grad_[1], 0.0452, 0.01);
 }
 
-TEST(MLP, DISABLED_InnerMatmul) {
+TEST(MLP, InnerMatmul) {
   // w0 @ x
 
   // >>> w0 = tensor([[-0.5963, -0.0062], [0.1741, -0.1097]],
@@ -902,7 +902,7 @@ TEST(MLP, DISABLED_InnerMatmul) {
   EXPECT_NEAR(w0.get()->grad_[3], 1.0, 0.01);
 }
 
-TEST(MLP, DISABLED_InnerNeuron) {
+TEST(MLP, InnerNeuron) {
   // (w0 @ x + b0)
 
   // >>> from torch import tensor
