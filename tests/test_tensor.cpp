@@ -273,7 +273,7 @@ tensor(61., grad_fn=<SumBackward0>)
   EXPECT_NEAR(c.get()->grad_[1], 1.0, 0.01);
 }
 
-TEST(Basic, DISABLED_MatMulAddSigmoid) {
+TEST(Basic, MatMulAddSigmoid) {
   /*
   >>> a = torch.tensor(((0.1, 0.2), (-0.3, 0.4)), requires_grad=True)
   >>> b = torch.tensor( [[0.5], [0.6]], requires_grad=True)
@@ -334,7 +334,7 @@ TEST(Basic, DISABLED_MatMulAddSigmoid) {
   EXPECT_NEAR(c.get()->grad_[1], 0.1975, 0.01);
 }
 
-TEST(Basic, DISABLED_ChainedMM) {
+TEST(Basic, ChainedMM) {
   /*
   >>> import torch
   >>> a = torch.tensor(((5.0, 4.0), (3.0, 2.0)), requires_grad=True)
@@ -384,7 +384,7 @@ TEST(Basic, DISABLED_ChainedMM) {
   EXPECT_NEAR(b.get()->grad_[3], 108.0, 0.01);
 }
 
-TEST(Basic, DISABLED_ScalarComplexAB) {
+TEST(Basic, ScalarComplexAB) {
   /*
   >>> import torch
   >>> a = torch.tensor((2.0), requires_grad=True)
@@ -414,7 +414,7 @@ TEST(Basic, DISABLED_ScalarComplexAB) {
   EXPECT_NEAR(b.get()->grad_[0], 0.5000, 0.01);
 }
 
-TEST(Basic, DISABLED_ChainedComplexOperations) {
+TEST(Basic, ChainedComplexOperations) {
   /*
   >>> import torch
   >>> a = torch.tensor(((2.0, 3.0), (4.0, 5.0)), requires_grad=True)
