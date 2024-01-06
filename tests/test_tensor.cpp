@@ -50,7 +50,7 @@ TEST(Basic, Sum) {
   EXPECT_EQ(a.get()->grad_[2], 1.0);
 }
 
-TEST(Basic, DISABLED_Minus) {
+TEST(Basic, Minus) {
   /*
   >>> a = torch.tensor((5.0, 4.0, 3.0, 2.0), requires_grad=True)
   >>> b = torch.tensor((2.0, 3.0, 4.0, 5.0), requires_grad=True)
@@ -91,7 +91,7 @@ TEST(Basic, DISABLED_Minus) {
   EXPECT_EQ(b.get()->grad_[3], -1.0);
 }
 
-TEST(Basic, DISABLED_Multiply) {
+TEST(Basic, Multiply) {
   /*
   >>> a = torch.tensor((5.0, 4.0, 3.0, 2.0), requires_grad=True)
   >>> b = torch.tensor((2.0, 3.0, 4.0, 5.0), requires_grad=True)
@@ -130,7 +130,7 @@ TEST(Basic, DISABLED_Multiply) {
   EXPECT_EQ(b.get()->grad_[3], 2.0);
 }
 
-TEST(Basic, DISABLED_Divide) {
+TEST(Basic, Divide) {
   /*
   >>> a = torch.tensor((5.0, 4.0, 3.0, 2.0), requires_grad=True)
   >>> b = torch.tensor((2.0, 3.0, 4.0, 5.0), requires_grad=True)
