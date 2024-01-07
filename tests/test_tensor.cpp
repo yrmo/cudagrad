@@ -1,4 +1,4 @@
-// Copyright 2023 Ryan Moore
+// Copyright 2023-2024 Ryan Moore
 
 #include <gtest/gtest.h>
 

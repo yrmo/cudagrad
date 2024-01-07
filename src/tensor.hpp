@@ -1,4 +1,4 @@
-// Copyright 2023 Ryan Moore
+// Copyright 2023-2024 Ryan Moore
 //
 // If you remember just one thing out of this course, it should be this – two
 // pieces of advice. The first piece of advice is whenever you can, use vector.

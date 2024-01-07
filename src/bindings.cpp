@@ -1,4 +1,4 @@
-// Copyright 2023 Ryan Moore
+// Copyright 2023-2024 Ryan Moore
 //
 // If the implementation is easy to explain, it may be a good idea.
 //

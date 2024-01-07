@@ -1,4 +1,4 @@
-// Copyright 2023 Ryan Moore
+// Copyright 2023-2024 Ryan Moore
 //
 // Calling code “clever” is usually an insult in software engineering, since
 // it means the code’s functionality is sufficiently obscure it’ll be hard to
