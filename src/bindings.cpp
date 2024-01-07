@@ -9,7 +9,7 @@
 
 #include <sstream>
 
-#include "tensor.hpp"
+#include "tensor.hpp"  // NOLINT(build/include_subdir)
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
