@@ -212,7 +212,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   }
 
   void _graph(int depth = 0) {
-    auto print_if_not_leaf = [this](char c) -> const char {
+    auto print_if_not_leaf = [](char c) -> char {
       if (c != '?') return c;
       return ' ';
     };
