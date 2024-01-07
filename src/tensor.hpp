@@ -145,9 +145,6 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
     // '<cudagrad.Tensor([1,], [1,]) object at 0x600001874018>'
     // '<cudagrad.Tensor([10,], [1, 1, 1, ...]) object at 0x600001874018>'
 
-    // TODO(yrmo): Dry
-    int n = 3;  // TODO(yrmo): jank
-
     // SIZE
     std::ostringstream oss_s;
     int i = 0;
