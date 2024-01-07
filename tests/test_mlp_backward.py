@@ -1,3 +1,5 @@
+# type: ignore
+
 # TEST BACKWARD MLP
 
 # OrderedDict([('layer1.weight',
@@ -17,7 +19,9 @@
 
 # %%
 
+from cudagrad import Tensor
 from cudagrad.nn import mse, sgd
+from cudagrad.mlp import MLP
 
 model = MLP()
 

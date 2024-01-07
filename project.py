@@ -117,7 +117,9 @@ class Project:
         os.chdir(os.path.expanduser("~/cudagrad"))
         RUN("rm CMakeLists.txt")
         RUN("python -m pip install .")
-        RUN("cp ./build/lib.macosx-13.2-arm64-cpython-311/cudagrad/tensor.cpython-311-darwin.so ./cudagrad")
+        RUN(
+            "cp ./build/lib.macosx-13.2-arm64-cpython-311/cudagrad/tensor.cpython-311-darwin.so ./cudagrad"
+        )
         RUN("python tests/test_backward.py")
         os.chdir(os.path.expanduser("~/cudagrad"))
         RUN("python -m pip install cudagrad")

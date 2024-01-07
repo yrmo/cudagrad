@@ -1,3 +1,4 @@
+# type: ignore
 from itertools import product
 
 from cudagrad.mlp import MLP

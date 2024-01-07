@@ -35,6 +35,9 @@ e = ((a @ b) + c) * d
 f = e.sum()
 f.backward()
 
+assert at.grad is not None
+assert bt.grad is not None
+
 assert f.data[[0, 0]].item() == ft.data.item()
 
 assert [
