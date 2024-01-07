@@ -50,7 +50,7 @@ PYBIND11_MODULE(tensor, m) {
   // TODO(yrmo): When doing C++ bindings does repr
   //              override str when no str present?
   py::class_<cg::Tensor, std::shared_ptr<cg::Tensor>>(m, "Tensor")
-      .def(py::init<std::vector<int>, std::vector<float>>())
+      .def(py::init<std::vector<size_t>, std::vector<float>>())
       .def("get_shared", &cg::Tensor::get_shared)
       .def("backward", &cg::Tensor::backward)
       .def("zero_grad", &cg::Tensor::zero_grad)

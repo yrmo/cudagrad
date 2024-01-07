@@ -52,27 +52,27 @@ class Tensor;
 class DataProxy;
 class GradProxy;
 
-std::shared_ptr<Tensor> tensor(std::initializer_list<int>,
+std::shared_ptr<Tensor> tensor(std::initializer_list<size_t>,
                                std::initializer_list<float>);
 
-std::shared_ptr<Tensor> tensor(std::vector<int>, std::vector<float>);
+std::shared_ptr<Tensor> tensor(std::vector<size_t>, std::vector<float>);
 
-std::shared_ptr<Tensor> tensor(std::vector<int>, std::vector<float>,
+std::shared_ptr<Tensor> tensor(std::vector<size_t>, std::vector<float>,
                                std::vector<std::shared_ptr<Tensor>>,
                                std::shared_ptr<AutoGradBackward>, char);
 
 class Tensor : public std::enable_shared_from_this<Tensor> {
  public:
-  std::vector<int> size_;
+  std::vector<size_t> size_;
   std::vector<float> data_;
   std::vector<float> grad_;
   std::vector<std::shared_ptr<Tensor>> children_;
   std::shared_ptr<AutoGradBackward> grad_fn_ = nullptr;
   char op_;
-  int offset_;
-  std::vector<int> strides_;
+  size_t offset_;
+  std::vector<size_t> strides_;
 
-  Tensor(std::initializer_list<int> size, std::initializer_list<float> data)
+  Tensor(std::initializer_list<size_t> size, std::initializer_list<float> data)
       : size_(size),
         data_(data),
         grad_(data.size(), 0),
@@ -85,7 +85,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
     _computeStrides();
   }
 
-  Tensor(std::vector<int> size, std::vector<float> data)
+  Tensor(std::vector<size_t> size, std::vector<float> data)
       : size_(size),
         data_(data),
         grad_(data.size(), 0),
@@ -98,7 +98,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
     _computeStrides();
   }
 
-  Tensor(std::vector<int> size, std::vector<float> data,
+  Tensor(std::vector<size_t> size, std::vector<float> data,
          std::vector<std::shared_ptr<Tensor>> children,
          std::shared_ptr<AutoGradBackward> grad_fn, char op = '?')
       : size_(size),
@@ -134,10 +134,10 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   std::shared_ptr<Tensor> sigmoid();
   std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> other);
 
-  std::shared_ptr<Tensor> select_data(std::vector<int> indexes);
-  void put_data(std::vector<int> indexes, float value);
-  std::shared_ptr<Tensor> select_grad(std::vector<int> indexes);
-  void put_grad(std::vector<int> indexes, float value);
+  std::shared_ptr<Tensor> select_data(std::vector<size_t> indexes);
+  void put_data(std::vector<size_t> indexes, float value);
+  std::shared_ptr<Tensor> select_grad(std::vector<size_t> indexes);
+  void put_grad(std::vector<size_t> indexes, float value);
 
   float item();
 
@@ -200,7 +200,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
     for (auto x : children_) std::cout << x << std::endl;
   }
 
-  std::vector<int> get_size() const { return size_; }
+  std::vector<size_t> get_size() const { return size_; }
 
   std::vector<float> get_data() const { return data_; }
 
@@ -244,37 +244,37 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
     return get_shared().get()->grad_[idx];
   }
 
-  static std::shared_ptr<Tensor> ones(const std::vector<int> &shape) {
+  static std::shared_ptr<Tensor> ones(const std::vector<size_t> &shape) {
     std::vector<float> data(
-        std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<int>()),
+        std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<size_t>()),
         1.0f);
     return tensor(shape, data);
   }
 
-  static std::shared_ptr<Tensor> zeros(const std::vector<int> &shape) {
+  static std::shared_ptr<Tensor> zeros(const std::vector<size_t> &shape) {
     std::vector<float> data(
-        std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<int>()),
+        std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<size_t>()),
         0.0f);
     return tensor(shape, data);
   }
 
-  static std::shared_ptr<Tensor> explode(const std::vector<int> &shape,
+  static std::shared_ptr<Tensor> explode(const std::vector<size_t> &shape,
                                          float value) {
     std::vector<float> data(
-        std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<int>()),
+        std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<size_t>()),
         value);
     return tensor(shape, data);
   }
 
-  static std::shared_ptr<Tensor> rand(const std::vector<int> &shape) {
+  static std::shared_ptr<Tensor> rand(const std::vector<size_t> &shape) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dis(0.0, 1.0);
 
-    int total_size =
-        std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<int>());
+    size_t total_size =
+        std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<size_t>());
     std::vector<float> data(total_size);
-    for (int i = 0; i < total_size; ++i) {
+    for (size_t i = 0; i < total_size; ++i) {
       data[i] = dis(gen);
     }
 
@@ -325,18 +325,18 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
  private:
   void _backward();
 
-  int _product(std::vector<int> size) {
-    int product = 1;
-    for (int s : size) {
+  size_t _product(std::vector<size_t> size) {
+    size_t product = 1;
+    for (size_t s : size) {
       product *= s;
     }
     return product;
   }
 
-  int _dot(std::vector<int> a, std::vector<int> b) {
+  int _dot(std::vector<size_t> a, std::vector<size_t> b) {
     assert(a.size() == b.size());
-    int ans = 0;
-    for (int i = 0; i < a.size(); ++i) {
+    size_t ans = 0;
+    for (size_t i = 0; i < a.size(); ++i) {
       ans += a[i] * b[i];
     }
     return ans;
@@ -358,11 +358,11 @@ class DataProxy {
  public:
   DataProxy(Tensor &tensor) : parent_tensor(tensor) {}
 
-  std::shared_ptr<Tensor> get(std::vector<int> indexes) {
+  std::shared_ptr<Tensor> get(std::vector<size_t> indexes) {
     return parent_tensor.select_data(indexes);
   }
 
-  void set(std::vector<int> indexes, float value) {
+  void set(std::vector<size_t> indexes, float value) {
     parent_tensor.put_data(indexes, value);
   }
 
@@ -374,11 +374,11 @@ class GradProxy {
  public:
   GradProxy(Tensor &tensor) : parent_tensor(tensor) {}
 
-  std::shared_ptr<Tensor> get(std::vector<int> indexes) {
+  std::shared_ptr<Tensor> get(std::vector<size_t> indexes) {
     return parent_tensor.select_grad(indexes);
   }
 
-  void set(std::vector<int> indexes, float value) {
+  void set(std::vector<size_t> indexes, float value) {
     parent_tensor.put_grad(indexes, value);
   }
 
@@ -400,7 +400,7 @@ std::shared_ptr<Tensor> binaryElementwiseOperator(
 
   assert(lhs.get()->data_.size() == rhs.get()->data_.size());
   std::vector<float> result_data(lhs.get()->data_.size());
-  for (int i = 0; i < lhs.get()->data_.size(); ++i) {
+  for (size_t i = 0; i < lhs.get()->data_.size(); ++i) {
     result_data[i] = func(lhs.get()->data_[i], rhs.get()->data_[i]);
   }
   return std::make_shared<Tensor>(lhs.get()->size_, result_data, children,
@@ -451,14 +451,14 @@ std::shared_ptr<Tensor> Tensor::sum() {
     total[0] += x;
   }
   return std::make_shared<Tensor>(
-      std::vector<int>{1}, std::vector<float>{total},
+      std::vector<size_t>{1}, std::vector<float>{total},
       std::vector<std::shared_ptr<Tensor>>{get_shared()},
       std::make_shared<SumBackward>(), 's');
 }
 
 std::shared_ptr<Tensor> Tensor::relu() {
   std::vector<float> result_data(data_.size());
-  for (int i = 0; i < data_.size(); ++i) {
+  for (size_t i = 0; i < data_.size(); ++i) {
     result_data[i] = std::max(0.0f, data_[i]);
   }
   return std::make_shared<Tensor>(
@@ -468,7 +468,7 @@ std::shared_ptr<Tensor> Tensor::relu() {
 
 std::shared_ptr<Tensor> Tensor::sigmoid() {
   std::vector<float> result_data(data_.size());
-  for (int i = 0; i < data_.size(); ++i) {
+  for (size_t i = 0; i < data_.size(); ++i) {
     result_data[i] = 1.0f / (1.0f + exp(-data_[i]));
   }
   return std::make_shared<Tensor>(
@@ -476,17 +476,17 @@ std::shared_ptr<Tensor> Tensor::sigmoid() {
       std::make_shared<SigmoidBackward>(), 'g');
 }
 
-std::shared_ptr<Tensor> tensor(std::initializer_list<int> size,
+std::shared_ptr<Tensor> tensor(std::initializer_list<size_t> size,
                                std::initializer_list<float> data) {
   return std::make_shared<Tensor>(size, data);
 }
 
-std::shared_ptr<Tensor> tensor(std::vector<int> size, std::vector<float> data) {
+std::shared_ptr<Tensor> tensor(std::vector<size_t> size, std::vector<float> data) {
   return std::make_shared<Tensor>(size, data);
 }
 
 std::shared_ptr<Tensor> tensor(
-    std::vector<int> size, std::vector<float> data,
+    std::vector<size_t> size, std::vector<float> data,
     std::vector<std::shared_ptr<Tensor>> children = {},
     std::shared_ptr<AutoGradBackward> grad_fn =
         std::make_shared<AutoGradBackward>(),
@@ -509,29 +509,29 @@ std::shared_ptr<Tensor> Tensor::sum() {
 
 // TODO(yrmo): char indicators is a mess!
 
-std::shared_ptr<Tensor> Tensor::select_data(std::vector<int> indexes) {
-  int product = _dot(indexes, strides_);
+std::shared_ptr<Tensor> Tensor::select_data(std::vector<size_t> indexes) {
+  size_t product = _dot(indexes, strides_);
   return std::make_shared<Tensor>(
-      std::vector<int>{1}, std::vector<float>{data_[product]},
+      std::vector<size_t>{1}, std::vector<float>{data_[product]},
       std::vector<std::shared_ptr<Tensor>>{get_shared()},
       std::make_shared<SelectBackward>(), '.');
 }
 
-std::shared_ptr<Tensor> Tensor::select_grad(std::vector<int> indexes) {
-  int product = _dot(indexes, strides_);
+std::shared_ptr<Tensor> Tensor::select_grad(std::vector<size_t> indexes) {
+  size_t product = _dot(indexes, strides_);
   return std::make_shared<Tensor>(
-      std::vector<int>{1}, std::vector<float>{grad_[product]},
+      std::vector<size_t>{1}, std::vector<float>{grad_[product]},
       std::vector<std::shared_ptr<Tensor>>{get_shared()},
       std::make_shared<SelectBackward>(), '.');
 }
 
 // TODO(yrmo): this is untracked, does pytorch track assignment?
 
-void Tensor::put_data(std::vector<int> indexes, float value) {
+void Tensor::put_data(std::vector<size_t> indexes, float value) {
   data_[_dot(indexes, strides_)] = value;
 }
 
-void Tensor::put_grad(std::vector<int> indexes, float value) {
+void Tensor::put_grad(std::vector<size_t> indexes, float value) {
   grad_[_dot(indexes, strides_)] = value;
 }
 
@@ -565,7 +565,7 @@ struct AutoGradBackward {
   }
 };
 
-std::vector<float> broadcast(std::vector<int> from, std::vector<float> data, std::vector<int> to) {
+std::vector<float> broadcast(std::vector<size_t> from, std::vector<float> data, std::vector<size_t> to) {
     // TODO(yrmo) only scalar, vector, and matrix until a nn needs rank > 2
     assert(from.size() < 3);
     assert(to.size() < 3);
@@ -599,7 +599,7 @@ std::vector<float> broadcast(std::vector<int> from, std::vector<float> data, std
     if (from.size() == 2 && to.size() == 2 && from[0] == 1) {
       std::vector<float> result;
       result.reserve(to[0] * to[1]);
-      for (int i = 0; i < to[0]; ++i) {
+      for (size_t i = 0; i < to[0]; ++i) {
         result.insert(result.end(), data.begin(), data.end());
       }
       return result;
@@ -609,8 +609,8 @@ std::vector<float> broadcast(std::vector<int> from, std::vector<float> data, std
     else if (from.size() == 2 && to.size() == 2 && from[1] == 1) {
       std::vector<float> result;
       result.reserve(to[0] * to[1]);
-      for (int i = 0; i < to[0]; ++i) {
-        for (int j = 0; j < to[1]; ++j) {
+      for (size_t i = 0; i < to[0]; ++i) {
+        for (size_t j = 0; j < to[1]; ++j) {
           result.push_back(data[i]);
         }
       }
@@ -633,7 +633,7 @@ struct AddBackward : public AutoGradBackward {
   debug_inputs(grad_output, grad_inputs, "AddBackward");
     for (std::shared_ptr<Tensor> grad_input : grad_inputs) {
       std::vector<float> broadcast_output_grad = broadcast(grad_output.get()->size_, grad_output.get()->grad_, grad_input.get()->size_);
-      for (int i = 0; i < grad_input.get()->grad_.size(); ++i) {
+      for (size_t i = 0; i < grad_input.get()->grad_.size(); ++i) {
         grad_input.get()->grad_[i] += broadcast_output_grad[i]; // grad_output.get()->grad_[i];
       }
     }
@@ -646,10 +646,10 @@ struct SubBackward : public AutoGradBackward {
 
   void apply(std::shared_ptr<Tensor> grad_output,
              std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
-    for (int i = 0; i < grad_inputs[0].get()->grad_.size(); ++i) {
+    for (size_t i = 0; i < grad_inputs[0].get()->grad_.size(); ++i) {
       grad_inputs[0].get()->grad_[i] += grad_output.get()->grad_[0];
     }
-    for (int i = 0; i < grad_inputs[1].get()->grad_.size(); ++i) {
+    for (size_t i = 0; i < grad_inputs[1].get()->grad_.size(); ++i) {
       grad_inputs[1].get()->grad_[i] -= grad_output.get()->grad_[0];
     }
   }
@@ -660,11 +660,11 @@ struct MulBackward : public AutoGradBackward {
 
   void apply(std::shared_ptr<Tensor> grad_output,
              std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
-    for (int i = 0; i < grad_inputs[0].get()->grad_.size(); ++i) {
+    for (size_t i = 0; i < grad_inputs[0].get()->grad_.size(); ++i) {
       grad_inputs[0].get()->grad_[i] +=
           grad_output.get()->grad_[0] * grad_inputs[1].get()->data_[i];
     }
-    for (int i = 0; i < grad_inputs[1].get()->grad_.size(); ++i) {
+    for (size_t i = 0; i < grad_inputs[1].get()->grad_.size(); ++i) {
       grad_inputs[1].get()->grad_[i] +=
           grad_output.get()->grad_[0] * grad_inputs[0].get()->data_[i];
     }
@@ -676,13 +676,13 @@ struct DivBackward : public AutoGradBackward {
 
   void apply(std::shared_ptr<Tensor> grad_output,
              std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
-    for (int i = 0; i < grad_inputs[0].get()->grad_.size(); ++i) {
+    for (size_t i = 0; i < grad_inputs[0].get()->grad_.size(); ++i) {
       // pro tip: don't put 1 instead of 1.0f!
       float update =
           grad_output.get()->grad_[i] * (1.0f / grad_inputs[1].get()->data_[i]);
       grad_inputs[0].get()->grad_[i] += update;
     }
-    for (int i = 0; i < grad_inputs[1].get()->grad_.size(); ++i) {
+    for (size_t i = 0; i < grad_inputs[1].get()->grad_.size(); ++i) {
       float update =
           grad_output.get()->grad_[i] *
           -(grad_inputs[0].get()->data_[i] /
@@ -699,7 +699,7 @@ struct ReluBackward : public AutoGradBackward {
              std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
     assert(grad_inputs.size() == 1);
     std::shared_ptr<Tensor> input = grad_inputs[0];
-    for (int i = 0; i < input.get()->grad_.size(); ++i) {
+    for (size_t i = 0; i < input.get()->grad_.size(); ++i) {
       input.get()->grad_[i] +=
           grad_output.get()->grad_[i] * (input.get()->data_[i] > 0 ? 1 : 0);
     }
@@ -714,7 +714,7 @@ struct SigmoidBackward : public AutoGradBackward {
     debug_inputs(grad_output, grad_inputs, "SigmoidBackward");
     assert(grad_inputs.size() == 1);
     std::shared_ptr<Tensor> input = grad_inputs[0];
-    for (int i = 0; i < input.get()->grad_.size(); ++i) {
+    for (size_t i = 0; i < input.get()->grad_.size(); ++i) {
       auto s = 1.0f / (1.0f + exp(-input.get()->data_[i]));
       auto temp_debug = grad_output.get()->grad_[i] * ((s) * (1 - s));
       input.get()->grad_[i] += temp_debug;
@@ -733,19 +733,19 @@ struct AutoGradForward {
       = 0;
 };
 
-std::vector<float> _matmul(const std::vector<int> &lhs_size,
+std::vector<float> _matmul(const std::vector<size_t> &lhs_size,
                            const std::vector<float> &lhs_data,
-                           const std::vector<int> &rhs_size,
+                           const std::vector<size_t> &rhs_size,
                            const std::vector<float> &rhs_data) {
-  int m = lhs_size[0];
-  int n = rhs_size[1];
-  int k = lhs_size[1];
+  size_t m = lhs_size[0];
+  size_t n = rhs_size[1];
+  size_t k = lhs_size[1];
 
   std::vector<float> result_data(m * n, 0.0f);
 
-  for (int i = 0; i < m; ++i) {
-    for (int j = 0; j < n; ++j) {
-      for (int p = 0; p < k; ++p) {
+  for (size_t i = 0; i < m; ++i) {
+    for (size_t j = 0; j < n; ++j) {
+      for (size_t p = 0; p < k; ++p) {
         result_data[i * n + j] += lhs_data[i * k + p] * rhs_data[p * n + j];
       }
     }
@@ -772,7 +772,7 @@ struct MatMulForward : public AutoGradForward {
         _matmul(lhs_.get()->size_, lhs_.get()->data_, rhs_.get()->size_,
                 rhs_.get()->data_);
 
-    std::vector<int> result_size = {lhs_.get()->size_[0], rhs_.get()->size_[1]};
+    std::vector<size_t> result_size = {lhs_.get()->size_[0], rhs_.get()->size_[1]};
     std::vector<std::shared_ptr<Tensor>> result_children = {lhs_, rhs_};
     std::shared_ptr<MatMulBackward> result_grad_fn =
         std::make_shared<MatMulBackward>();
@@ -783,14 +783,14 @@ struct MatMulForward : public AutoGradForward {
   }
 };
 
-std::vector<float> transpose(const std::vector<int> &size,
+std::vector<float> transpose(const std::vector<size_t> &size,
                              const std::vector<float> &data) {
-  int rows = size[0];
-  int cols = size[1];
+  size_t rows = size[0];
+  size_t cols = size[1];
   std::vector<float> transposed_data(cols * rows, 0.0f);
 
-  for (int i = 0; i < rows; ++i) {
-    for (int j = 0; j < cols; ++j) {
+  for (size_t i = 0; i < rows; ++i) {
+    for (size_t j = 0; j < cols; ++j) {
       transposed_data[j * rows + i] = data[i * cols + j];
     }
   }
@@ -807,7 +807,7 @@ struct MatMulBackward : public AutoGradBackward {
     // std::cout << std::string("matmulbackward") << std::endl;
     // for (std::shared_ptr<Tensor> grad_input : grad_inputs) {
     //   std::cout << std::string("input") << std::endl;
-    //   for (int i = 0; i < grad_output.get()->grad_.size(); ++i) {
+    //   for (size_t i = 0; i < grad_output.get()->grad_.size(); ++i) {
     //     // std::cout << grad_input.get()->grad_[i] << std::endl;
     //     std::cout << grad_output.get()->grad_[i] << std::endl;
     //   }
@@ -817,11 +817,11 @@ struct MatMulBackward : public AutoGradBackward {
     auto b = grad_inputs[1];
 
     auto b_transposed_size =
-        std::vector<int>{b.get()->size_[1], b.get()->size_[0]};
+        std::vector<size_t>{b.get()->size_[1], b.get()->size_[0]};
     auto b_transposed_data = transpose(b.get()->size_, b.get()->data_);
 
     auto a_transposed_size =
-        std::vector<int>{a.get()->size_[1], a.get()->size_[0]};
+        std::vector<size_t>{a.get()->size_[1], a.get()->size_[0]};
     auto a_transposed_data = transpose(a.get()->size_, a.get()->data_);
 
     auto grad_a_data =
@@ -831,11 +831,11 @@ struct MatMulBackward : public AutoGradBackward {
         _matmul(a_transposed_size, a_transposed_data, grad_output.get()->size_,
                 grad_output.get()->grad_);
 
-    for (int i = 0; i < a.get()->grad_.size(); ++i) {
+    for (size_t i = 0; i < a.get()->grad_.size(); ++i) {
       a.get()->grad_[i] += grad_a_data[i];
     }
 
-    for (int i = 0; i < b.get()->grad_.size(); ++i) {
+    for (size_t i = 0; i < b.get()->grad_.size(); ++i) {
       b.get()->grad_[i] += grad_b_data[i];
     }
     debug_outputs(grad_output, grad_inputs, "MatMulBackward");
@@ -877,61 +877,61 @@ void Tensor::zero_grad() {
   }
 }
 
-namespace nn {
+// namespace nn {
 
-// TODO(yrmo): nonlinearity of Neuron need to pass and drill down from MLP
-//              static_cast<bool>(vec_.size() - 1) something liek this for MLP
+// // TODO(yrmo): nonlinearity of Neuron need to pass and drill down from MLP
+// //              static_cast<bool>(vec_.size() - 1) something liek this for MLP
 
-// keep it simple to start
-class Neuron {
- public:
-  std::vector<std::shared_ptr<Tensor>> weights_;
-  std::shared_ptr<Tensor> bias_;
-  float rate_;
+// // keep it simple to start
+// class Neuron {
+//  public:
+//   std::vector<std::shared_ptr<Tensor>> weights_;
+//   std::shared_ptr<Tensor> bias_;
+//   float rate_;
 
-  Neuron(int nin, float rate) : rate_(rate) {
-    for (int i = 0; i < nin; ++i) {
-      weights_.push_back(Tensor::rand({1}));
-    }
-    assert(weights_.size() == nin);
-    bias_ = Tensor::rand({1});
-  }
+//   Neuron(int nin, float rate) : rate_(rate) {
+//     for (size_t i = 0; i < nin; ++i) {
+//       weights_.push_back(Tensor::rand({1}));
+//     }
+//     assert(weights_.size() == nin);
+//     bias_ = Tensor::rand({1});
+//   }
 
-  std::shared_ptr<Tensor> operator()(
-      std::vector<std::shared_ptr<Tensor>> inputs) {
-    if (inputs.size() != weights_.size()) {
-      throw std::runtime_error("Neuron inputs length weights length mismatch!");
-    }
-    std::shared_ptr<Tensor> ans = nullptr;
-    for (int i = 0; i < weights_.size(); ++i) {
-      if (ans == nullptr) {
-        ans = (weights_[i] * inputs[i]);
-      } else {
-        ans = ans + (weights_[i] * inputs[i]);
-      }
-    }
-    ans = ans + bias_;
-    return ans.get()->relu();
-  }
+//   std::shared_ptr<Tensor> operator()(
+//       std::vector<std::shared_ptr<Tensor>> inputs) {
+//     if (inputs.size() != weights_.size()) {
+//       throw std::runtime_error("Neuron inputs length weights length mismatch!");
+//     }
+//     std::shared_ptr<Tensor> ans = nullptr;
+//     for (size_t i = 0; i < weights_.size(); ++i) {
+//       if (ans == nullptr) {
+//         ans = (weights_[i] * inputs[i]);
+//       } else {
+//         ans = ans + (weights_[i] * inputs[i]);
+//       }
+//     }
+//     ans = ans + bias_;
+//     return ans.get()->relu();
+//   }
 
-  void train() {
-    for (int i = 0; i < weights_.size(); ++i) {
-      // std::cout << "weight before: " << weights_[i].get()->data_[0] <<
-      // std::endl;
-      weights_[i].get()->data_[0] = weights_[i].get()->data_[0] +
-                                    ((-rate_) * weights_[i].get()->grad_[0]);
-      // std::cout << "weight after: " << weights_[i].get()->data_[0] <<
-      // std::endl;
-    }
-    // std::cout << "bias before: " << bias_.get()->data_[0] << std::endl;
-    bias_.get()->data_[0] =
-        bias_.get()->data_[0] + ((-rate_) * bias_.get()->grad_[0]);
-    // std::cout << "bias after: " << bias_.get()->data_[0] << std::endl;
-  }
-  // TODO(yrmo) parameters, how do i make this like std iterator?
-};
+//   void train() {
+//     for (size_t i = 0; i < weights_.size(); ++i) {
+//       // std::cout << "weight before: " << weights_[i].get()->data_[0] <<
+//       // std::endl;
+//       weights_[i].get()->data_[0] = weights_[i].get()->data_[0] +
+//                                     ((-rate_) * weights_[i].get()->grad_[0]);
+//       // std::cout << "weight after: " << weights_[i].get()->data_[0] <<
+//       // std::endl;
+//     }
+//     // std::cout << "bias before: " << bias_.get()->data_[0] << std::endl;
+//     bias_.get()->data_[0] =
+//         bias_.get()->data_[0] + ((-rate_) * bias_.get()->grad_[0]);
+//     // std::cout << "bias after: " << bias_.get()->data_[0] << std::endl;
+//   }
+//   // TODO(yrmo) parameters, how do i make this like std iterator?
+// };
 
-}  // namespace nn
+// }  // namespace nn
 
 }  // namespace cg
 
