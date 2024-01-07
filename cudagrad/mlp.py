@@ -1,24 +1,7 @@
-# type: ignore
-#
-# Copyright 2023 Ryan Moore
-#
-# So the magic is that there's this relatively simple algorithm called
-# backpropagation that takes the error in the output and sends that
-# error backwards through the network and computes through all the
-# connections how you should change them to improve the behavior, and
-# then you change them all a tiny bit and you just keep going with
-# another example. And surprisingly that actually works. For many years
-# people thought that would just get jammed up — it would get stuck
-# somewhere — but no it doesn't, it actually works very well.
-#
-# Geoffrey Hinton
-
-# %%
 from random import choice, random
-from typing import *
+from typing import * # type: ignore
 
 import matplotlib.pyplot as plt
-import numpy as np  # just for plotting
 
 from cudagrad.nn import Module, mse, sgd
 from cudagrad.tensor import Tensor
@@ -91,6 +74,8 @@ if __name__ == "__main__":
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
     plt.savefig("./cudagrad/plots/mlp.jpg")
+
+    import numpy as np  # type: ignore
 
     x = np.linspace(0, 1, 50)
     y = np.linspace(0, 1, 50)
