@@ -9,9 +9,9 @@ from cudagrad import Tensor
 # assert cg.subtract(1, 2) == -1
 
 
-def flatten(l):
+def flatten(iterable):
     out = []
-    for item in l:
+    for item in iterable:
         if isinstance(item, (list, tuple)):
             out.extend(flatten(item))
         else:

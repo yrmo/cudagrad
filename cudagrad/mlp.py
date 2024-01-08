@@ -1,5 +1,4 @@
 from random import choice, random
-from typing import *  # type: ignore
 
 import matplotlib.pyplot as plt
 

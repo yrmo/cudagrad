@@ -5,7 +5,6 @@ import sqlite3
 import subprocess
 import time
 from functools import wraps
-from getpass import getpass
 from itertools import chain
 from pathlib import Path
 from subprocess import run
@@ -43,7 +42,7 @@ class Project:
     def __init__(self):
         global CPP_FILES
         for file in CPP_FILES.split():
-            assert os.path.isfile(f"{file}") == True
+            assert os.path.isfile(f"{file}") is True
 
     def connect(self):
         RUN("ssh ryan@192.168.0.28")
@@ -76,6 +75,7 @@ class Project:
     def lint(self):
         RUN(f"python -m cpplint {CPP_FILES}")
         RUN("python -m mypy --exclude build --ignore-missing-imports --pretty .")
+        RUN("ruff .")
 
     def clean(self):
         RUN("python -m isort .")
@@ -260,7 +260,7 @@ class Project:
                 number = test[4]
                 statement = test[3]
                 setup = test[2]
-                key = test[1]
+                # key = test[1]
                 id = test[0]
                 version = None  # TODO
 

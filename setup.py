@@ -1,8 +1,5 @@
 # Available at setup time due to pyproject.toml
 
-from os import environ
-from shutil import which
-
 import toml
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 from setuptools import find_packages, setup
