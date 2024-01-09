@@ -25,6 +25,11 @@
 #include <utility>
 #include <vector>
 
+template <typename... Args>
+void UNUSED(Args&&... args) {
+  ([&args](){ (void)args; }(), ...);
+}
+
 namespace cg {
 
 // __CUDACC__ isn't needed now, but maybe more clear
@@ -432,6 +437,7 @@ template <typename T>
 std::shared_ptr<Tensor> binaryForwardOperator(std::shared_ptr<Tensor> lhs,
                                               std::shared_ptr<Tensor> rhs,
                                               T forward) {
+  UNUSED(lhs, rhs);
   return (*forward)();  // forward.get()();
 }
 
@@ -536,6 +542,7 @@ void Tensor::put_grad(std::vector<size_t> indexes, float value) {
 void debug_inputs(std::shared_ptr<Tensor> grad_output,
                   std::vector<std::shared_ptr<Tensor>> grad_inputs,
                   std::string operation) {
+  UNUSED(grad_output, grad_inputs, operation);
   // std::cout << std::string("--------------------") << std::string("INPUT") <<
   // std::string("--------------------") << std::endl; std::cout <<
   // std::string("--------------------") << operation <<
@@ -548,6 +555,7 @@ void debug_inputs(std::shared_ptr<Tensor> grad_output,
 void debug_outputs(std::shared_ptr<Tensor> grad_output,
                    std::vector<std::shared_ptr<Tensor>> grad_inputs,
                    std::string operation) {
+  UNUSED(grad_output, grad_inputs, operation);
   // std::cout << std::string("--------------------") << std::string("OUTPUT")
   // << std::string("--------------------") << std::endl; std::cout <<
   // std::string("--------------------") << operation <<
@@ -563,6 +571,7 @@ struct AutoGradBackward {
 
   virtual void apply(std::shared_ptr<Tensor> grad_output,
                      std::vector<std::shared_ptr<Tensor>> grad_inputs) {
+    UNUSED(grad_output, grad_inputs);
     throw std::runtime_error("apply() is not implemented");
   }
 };
