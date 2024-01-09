@@ -361,7 +361,7 @@ class DataProxy {
   explicit DataProxy(Tensor &tensor) : parent_tensor(tensor) {}
 
   std::vector<float> operator()() {
-    return parent_tensor.data_;
+    return parent_tensor.get_data();
   }
 
   std::shared_ptr<Tensor> get(std::vector<size_t> indexes) {
@@ -381,7 +381,7 @@ class GradProxy {
   explicit GradProxy(Tensor &tensor) : parent_tensor(tensor) {}
 
   std::vector<float> operator()() {
-    return parent_tensor.grad_;
+    return parent_tensor.get_grad();
   }
 
   std::shared_ptr<Tensor> get(std::vector<size_t> indexes) {
