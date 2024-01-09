@@ -40,10 +40,12 @@ PYBIND11_MODULE(tensor, m) {
 #endif
 
   py::class_<cg::DataProxy>(m, "_DataProxy")
+      .def("__call__", &cg::DataProxy::operator())
       .def("__getitem__", &cg::DataProxy::get)
       .def("__setitem__", &cg::DataProxy::set);
 
   py::class_<cg::GradProxy>(m, "_GradProxy")
+      .def("__call__", &cg::GradProxy::operator())
       .def("__getitem__", &cg::GradProxy::get)
       .def("__setitem__", &cg::GradProxy::set);
 
