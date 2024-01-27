@@ -66,6 +66,8 @@ std::shared_ptr<Tensor> tensor(std::vector<size_t>, std::vector<float>,
                                std::vector<std::shared_ptr<Tensor>>,
                                std::shared_ptr<AutoGradBackward>, std::string);
 
+const std::string DEFAULT_BACKWARD_STRING = "DefaultBackward";
+
 class Tensor : public std::enable_shared_from_this<Tensor> {
  public:
   std::vector<size_t> size_;
@@ -73,7 +75,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   std::vector<float> grad_;
   std::vector<std::shared_ptr<Tensor>> children_;
   std::shared_ptr<AutoGradBackward> grad_fn_ = nullptr;
-  std::string op_ = "UnknownBackward";
+  std::string op_ = DEFAULT_BACKWARD_STRING;
   size_t offset_;
   std::vector<size_t> strides_;
 
@@ -83,7 +85,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
         grad_(data.size(), 0),
         children_(),
         grad_fn_(),
-        op_(),
+        op_(DEFAULT_BACKWARD_STRING),
         offset_(0),
         strides_(size.size(), 0) {
     assert(_product(size) == data_.size());
@@ -96,7 +98,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
         grad_(data.size(), 0),
         children_(),
         grad_fn_(),
-        op_(),
+        op_(DEFAULT_BACKWARD_STRING),
         offset_(0),
         strides_(size.size(), 0) {
     assert(_product(size) == data_.size());
@@ -106,7 +108,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   Tensor(std::vector<size_t> size, std::vector<float> data,
          std::vector<std::shared_ptr<Tensor>> children,
          std::shared_ptr<AutoGradBackward> grad_fn,
-         std::string op = "UnknownBackward")
+         std::string op = DEFAULT_BACKWARD_STRING)
       : size_(size),
         data_(data),
         grad_(data.size(), 0),
@@ -217,7 +219,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
 
   void _graph(int depth = 0) {
     auto print_if_not_leaf = [](std::string c) -> std::string {
-      if (c != "UnknownBackward") return c;
+      if (c != DEFAULT_BACKWARD_STRING) return c;
       return std::string(" ");
     };
     std::string tab(depth, ' ');
@@ -504,7 +506,7 @@ std::shared_ptr<Tensor> tensor(
     std::vector<std::shared_ptr<Tensor>> children = {},
     std::shared_ptr<AutoGradBackward> grad_fn =
         std::make_shared<AutoGradBackward>(),
-    std::string op = "UnknownBackward") {
+    std::string op = DEFAULT_BACKWARD_STRING) {
   return std::make_shared<Tensor>(size, data, children, std::move(grad_fn), op);
 }
 
@@ -884,7 +886,7 @@ void Tensor::backward() {
   grad_fn_.get()->apply(get_shared(), children_);
   for (auto child : children_) {
     if (child.get()->grad_fn_ != nullptr) {
-      assert(child.get()->op_ != "UnknownBackward");
+      assert(child.get()->op_ != DEFAULT_BACKWARD_STRING);
       child.get()->_backward();
     }
   }
