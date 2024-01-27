@@ -48,22 +48,22 @@ if __name__ == "__main__":
             out2 = round(model(Tensor([2, 1], inputs[2])).item())
             out3 = round(model(Tensor([2, 1], inputs[3])).item())
             print(
-                "0 OR 0 = ",
+                "0 XOR 0 = ",
                 round(model(Tensor([2, 1], inputs[0])).item(), 2),
                 "🔥" if out0 == 0 else "",
             )
             print(
-                "0 OR 1 = ",
+                "0 XOR 1 = ",
                 round(model(Tensor([2, 1], inputs[1])).item(), 2),
                 "🔥" if out1 == 1 else "",
             )
             print(
-                "1 OR 0 = ",
+                "1 XOR 0 = ",
                 round(model(Tensor([2, 1], inputs[2])).item(), 2),
                 "🔥" if out2 == 1 else "",
             )
             print(
-                "1 OR 1 = ",
+                "1 XOR 1 = ",
                 round(model(Tensor([2, 1], inputs[3])).item(), 2),
                 "🔥" if out3 == 0 else "",
             )
