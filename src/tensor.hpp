@@ -26,8 +26,8 @@
 #include <vector>
 
 template <typename... Args>
-void UNUSED(Args&&... args) {
-  ([&args](){ (void)args; }(), ...);
+void UNUSED(Args &&...args) {
+  ([&args]() { (void)args; }(), ...);
 }
 
 namespace cg {
@@ -105,7 +105,8 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
 
   Tensor(std::vector<size_t> size, std::vector<float> data,
          std::vector<std::shared_ptr<Tensor>> children,
-         std::shared_ptr<AutoGradBackward> grad_fn, std::string op = "UnknownBackward")
+         std::shared_ptr<AutoGradBackward> grad_fn,
+         std::string op = "UnknownBackward")
       : size_(size),
         data_(data),
         grad_(data.size(), 0),
@@ -185,8 +186,9 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
     ss << std::hex << (uintptr_t)this;
     std::string address = ss.str();
 
-    return std::string("<cudagrad.Tensor([") + s_str + std::string("], [") +
-           d_str + std::string("]) object at 0x") + address + std::string(">");
+    return std::string("<Tensor([") + s_str + std::string("], [") + d_str +
+           std::string("]) ") + std::string("object at 0x") + address +
+           std::string(" ") + op_ + std::string(">");
   }
 
   void size() {
@@ -360,9 +362,7 @@ class DataProxy {
  public:
   explicit DataProxy(Tensor &tensor) : parent_tensor(tensor) {}
 
-  std::vector<float> operator()() {
-    return parent_tensor.get_data();
-  }
+  std::vector<float> operator()() { return parent_tensor.get_data(); }
 
   std::shared_ptr<Tensor> get(std::vector<size_t> indexes) {
     return parent_tensor.select_data(indexes);
@@ -380,9 +380,7 @@ class GradProxy {
  public:
   explicit GradProxy(Tensor &tensor) : parent_tensor(tensor) {}
 
-  std::vector<float> operator()() {
-    return parent_tensor.get_grad();
-  }
+  std::vector<float> operator()() { return parent_tensor.get_grad(); }
 
   std::shared_ptr<Tensor> get(std::vector<size_t> indexes) {
     return parent_tensor.select_grad(indexes);
@@ -420,25 +418,29 @@ std::shared_ptr<Tensor> binaryElementwiseOperator(
 std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> lhs,
                                   std::shared_ptr<Tensor> rhs) {
   return binaryElementwiseOperator<AddBackward>(
-      lhs, rhs, std::plus<float>(), "AddBackward", std::make_shared<AddBackward>());
+      lhs, rhs, std::plus<float>(), "AddBackward",
+      std::make_shared<AddBackward>());
 }
 
 std::shared_ptr<Tensor> operator-(std::shared_ptr<Tensor> lhs,
                                   std::shared_ptr<Tensor> rhs) {
   return binaryElementwiseOperator<SubBackward>(
-      lhs, rhs, std::minus<float>(), "MinusBackward", std::make_shared<SubBackward>());
+      lhs, rhs, std::minus<float>(), "MinusBackward",
+      std::make_shared<SubBackward>());
 }
 
 std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> lhs,
                                   std::shared_ptr<Tensor> rhs) {
   return binaryElementwiseOperator<MulBackward>(
-      lhs, rhs, std::multiplies<float>(), "MulBackward", std::make_shared<MulBackward>());
+      lhs, rhs, std::multiplies<float>(), "MulBackward",
+      std::make_shared<MulBackward>());
 }
 
 std::shared_ptr<Tensor> operator/(std::shared_ptr<Tensor> lhs,
                                   std::shared_ptr<Tensor> rhs) {
   return binaryElementwiseOperator<DivBackward>(
-      lhs, rhs, std::divides<float>(), "DivBackward", std::make_shared<DivBackward>());
+      lhs, rhs, std::divides<float>(), "DivBackward",
+      std::make_shared<DivBackward>());
 }
 
 template <typename T>

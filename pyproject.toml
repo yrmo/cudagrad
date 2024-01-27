@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cudagrad"
-version = "0.0.51"
+version = "0.0.52"
 description = "A tensor-valued autograd engine for Python"
 readme = "README.md"
 license = {text = "MIT License"}
