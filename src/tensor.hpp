@@ -64,7 +64,7 @@ std::shared_ptr<Tensor> tensor(std::vector<size_t>, std::vector<float>);
 
 std::shared_ptr<Tensor> tensor(std::vector<size_t>, std::vector<float>,
                                std::vector<std::shared_ptr<Tensor>>,
-                               std::shared_ptr<AutoGradBackward>, char);
+                               std::shared_ptr<AutoGradBackward>, std::string);
 
 class Tensor : public std::enable_shared_from_this<Tensor> {
  public:
@@ -73,7 +73,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   std::vector<float> grad_;
   std::vector<std::shared_ptr<Tensor>> children_;
   std::shared_ptr<AutoGradBackward> grad_fn_ = nullptr;
-  char op_;
+  std::string op_ = "UnknownBackward";
   size_t offset_;
   std::vector<size_t> strides_;
 
@@ -83,7 +83,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
         grad_(data.size(), 0),
         children_(),
         grad_fn_(),
-        op_('?'),
+        op_(),
         offset_(0),
         strides_(size.size(), 0) {
     assert(_product(size) == data_.size());
@@ -96,7 +96,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
         grad_(data.size(), 0),
         children_(),
         grad_fn_(),
-        op_('?'),
+        op_(),
         offset_(0),
         strides_(size.size(), 0) {
     assert(_product(size) == data_.size());
@@ -105,7 +105,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
 
   Tensor(std::vector<size_t> size, std::vector<float> data,
          std::vector<std::shared_ptr<Tensor>> children,
-         std::shared_ptr<AutoGradBackward> grad_fn, char op = '?')
+         std::shared_ptr<AutoGradBackward> grad_fn, std::string op = "UnknownBackward")
       : size_(size),
         data_(data),
         grad_(data.size(), 0),
@@ -123,7 +123,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
         grad_(std::move(other.grad_)),
         children_(std::move(other.children_)),
         grad_fn_(std::move(other.grad_fn_)),
-        op_(other.op_),
+        op_(std::move(other.op_)),
         offset_(other.offset_),
         strides_(std::move(other.strides_)) {}
 
@@ -214,12 +214,12 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   }
 
   void _graph(int depth = 0) {
-    auto print_if_not_leaf = [](char c) -> char {
-      if (c != '?') return c;
-      return ' ';
+    auto print_if_not_leaf = [](std::string c) -> std::string {
+      if (c != "UnknownBackward") return c;
+      return std::string(" ");
     };
     std::string tab(depth, ' ');
-    char displayed_op = print_if_not_leaf(op_);
+    std::string displayed_op = print_if_not_leaf(op_);
     std::cout << tab << this << " " << displayed_op << std::endl;
     for (auto c : children_) {
       c.get()->_graph(depth + 2);
@@ -402,7 +402,7 @@ GradProxy Tensor::grad_proxy() { return GradProxy(*this); }
 template <typename T>
 std::shared_ptr<Tensor> binaryElementwiseOperator(
     std::shared_ptr<Tensor> lhs, std::shared_ptr<Tensor> rhs,
-    std::function<float(float, float)> func, char op,
+    std::function<float(float, float)> func, std::string op,
     std::shared_ptr<T> backward) {
   std::vector<std::shared_ptr<Tensor>> children;
   children.push_back(lhs);
@@ -420,25 +420,25 @@ std::shared_ptr<Tensor> binaryElementwiseOperator(
 std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> lhs,
                                   std::shared_ptr<Tensor> rhs) {
   return binaryElementwiseOperator<AddBackward>(
-      lhs, rhs, std::plus<float>(), '+', std::make_shared<AddBackward>());
+      lhs, rhs, std::plus<float>(), "AddBackward", std::make_shared<AddBackward>());
 }
 
 std::shared_ptr<Tensor> operator-(std::shared_ptr<Tensor> lhs,
                                   std::shared_ptr<Tensor> rhs) {
   return binaryElementwiseOperator<SubBackward>(
-      lhs, rhs, std::minus<float>(), '-', std::make_shared<SubBackward>());
+      lhs, rhs, std::minus<float>(), "MinusBackward", std::make_shared<SubBackward>());
 }
 
 std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> lhs,
                                   std::shared_ptr<Tensor> rhs) {
   return binaryElementwiseOperator<MulBackward>(
-      lhs, rhs, std::multiplies<float>(), '*', std::make_shared<MulBackward>());
+      lhs, rhs, std::multiplies<float>(), "MulBackward", std::make_shared<MulBackward>());
 }
 
 std::shared_ptr<Tensor> operator/(std::shared_ptr<Tensor> lhs,
                                   std::shared_ptr<Tensor> rhs) {
   return binaryElementwiseOperator<DivBackward>(
-      lhs, rhs, std::divides<float>(), '/', std::make_shared<DivBackward>());
+      lhs, rhs, std::divides<float>(), "DivBackward", std::make_shared<DivBackward>());
 }
 
 template <typename T>
@@ -464,7 +464,7 @@ std::shared_ptr<Tensor> Tensor::sum() {
   return std::make_shared<Tensor>(
       std::vector<size_t>{1}, std::vector<float>{total},
       std::vector<std::shared_ptr<Tensor>>{get_shared()},
-      std::make_shared<SumBackward>(), 's');
+      std::make_shared<SumBackward>(), "SumBackward");
 }
 
 std::shared_ptr<Tensor> Tensor::relu() {
@@ -474,7 +474,7 @@ std::shared_ptr<Tensor> Tensor::relu() {
   }
   return std::make_shared<Tensor>(
       size_, result_data, std::vector<std::shared_ptr<Tensor>>{get_shared()},
-      std::make_shared<ReluBackward>(), 'r');
+      std::make_shared<ReluBackward>(), "ReluBackward");
 }
 
 std::shared_ptr<Tensor> Tensor::sigmoid() {
@@ -484,7 +484,7 @@ std::shared_ptr<Tensor> Tensor::sigmoid() {
   }
   return std::make_shared<Tensor>(
       size_, result_data, std::vector<std::shared_ptr<Tensor>>{get_shared()},
-      std::make_shared<SigmoidBackward>(), 'g');
+      std::make_shared<SigmoidBackward>(), "SigmoidBackward");
 }
 
 std::shared_ptr<Tensor> tensor(std::initializer_list<size_t> size,
@@ -502,7 +502,7 @@ std::shared_ptr<Tensor> tensor(
     std::vector<std::shared_ptr<Tensor>> children = {},
     std::shared_ptr<AutoGradBackward> grad_fn =
         std::make_shared<AutoGradBackward>(),
-    char op = '?') {
+    std::string op = "UnknownBackward") {
   return std::make_shared<Tensor>(size, data, children, std::move(grad_fn), op);
 }
 
@@ -526,7 +526,7 @@ std::shared_ptr<Tensor> Tensor::select_data(std::vector<size_t> indexes) {
   return std::make_shared<Tensor>(
       std::vector<size_t>{1}, std::vector<float>{data_[product]},
       std::vector<std::shared_ptr<Tensor>>{get_shared()},
-      std::make_shared<SelectBackward>(), '.');
+      std::make_shared<SelectBackward>(), "SelectBackward");
 }
 
 std::shared_ptr<Tensor> Tensor::select_grad(std::vector<size_t> indexes) {
@@ -534,7 +534,7 @@ std::shared_ptr<Tensor> Tensor::select_grad(std::vector<size_t> indexes) {
   return std::make_shared<Tensor>(
       std::vector<size_t>{1}, std::vector<float>{grad_[product]},
       std::vector<std::shared_ptr<Tensor>>{get_shared()},
-      std::make_shared<SelectBackward>(), '.');
+      std::make_shared<SelectBackward>(), "SelectGradBackward");
 }
 
 // TODO(yrmo): this is untracked, does pytorch track assignment?
@@ -802,7 +802,9 @@ struct MatMulForward : public AutoGradForward {
 
     return std::make_shared<Tensor>(result_size, result_data,
                                     std::move(result_children),
-                                    std::move(result_grad_fn), '@');
+                                    std::move(result_grad_fn),
+                                    // TODO(yrmo) Is this MatMulForward?
+                                    "MatMulBackward");
   }
 };
 
@@ -880,7 +882,7 @@ void Tensor::backward() {
   grad_fn_.get()->apply(get_shared(), children_);
   for (auto child : children_) {
     if (child.get()->grad_fn_ != nullptr) {
-      assert(child.get()->op_ != '?');
+      assert(child.get()->op_ != "UnknownBackward");
       child.get()->_backward();
     }
   }

@@ -82,7 +82,7 @@ class Project:
         RUN("python -m black .")
         RUN(f"clang-format -i -style=Google {CPP_FILES}")
 
-    def SO(self):
+    def build(self):
         RUN("pip install .")
         RUN(
             "cp build/lib.macosx-13.2-arm64-cpython-311/cudagrad/tensor.cpython-311-darwin.so ./cudagrad/"
