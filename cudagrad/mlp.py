@@ -1,6 +1,15 @@
-from random import choice, random
+from os import getenv
 
-import matplotlib.pyplot as plt
+PROFILING = int(getenv("PROFILING", "0"))
+
+if not PROFILING:
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+###############################################################################
+
+
+from random import choice, random
 
 from cudagrad.nn import Module, mse, sgd
 from cudagrad.tensor import Tensor
@@ -68,28 +77,27 @@ if __name__ == "__main__":
                 "🔥" if out3 == 0 else "",
             )
 
-    plt.scatter(epochs, losses)
-    plt.title("MLP trained on binary XOR function")
-    plt.xlabel("Epoch")
-    plt.ylabel("Loss")
-    plt.savefig("./cudagrad/plots/mlp.jpg")
+    if not PROFILING:
+        plt.scatter(epochs, losses)
+        plt.title("MLP trained on binary XOR function")
+        plt.xlabel("Epoch")
+        plt.ylabel("Loss")
+        plt.savefig("./cudagrad/plots/mlp.jpg")
 
-    import numpy as np  # type: ignore
+        x = np.linspace(0, 1, 50)
+        y = np.linspace(0, 1, 50)
+        X, Y = np.meshgrid(x, y)
+        Z = np.zeros(X.shape)
 
-    x = np.linspace(0, 1, 50)
-    y = np.linspace(0, 1, 50)
-    X, Y = np.meshgrid(x, y)
-    Z = np.zeros(X.shape)
+        for i in range(X.shape[0]):
+            for j in range(X.shape[1]):
+                input_data = Tensor([2, 1], [X[i, j], Y[i, j]])
+                Z[i, j] = model(input_data).item()
 
-    for i in range(X.shape[0]):
-        for j in range(X.shape[1]):
-            input_data = Tensor([2, 1], [X[i, j], Y[i, j]])
-            Z[i, j] = model(input_data).item()
-
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection="3d")
-    ax.plot_surface(X, Y, Z, cmap="viridis")
-    plt.title("XOR MLP Visualization")
-    plt.xlabel("X")
-    plt.ylabel("Y")
-    plt.savefig("./cudagrad/plots/mlp-3d.jpg")
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection="3d")
+        ax.plot_surface(X, Y, Z, cmap="viridis")
+        plt.title("XOR MLP Visualization")
+        plt.xlabel("X")
+        plt.ylabel("Y")
+        plt.savefig("./cudagrad/plots/mlp-3d.jpg")

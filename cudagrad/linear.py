@@ -1,6 +1,14 @@
-from random import random
+from os import getenv
 
-import matplotlib.pyplot as plt
+PROFILING = int(getenv("PROFILING", "0"))
+
+if not PROFILING:
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+###############################################################################
+
+from random import random
 
 from cudagrad.nn import Module, mse, sgd
 from cudagrad.tensor import Tensor
@@ -60,8 +68,9 @@ if __name__ == "__main__":
                 "🔥" if out3 == 1 else "",
             )
 
-    plt.scatter(epochs, losses)
-    plt.title("Neuron trained on binary OR function")
-    plt.xlabel("Epoch")
-    plt.ylabel("Loss")
-    plt.savefig("./cudagrad/plots/linear.jpg")
+    if not PROFILING:
+        plt.scatter(epochs, losses)
+        plt.title("Neuron trained on binary OR function")
+        plt.xlabel("Epoch")
+        plt.ylabel("Loss")
+        plt.savefig("./cudagrad/plots/linear.jpg")

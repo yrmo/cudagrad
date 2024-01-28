@@ -1,14 +1,11 @@
 import os
 import re
 import shutil
-import sqlite3
 import subprocess
-import time
 from functools import wraps
 from itertools import chain
+from os import environ
 from pathlib import Path
-from subprocess import run
-from timeit import timeit
 
 import fire
 import torch
@@ -188,6 +185,7 @@ class Project:
             )
 
     def profile(self, model):
+        environ["PROFILING"] = "1"
         RUN(f"python -m cProfile -o ./profiles/{model}.prof -m cudagrad.{model}")
 
     class CheckRequirementsBroken:
