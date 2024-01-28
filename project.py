@@ -187,6 +187,9 @@ class Project:
                 )
             )
 
+    def profile(self, model):
+        RUN(f"python -m cProfile -o ./profiles/{model}.prof -m cudagrad.{model}")
+
     class DB:
         def connect(self):
             run(f"sqlite3 {DATABASE}")
