@@ -20,8 +20,8 @@
 # %%
 
 from cudagrad import Tensor
-from cudagrad.nn import mse, sgd
 from cudagrad.mlp import MLP
+from cudagrad.nn import mse, sgd
 
 model = MLP()
 
