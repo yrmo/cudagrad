@@ -13,9 +13,24 @@ from random import choice, random
 
 from sklearn.datasets import make_moons
 
-from cudagrad.mlp import MLP
-from cudagrad.nn import mse, sgd
+from cudagrad.nn import Module, mse, sgd
 from cudagrad.tensor import Tensor
+
+class MLP(Module):
+    def __init__(self):
+        self.w0 = Tensor(
+            [16, 2], [choice([-1 * random(), random()]) for _ in range(2 * 16)]
+        )
+        self.b0 = Tensor([16, 1], [choice([-1 * random(), random()]) for _ in range(16)])
+        self.w1 = Tensor(
+            [1, 16], [choice([-1 * random(), random()]) for _ in range(1 * 16)]
+        )
+        self.b1 = Tensor([1], [choice([-1 * random(), random()]) for _ in range(1)])
+
+    def __call__(self, x: Tensor) -> Tensor:
+        return Tensor.sigmoid(
+            self.w1 @ Tensor.sigmoid((self.w0 @ x + self.b0)) + self.b1
+        )
 
 if __name__ == "__main__":
     moons = make_moons()  # two moons
@@ -23,7 +38,7 @@ if __name__ == "__main__":
     inputs = moons[0]
     targets = moons[1]
 
-    EPOCHS = 10000
+    EPOCHS = 500
     lr = 0.05
     epochs = []
     losses = []
@@ -41,8 +56,8 @@ if __name__ == "__main__":
             accuracy = []
             for i, target in enumerate(targets):
                 accuracy.append(round(model(Tensor([2, 1], inputs[i])).item()) == target.item())
-            print(f"{round(sum(accuracy) / len(accuracy), 2)}%")
-            print(["🔥" if x == True else " " for x in accuracy])
+            print(f"{round(sum(accuracy) / len(accuracy), 2) * 100}%")
+            print("".join(["🔥" if x == True else " " for x in accuracy]))
 
     if not PROFILING:
         plt.scatter(epochs, losses)
@@ -52,7 +67,7 @@ if __name__ == "__main__":
         plt.savefig("./cudagrad/plots/moons.jpg")
 
         x = np.linspace(-2.5, 2.5, 50)
-        y = np.linspace(-2.5, 2.5, 50)
+        y = np.linspace(-1.5, 1.5, 50)
         X, Y = np.meshgrid(x, y)
         Z = np.zeros(X.shape)
 
@@ -63,8 +78,14 @@ if __name__ == "__main__":
 
         plt.figure()
         plt.contourf(X, Y, Z, cmap="viridis")
+        plt.colorbar()  # colors Z value
+
+        # plotting scatter plot over contour plot
+        plt.scatter(inputs[targets == 0, 0], inputs[targets == 0, 1], c='red', label='Class 0')
+        plt.scatter(inputs[targets == 1, 0], inputs[targets == 1, 1], c='blue', label='Class 1')
+
         plt.title("Two Moons MLP Visualization (2D)")
         plt.xlabel("X")
         plt.ylabel("Y")
-        plt.colorbar()  # adds a color bar to indicate the Z value
+        plt.legend()
         plt.savefig("./cudagrad/plots/moons-2d.jpg")
