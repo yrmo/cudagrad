@@ -13,13 +13,12 @@ from random import choice, random
 
 from sklearn.datasets import make_moons
 
-from cudagrad.nn import mse, sgd
 from cudagrad.mlp import MLP
+from cudagrad.nn import mse, sgd
 from cudagrad.tensor import Tensor
 
-
 if __name__ == "__main__":
-    moons = make_moons() # two moons
+    moons = make_moons()  # two moons
 
     inputs = moons[0]
     targets = moons[1]
@@ -36,33 +35,14 @@ if __name__ == "__main__":
             loss.backward()
             sgd(model, lr)
         if epoch % (EPOCHS // 10) == 0:
-            print(f"{epoch=}", f"{loss.item()}")
+            print(f"{epoch=}", f"{loss.item()=}")
             epochs.append(epoch)
             losses.append(loss.item())
-            out0 = int(model(Tensor([2, 1], inputs[(len(inputs) // 4) * 0])).item())
-            out1 = int(model(Tensor([2, 1], inputs[(len(inputs) // 4) * 1])).item())
-            out2 = int(model(Tensor([2, 1], inputs[(len(inputs) // 4) * 2])).item())
-            out3 = int(model(Tensor([2, 1], inputs[(len(inputs) // 4) * 3])).item())
-            print(
-                f"Moons {inputs[(len(inputs) // 4) * 0]} = {(targets[i] // 4) * 0}",
-                int(model(Tensor([2, 1], inputs[(len(inputs) // 4) * 0])).item()),
-                "🔥" if out0 == targets[(len(inputs) // 4) * 0] else "",
-            )
-            print(
-                f"Moons {inputs[(len(inputs) // 4) * 1]} = {(targets[i] // 4) * 1}",
-                int(model(Tensor([2, 1], inputs[(len(inputs) // 4) * 1])).item()),
-                "🔥" if out1 == targets[(len(inputs) // 4) * 1] else "",
-            )
-            print(
-                f"Moons {inputs[(len(inputs) // 4) * 2]} = {(targets[i] // 4) * 2}",
-                int(model(Tensor([2, 1], inputs[(len(inputs) // 4) * 2])).item()),
-                "🔥" if out2 == targets[(len(inputs) // 4) * 2] else "",
-            )
-            print(
-                f"Moons {inputs[(len(inputs) // 4) * 3]} = {(targets[i] // 4) * 3}",
-                int(model(Tensor([2, 1], inputs[(len(inputs) // 4) * 3])).item()),
-                "🔥" if out3 == targets[(len(inputs) // 4) * 3] else "",
-            )
+            accuracy = []
+            for i, target in enumerate(targets):
+                accuracy.append(round(model(Tensor([2, 1], inputs[i])).item()) == target.item())
+            print(f"{round(sum(accuracy) / len(accuracy), 2)}%")
+            print(["🔥" if x == True else " " for x in accuracy])
 
     if not PROFILING:
         plt.scatter(epochs, losses)
