@@ -18,3 +18,8 @@ The following examples were written purely in Python using only `cudagrad.Tensor
 
 ![](cudagrad/plots/mlp.jpg)
 ![](cudagrad/plots/mlp-3d.jpg)
+
+## Two moons
+
+![](cudagrad/plots/moons.jpg)
+![](cudagrad/plots/moons-2d.jpg)
