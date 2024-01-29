@@ -69,18 +69,21 @@ if __name__ == "__main__":
             )
 
     if not PROFILING:
-        x1_values = np.linspace(0, 1, 100)
-        x2_values = np.linspace(0, 1, 100)
-        x1_grid, x2_grid = np.meshgrid(x1_values, x2_values)
+        x = np.linspace(0, 1, 100)
+        y = np.linspace(0, 1, 100)
+        X, Y = np.meshgrid(x, y)
+        Z = np.zeros(X.shape)
 
-        outputs = np.zeros(x1_grid.shape)
-        for i in range(x1_grid.shape[0]):
-            for j in range(x1_grid.shape[1]):
-                outputs[i, j] = model(Tensor([2, 1], [x1_grid[i, j], x2_grid[i, j]])).item()
+        for i in range(X.shape[0]):
+            for j in range(X.shape[1]):
+                Z[i, j] = model(Tensor([2, 1], [X[i, j], Y[i, j]])).item()
 
-        plt.imshow(outputs, extent=(0, 1, 0, 1), origin='lower', cmap="viridis", alpha=0.7)
-        plt.colorbar(label='Z')
-        plt.title('Neuron train on binary OR function')
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        ax.plot_surface(X, Y, Z, cmap='viridis')
+
+        plt.title('OR Neuron')
         plt.xlabel('X')
         plt.ylabel('Y')
-        plt.savefig("./cudagrad/plots/linear-2d-contour.jpg")
+        ax.set_zlabel('Z')
+        plt.savefig("./cudagrad/plots/linear-3d.jpg")

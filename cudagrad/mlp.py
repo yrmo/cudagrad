@@ -78,12 +78,6 @@ if __name__ == "__main__":
             )
 
     if not PROFILING:
-        plt.scatter(epochs, losses)
-        plt.title("MLP trained on binary XOR function")
-        plt.xlabel("Epoch")
-        plt.ylabel("Loss")
-        plt.savefig("./cudagrad/plots/mlp.jpg")
-
         x = np.linspace(0, 1, 50)
         y = np.linspace(0, 1, 50)
         X, Y = np.meshgrid(x, y)
@@ -97,7 +91,7 @@ if __name__ == "__main__":
         fig = plt.figure()
         ax = fig.add_subplot(111, projection="3d")
         ax.plot_surface(X, Y, Z, cmap="viridis")
-        plt.title("XOR MLP Visualization")
+        plt.title("XOR MLP")
         plt.xlabel("X")
         plt.ylabel("Y")
         plt.savefig("./cudagrad/plots/mlp-3d.jpg")

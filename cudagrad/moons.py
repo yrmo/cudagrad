@@ -60,12 +60,6 @@ if __name__ == "__main__":
             print("".join(["🔥" if x == True else " " for x in accuracy]))
 
     if not PROFILING:
-        plt.scatter(epochs, losses)
-        plt.title("MLP trained on two moons")
-        plt.xlabel("Epoch")
-        plt.ylabel("Loss")
-        plt.savefig("./cudagrad/plots/moons.jpg")
-
         x = np.linspace(-2.5, 2.5, 50)
         y = np.linspace(-1.5, 1.5, 50)
         X, Y = np.meshgrid(x, y)
@@ -76,16 +70,17 @@ if __name__ == "__main__":
                 input_data = Tensor([2, 1], [X[i, j], Y[i, j]])
                 Z[i, j] = model(input_data).item()
 
-        plt.figure()
-        plt.contourf(X, Y, Z, cmap="viridis")
-        plt.colorbar()  # colors Z value
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
 
-        # plotting scatter plot over contour plot
-        plt.scatter(inputs[targets == 0, 0], inputs[targets == 0, 1], c='red', label='Class 0')
-        plt.scatter(inputs[targets == 1, 0], inputs[targets == 1, 1], c='blue', label='Class 1')
+        surf = ax.plot_surface(X, Y, Z, cmap='viridis', alpha=0.6)
 
-        plt.title("Two Moons MLP Visualization (2D)")
-        plt.xlabel("X")
-        plt.ylabel("Y")
-        plt.legend()
-        plt.savefig("./cudagrad/plots/moons-2d.jpg")
+        ax.scatter(inputs[targets == 0, 0], inputs[targets == 0, 1], 0, c='#440154', label='0')
+        ax.scatter(inputs[targets == 1, 0], inputs[targets == 1, 1], 0, c='#fde725', label='1')
+
+        plt.title("Two Moons MLP")
+        ax.set_xlabel('X')
+        ax.set_ylabel('Y')
+        ax.set_zlabel('Z')
+
+        plt.savefig("./cudagrad/plots/moons-3d.jpg")
