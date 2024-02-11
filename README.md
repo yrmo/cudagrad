@@ -8,16 +8,20 @@ In-depth `cudagrad.Tensor` documentation can be found in [Tensor.ipynb](./Tensor
 
 # Examples
 
-The following examples were written purely in Python using only `cudagrad.Tensor` for learning. See `__main__` guards in `cudagrad/cudagrad/` for usage examples, below are the loss function plots:
+The following examples were written purely in Python using only `cudagrad.Tensor` for learning. See `__main__` guards in `cudagrad/cudagrad/` for usage examples.
 
 ## Neuron/Linear
 
+### OR
+
 ![](cudagrad/plots/linear-3d.jpg)
 
-## Multilayer perceptron
+## Multilayer perceptron (MLP)
+
+### XOR
 
 ![](cudagrad/plots/mlp-3d.jpg)
 
-## Two moons
+### Two moons
 
 ![](cudagrad/plots/moons-3d.jpg)
