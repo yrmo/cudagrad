@@ -32,10 +32,7 @@ void UNUSED(Args &&...args) {
 
 namespace cg {
 
-// __CUDACC__ isn't needed now, but maybe more clear
-#ifdef __CUDACC__
 extern "C" void hello();
-#endif
 
 // using using for now in case in the future during operator fusion
 // I need to know what is actually happening, maybe more clear
