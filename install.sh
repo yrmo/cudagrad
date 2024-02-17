@@ -4,3 +4,4 @@ mkdir build
 cd build
 cmake ..
 make
+cp tensor.so ../cudagrad/
