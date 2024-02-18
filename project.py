@@ -112,21 +112,16 @@ class Project:
         
         os.chdir("..")
         RUN("git restore CMakeLists.txt")
-        return
 
         RUN("python -m pip uninstall -y cudagrad")
         RUN("python -m pip cache purge")
         os.chdir(os.path.expanduser("~/cudagrad"))
-        RUN("rm CMakeLists.txt")
-        RUN("python -m pip install .")
-        RUN(
-            "cp ./build/lib.macosx-13.2-arm64-cpython-311/cudagrad/tensor.cpython-311-darwin.so ./cudagrad"
-        )
-        RUN("python tests/test_backward.py")
-        os.chdir(os.path.expanduser("~/cudagrad"))
+        RUN("pip install .")
+        # RUN("python tests/test_backward.py")
         RUN("python -m pip install cudagrad")
         RUN("python -m cudagrad.linear")
         RUN("python -m cudagrad.mlp")
+        RUN("python -m cudagrad.moons")
         RUN("git restore cudagrad/plots/*.jpg")
 
     def test_python_3_7(self):
