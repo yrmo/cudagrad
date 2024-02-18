@@ -1,17 +1,13 @@
-# Available at setup time due to pyproject.toml
-
-import toml
-from pybind11.setup_helpers import Pybind11Extension, build_ext
-from setuptools import find_packages, setup
-
-
 import os
-import re
 import subprocess
 import sys
-import platform
-from setuptools import setup, Extension
+from shutil import move
+
+import toml
+from setuptools import Extension, find_packages, setup
 from setuptools.command.build_ext import build_ext
+
+from pybind11.setup_helpers import build_ext
 
 
 class CMakeExtension(Extension):
@@ -22,41 +18,32 @@ class CMakeExtension(Extension):
 class CMakeBuild(build_ext):
     def run(self):
         try:
-            out = subprocess.check_output(['cmake', '--version'])
+            subprocess.check_output(['cmake', '--version'])
         except OSError:
-            raise RuntimeError("CMake must be installed to build the following extensions: " +
-                               ", ".join(e.name for e in self.extensions))
+            raise RuntimeError("CMake must be installed to build tensor!")
 
-        for ext in self.extensions:
-            self.build_extension(ext)
+        for extension in self.extensions:
+            self.build_extension(extension)
 
     def build_extension(self, ext):
         extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
         cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
                       '-DPYTHON_EXECUTABLE=' + sys.executable]
 
-        cfg = 'Debug' if self.debug else 'Release'
-        build_args = ['--config', cfg]
-
-        if platform.system() == "Windows":
-            cmake_args += ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}'.format(cfg.upper(), extdir)]
-            if sys.maxsize > 2**32:
-                cmake_args += ['-A', 'x64']
-            build_args += ['--', '/m']
-        else:
-            cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
-            build_args += ['--', '-j2']
-
-        env = os.environ.copy()
-        env['CXXFLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(env.get('CXXFLAGS', ''),
-                                                              self.distribution.get_version())
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
-        subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env)
-        subprocess.check_call(['cmake', '--build', '.'] + build_args, cwd=self.build_temp)
+        subprocess.check_call(['cmake', ext.sourcedir] + cmake_args
+                              , cwd=self.build_temp)
+        subprocess.check_call(['cmake', '--build', '.'], cwd=self.build_temp)
 
+        # print("Listing all files in build_temp directory:")
+        # for root, dirs, files in os.walk(self.build_temp):
+        #     for file in files:
+        #         print(os.path.join(root, file))
 
-# assert which("nvcc") is not None
+        built_lib = os.path.join(self.build_temp,'lib', 'tensor.so')
+        dest_lib = os.path.join(self.build_lib, 'cudagrad', 'tensor.so')
+        move(built_lib, dest_lib)
 
 
 def get_version_from_toml():
@@ -78,10 +65,7 @@ setup(
     url="https://github.com/cudagrad/cudagrad",
     description="A tensor-valued autograd engine for Python",
     long_description="",
-    ext_modules=[CMakeExtension('cudagrad')],
-    # extras_require={"test": "pytest"},
-    # Currently, build_ext only provides an optional "highest supported C++
-    # level" feature, but in the future it may provide more features.
+    ext_modules=[CMakeExtension('cudagrad.tensor')],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
     python_requires=">=3.7",
