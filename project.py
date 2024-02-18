@@ -109,6 +109,11 @@ class Project:
         # FIXME skipping installation 'tests' on github runner for now
         if (str(Path(".").resolve()).split("/")[2]) == "runner":
             return
+        
+        os.chdir("..")
+        RUN("git restore CMakeLists.txt")
+        return
+
         RUN("python -m pip uninstall -y cudagrad")
         RUN("python -m pip cache purge")
         os.chdir(os.path.expanduser("~/cudagrad"))
