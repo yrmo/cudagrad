@@ -85,10 +85,43 @@ class Project:
             "cp build/lib.macosx-13.2-arm64-cpython-311/cudagrad/tensor.cpython-311-darwin.so ./cudagrad/"
         )
 
+    def _test_cuda_setup(self):
+        code = """\
+        #include <stdio.h>
+
+        __global__ void foo() {}
+
+        int main() {
+        foo<<<1,1>>>();
+        printf("%s", cudaGetErrorString(cudaGetLastError()));
+        return 0;
+        }
+        """
+
+        TEST_CUDA_FILENAME = "test_cuda_setup"
+
+        process = subprocess.run(['nvcc', '-x', 'cu', '-o', TEST_CUDA_FILENAME, '-'], input=code, text=True, capture_output=True)
+
+        if process.returncode != 0:
+            print(process.stderr)
+        else:
+            run_command = [f'./{TEST_CUDA_FILENAME}']
+            run_process = subprocess.run(run_command, capture_output=True, text=True)
+            
+            if run_process.returncode == 0:
+                print(run_process.stdout)
+            else:
+                print(repr(run_process.stderr))
+            
+            assert run_process.stdout == "no error"
+            os.remove(TEST_CUDA_FILENAME)
+
     def test(self, processor):
         @echo
         def RUN(input: str) -> None:
             subprocess.check_call(input, shell=True)
+
+        self._test_cuda_setup()
 
         if processor == "CPU":
             RUN("cp CMakeListsCPU.txt CMakeLists.txt")
