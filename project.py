@@ -121,7 +121,10 @@ class Project:
         def RUN(input: str) -> None:
             subprocess.check_call(input, shell=True)
 
-        self._test_cuda_setup()
+        if processor == "CUDA":
+            self._test_cuda_setup()
+            RUN("nvcc tests/test_setup.cu && ./a.out")
+            RUN("rm a.out")
 
         if processor == "CPU":
             RUN("cp CMakeListsCPU.txt CMakeLists.txt")
