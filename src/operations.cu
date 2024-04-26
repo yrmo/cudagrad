@@ -8,6 +8,9 @@
 // Greg Brockman
 
 #include <stdio.h>
+#include <thrust/device_vector.h>
+#include <cub/cub.cuh>
+#include <cuda/std/atomic>
 
 namespace cg {
 
