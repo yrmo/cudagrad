@@ -170,6 +170,9 @@ class Project:
 
     def publish(self):
         RUN = os.system
+        nb = "Tensor.ipynb"
+        assert os.isfile(nb)
+        RUN(f"jupyter nbconvert --to notebook --execute --inplace {nb}")
         RUN("python -m pip uninstall -y cudagrad")
         RUN("python -m pip cache purge")
         if os.path.exists("dist"):
