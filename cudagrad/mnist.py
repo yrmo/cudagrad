@@ -2,7 +2,7 @@ import urllib.request
 from os.path import isfile
 
 import numpy as np
-from torch import nn, tensor, zeros
+from cudagrad import Tensor
 
 filename = "mnist.npz"
 if not isfile(filename):
@@ -18,16 +18,16 @@ with np.load(filename, allow_pickle=True) as data:
     test_labels = data["y_test"]
 
 
-class ZeroNet(nn.Module):
+class ZeroNet:
     def __init__(self):
-        super().__init__()
+        pass
 
-    def forward(self, x):
-        return zeros(x.shape)
+    def __call__(self, x):
+        return Tensor([1], [42]).zeros(x)
 
 
 model = ZeroNet()
 
 for train_image in train_images:
-    model(tensor(train_image))
+    print(model(train_image.shape))
     break
