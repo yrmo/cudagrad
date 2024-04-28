@@ -23,7 +23,7 @@ class ZeroNet:
         pass
 
     def __call__(self, x):
-        return Tensor([1], [42]).zeros(x)
+        return Tensor.zeros(x)
 
 
 model = ZeroNet()
