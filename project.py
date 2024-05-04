@@ -147,7 +147,7 @@ class Project:
             return
 
         os.chdir("..")
-        RUN("git restore tests/CMakeLists.txt")
+        RUN("rm ./tests/CMakeLists.txt")
 
         RUN("python -m pip uninstall -y cudagrad")
         RUN("python -m pip cache purge")
