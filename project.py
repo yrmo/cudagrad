@@ -127,9 +127,9 @@ class Project:
             RUN("rm a.out")
 
         if processor == "CPU":
-            RUN("cp CMakeListsCPU.txt CMakeLists.txt")
+            RUN("cp tests/CMakeListsCPU.txt tests/CMakeLists.txt")
         elif processor == "CUDA":
-            RUN("cp CMakeListsCUDA.txt CMakeLists.txt")
+            RUN("cp tests/CMakeListsCUDA.txt tests/CMakeLists.txt")
         else:
             raise ValueError(f"Unknown option for {processor=}!")
 
@@ -138,16 +138,16 @@ class Project:
             shutil.rmtree("build")
         os.makedirs("build", exist_ok=True)
         os.chdir("build")
-        RUN("cmake -DCMAKE_PREFIX_PATH=" + torch.utils.cmake_prefix_path + " ..")
-        RUN("cmake ..")
+        RUN("cmake -DCMAKE_PREFIX_PATH=" + torch.utils.cmake_prefix_path + f" {Path('../tests').resolve()}")
+        RUN("cmake ../tests")
         RUN("make")
         RUN("./tensor_test")
         # FIXME skipping installation 'tests' on github runner for now
         if (str(Path(".").resolve()).split("/")[2]) == "runner":
             return
-        
+
         os.chdir("..")
-        RUN("git restore CMakeLists.txt")
+        RUN("git restore tests/CMakeLists.txt")
 
         RUN("python -m pip uninstall -y cudagrad")
         RUN("python -m pip cache purge")
