@@ -154,10 +154,10 @@ class Project:
         os.chdir(os.path.expanduser("~/cudagrad"))
         RUN("pip install .")
         # RUN("python tests/test_backward.py")
-        RUN("python -m pip install cudagrad")
-        RUN("python -m cudagrad.linear")
-        RUN("python -m cudagrad.mlp")
-        RUN("python -m cudagrad.moons")
+        RUN("python ./examples/or.py")
+        RUN("python ./examples/xor.py")
+        RUN("python ./examples/moons.py")
+        RUN("python ./examples/mnist.py")
         RUN("git restore cudagrad/plots/*.jpg")
 
     def test_python_3_7(self):
