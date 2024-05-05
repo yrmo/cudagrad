@@ -41,33 +41,14 @@ class Project:
         for file in CPP_FILES.split():
             assert os.path.isfile(f"{file}") is True
 
-    def connect(self):
-        RUN("ssh ryan@192.168.0.28")
-
-    def code(self):
-        RUN(
-            'code --folder-uri "vscode-remote://ssh-remote+ryan@192.168.0.28/home/ryan/cudagrad"'
-        )
-
-    def github_release(self):
-        RUN("python makefile.py bump patch")
-        RUN(
-            "version=$(python -c \"import toml; print(toml.load('pyproject.toml')['project']['version'])\")"
-        )
-        RUN('git tag -a $version -m "Release version $version"')
-        RUN("git add cudagrad/__init__.py pyproject.toml")
-        RUN("git commit -m $version")
-        RUN("git push origin $version")
-        RUN('echo "Version $version has been tagged and pushed to GitHub."')
-        RUN('file_name="release_notes.txt"')
-        RUN("code --wait $file_name")
-        RUN("release_notes=$(cat $file_name)")
-        RUN('echo "Content captured:"')
-        RUN('echo "$release_notes"')
-        RUN('gh release create $version -t $version -n "$release_notes"')
-        RUN('echo "GitHub release for version $version has been created."')
-        RUN("python makefile.py publish")
-        RUN("rm $file_name")
+    def install(self):
+        RUN("git submodule update --init --recursive")
+        RUN("rm -rf build")
+        RUN("mkdir build")
+        os.chdir("build")
+        RUN("cmake ..")
+        RUN("make")
+        RUN("cp tensor.so ../cudagrad/")
 
     def lint(self):
         RUN(f"python -m cpplint {CPP_FILES}")
