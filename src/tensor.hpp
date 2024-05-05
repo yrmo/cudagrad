@@ -33,13 +33,9 @@ void UNUSED(Args &&...args) {
 
 namespace cg {
 
-#ifdef __CUDACC__
-extern "C" void hello();
-#else
 extern "C" void hello() {
   printf("Hello, CPU!\n");
 }
-#endif
 
 // using using for now in case in the future during operator fusion
 // I need to know what is actually happening, maybe more clear
