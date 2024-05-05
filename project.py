@@ -158,7 +158,7 @@ class Project:
         RUN("python ./examples/xor.py")
         RUN("python ./examples/moons.py")
         RUN("python ./examples/mnist.py")
-        RUN("git restore cudagrad/plots/*.jpg")
+        RUN("git restore examples/plots/*.jpg")
 
     def test_python_3_7(self):
         RUN("pyenv global 3.7")

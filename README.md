@@ -8,20 +8,26 @@ In-depth `cudagrad.Tensor` documentation can be found in [Tensor.ipynb](./Tensor
 
 # Examples
 
-The following examples were written purely in Python using only `cudagrad.Tensor` for learning. See `__main__` guards in `cudagrad/cudagrad/` for usage examples.
+The following examples were written purely in Python using only `cudagrad.Tensor` for learning
 
 ## Neuron/Linear
 
 ### OR
 
-![](cudagrad/plots/linear-3d.jpg)
+![](examples/plots/or-3d.jpg)
+
+[`/examples/or.py`](https://github.com/yrmo/cudagrad/blob/main/examples/or.py)
 
 ## Multilayer perceptron (MLP)
 
 ### XOR
 
-![](cudagrad/plots/mlp-3d.jpg)
+![](examples/plots/xor-3d.jpg)
+
+[`/examples/xor.py`](https://github.com/yrmo/cudagrad/blob/main/examples/xor.py)
 
 ### Two moons
 
-![](cudagrad/plots/moons-3d.jpg)
+![](examples/plots/moons-3d.jpg)
+
+[`/examples/moons.py`](https://github.com/yrmo/cudagrad/blob/main/examples/moons.py)

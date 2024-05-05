@@ -83,4 +83,4 @@ if __name__ == "__main__":
         ax.set_ylabel('Y')
         ax.set_zlabel('Z')
 
-        plt.savefig("./cudagrad/plots/moons-3d.jpg")
+        plt.savefig("./examples/plots/moons-3d.jpg")

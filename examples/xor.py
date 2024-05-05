@@ -94,4 +94,4 @@ if __name__ == "__main__":
         plt.title("XOR MLP")
         plt.xlabel("X")
         plt.ylabel("Y")
-        plt.savefig("./cudagrad/plots/mlp-3d.jpg")
+        plt.savefig("./examples/plots/xor-3d.jpg")

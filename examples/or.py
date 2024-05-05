@@ -86,4 +86,4 @@ if __name__ == "__main__":
         plt.xlabel('X')
         plt.ylabel('Y')
         ax.set_zlabel('Z')
-        plt.savefig("./cudagrad/plots/linear-3d.jpg")
+        plt.savefig("./examples/plots/or-3d.jpg")
