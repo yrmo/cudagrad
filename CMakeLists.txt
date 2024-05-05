@@ -21,7 +21,7 @@ set(CMAKE_CUDA_STANDARD 17)
 set(CMAKE_CUDA_ARCHITECTURES "86")
 
 set(SOURCE_FILES src/bindings.cpp src/operations.cu src/tensor.hpp)
-add_library(tensor SHARED ${SOURCE_FILES})
+add_library(tensor MODULE ${SOURCE_FILES})
 set_target_properties(tensor PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 target_link_libraries(tensor ${Python3_LIBRARIES} ${CUDA_LIBRARIES} pybind11::module)
 set_target_properties(tensor PROPERTIES PREFIX "")
