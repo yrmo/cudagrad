@@ -15,6 +15,10 @@ if(CMAKE_CUDA_COMPILER)
 
     set(CMAKE_CUDA_STANDARD 17)
     set(CMAKE_CUDA_ARCHITECTURES "86")
+
+    set(SOURCE_FILES src/bindings.cpp src/tensor.hpp src/operations.cu)
+else()
+    set(SOURCE_FILES src/bindings.cpp src/tensor.hpp)
 endif()
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
@@ -24,7 +28,6 @@ include_directories(./pybind11/include)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(SOURCE_FILES src/bindings.cpp src/operations.cu src/tensor.hpp)
 add_library(tensor MODULE ${SOURCE_FILES})
 
 if(CUDA_FOUND)
