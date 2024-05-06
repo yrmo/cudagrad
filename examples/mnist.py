@@ -49,7 +49,7 @@ num_col = 4
 fig, axes = plt.subplots(num_row, num_col)
 for i in range(num_row * num_col):
     ax = axes[i//num_col, i%num_col]
-    ax.imshow(test_images[i], cmap='gray')
+    ax.imshow(test_images[i], cmap='viridis')
     output = model(train_images[i].shape)
     output = int(output.data[0, 0].item())
     ax.set_title(f"Output: {output}")
