@@ -232,6 +232,16 @@ class Project:
         rm $file_name
         """
 
+    def prepublish(self):
+        # TODO
+        """
+        rm -rf dist
+        python setup.py sdist bdist_wheel
+        cd dist
+        pip install cudagrad-0.1.0.tar.gz # TODO fix harcode
+        python -c "from cudagrad import hello; hello()"
+        """
+
     class CheckRequirementsBroken:
         def check_program(self, program) -> None:
             """Checks if the specified program is installed"""
