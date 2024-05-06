@@ -1,6 +1,7 @@
 import urllib.request
 from os.path import isfile
 
+import matplotlib.pyplot as plt
 import numpy as np
 from cudagrad import Tensor
 
@@ -28,6 +29,19 @@ class ZeroNet:
 
 model = ZeroNet()
 
-for train_image in train_images:
-    print(model(train_image.shape))
-    break
+num_row = 2
+num_col = 5
+fig, axes = plt.subplots(num_row, num_col, figsize=(1.5*num_col,2*num_row))
+for i in range(num_row * num_col):
+    ax = axes[i//num_col, i%num_col]
+    ax.imshow(test_images[i], cmap='gray')
+    output = model(train_images[i].shape)
+    output = int(output.data[0, 0].item())
+    ax.set_title(f"Output: {output}")
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
+plt.tight_layout()
+plt.savefig("./examples/plots/mnist-grid.jpg")
+plt.show()

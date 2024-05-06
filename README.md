@@ -31,3 +31,9 @@ The following examples were written purely in Python using only `cudagrad.Tensor
 ![](examples/plots/moons-3d.jpg)
 
 [`/examples/moons.py`](https://github.com/yrmo/cudagrad/blob/main/examples/moons.py)
+
+## Convolutional neural network (CNN) WIP!
+
+![](examples/plots/mnist-grid.jpg)
+
+[`/examples/mnist.py`](https://github.com/yrmo/cudagrad/blob/main/examples/mnist.py)
