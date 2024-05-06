@@ -34,6 +34,8 @@ The following examples were written purely in Python using only `cudagrad.Tensor
 
 ## Convolutional neural network (CNN) WIP!
 
+### MNIST
+
 ![](examples/plots/mnist-grid.jpg)
 
 [`/examples/mnist.py`](https://github.com/yrmo/cudagrad/blob/main/examples/mnist.py)
