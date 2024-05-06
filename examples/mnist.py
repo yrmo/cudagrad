@@ -29,9 +29,9 @@ class ZeroNet:
 
 model = ZeroNet()
 
-num_row = 2
-num_col = 5
-fig, axes = plt.subplots(num_row, num_col, figsize=(1.5*num_col,2*num_row))
+num_row = 3
+num_col = 4
+fig, axes = plt.subplots(num_row, num_col)
 for i in range(num_row * num_col):
     ax = axes[i//num_col, i%num_col]
     ax.imshow(test_images[i], cmap='gray')
@@ -43,6 +43,5 @@ for i in range(num_row * num_col):
     ax.set_xticklabels([])
     ax.set_yticklabels([])
 
-plt.suptitle("MNIST CNN")
+fig.tight_layout()
 plt.savefig("./examples/plots/mnist-grid.jpg")
-plt.show()

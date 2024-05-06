@@ -78,7 +78,6 @@ if __name__ == "__main__":
         ax.scatter(inputs[targets == 0, 0], inputs[targets == 0, 1], 0, c='#440154', label='0')
         ax.scatter(inputs[targets == 1, 0], inputs[targets == 1, 1], 0, c='#fde725', label='1')
 
-        plt.title("Two Moons MLP")
         ax.set_xlabel('X')
         ax.set_ylabel('Y')
         ax.set_zlabel('Z')

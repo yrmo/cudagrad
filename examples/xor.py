@@ -91,7 +91,6 @@ if __name__ == "__main__":
         fig = plt.figure()
         ax = fig.add_subplot(111, projection="3d")
         ax.plot_surface(X, Y, Z, cmap="viridis")
-        plt.title("XOR MLP")
         plt.xlabel("X")
         plt.ylabel("Y")
         plt.savefig("./examples/plots/xor-3d.jpg")

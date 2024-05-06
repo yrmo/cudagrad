@@ -82,7 +82,6 @@ if __name__ == "__main__":
         ax = fig.add_subplot(111, projection='3d')
         ax.plot_surface(X, Y, Z, cmap='viridis')
 
-        plt.title('OR Neuron')
         plt.xlabel('X')
         plt.ylabel('Y')
         ax.set_zlabel('Z')
