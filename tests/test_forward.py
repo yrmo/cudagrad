@@ -103,13 +103,28 @@
 
 # In [9]:
 
-from cudagrad import MLP, Tensor
-from cudagrad.nn import mse, sgd
+from random import choice, random
+
+from cudagrad import Tensor
+from cudagrad.nn import mse, sgd, Module
+
+class MLP(Module):
+    def __init__(self):
+        self.w0 = Tensor(
+            [2, 2], [choice([-1 * random(), random()]) for _ in range(2 * 2)]
+        )
+        self.b0 = Tensor([2, 1], [choice([-1 * random(), random()]) for _ in range(2)])
+        self.w1 = Tensor(
+            [1, 2], [choice([-1 * random(), random()]) for _ in range(1 * 2)]
+        )
+        self.b1 = Tensor([1], [choice([-1 * random(), random()]) for _ in range(1)])
+
+    def __call__(self, x: Tensor) -> Tensor:
+        return Tensor.sigmoid(
+            self.w1 @ Tensor.sigmoid((self.w0 @ x + self.b0)) + self.b1
+        )
 
 model = MLP()
-
-
-# TEST FORWARD MLP
 
 model.w0.data[[0, 0]] = -6.0408
 model.w0.data[[0, 1]] = 6.1632
@@ -123,11 +138,6 @@ model.w1.data[[0, 0]] = -6.0373
 model.w1.data[[0, 1]] = -6.1604
 
 model.b1.data[[0, 0]] = 8.9376
-
-print(model.w0)
-print(model.b0)
-print(model.w1)
-print(model.b1)
 
 assert round(model(Tensor([2, 1], [0, 0])).item(), 3) == round(0.0713, 3)
 assert round(model(Tensor([2, 1], [0, 1])).item(), 3) == round(0.9198, 3)

@@ -520,10 +520,13 @@ std::shared_ptr<Tensor> Tensor::sum() {
 }
 */
 
-// TODO(yrmo): char indicators is a mess!
+// TODO(yrmo): DRY tensor access
 
 std::shared_ptr<Tensor> Tensor::select_data(std::vector<size_t> indexes) {
-  size_t product = _dot(indexes, strides_);
+  size_t product = 0;
+  if (std::accumulate(indexes.begin(), indexes.end(), 0) > 0) {
+    product = _dot(indexes, strides_);
+  }
   return std::make_shared<Tensor>(
       std::vector<size_t>{1}, std::vector<float>{data_[product]},
       std::vector<std::shared_ptr<Tensor>>{get_shared()},
@@ -531,7 +534,10 @@ std::shared_ptr<Tensor> Tensor::select_data(std::vector<size_t> indexes) {
 }
 
 std::shared_ptr<Tensor> Tensor::select_grad(std::vector<size_t> indexes) {
-  size_t product = _dot(indexes, strides_);
+  size_t product = 0;
+  if (std::accumulate(indexes.begin(), indexes.end(), 0) > 0) {
+    product = _dot(indexes, strides_);
+  }
   return std::make_shared<Tensor>(
       std::vector<size_t>{1}, std::vector<float>{grad_[product]},
       std::vector<std::shared_ptr<Tensor>>{get_shared()},
@@ -541,11 +547,19 @@ std::shared_ptr<Tensor> Tensor::select_grad(std::vector<size_t> indexes) {
 // TODO(yrmo): this is untracked, does pytorch track assignment?
 
 void Tensor::put_data(std::vector<size_t> indexes, float value) {
-  data_[_dot(indexes, strides_)] = value;
+  size_t product = 0;
+  if (std::accumulate(indexes.begin(), indexes.end(), 0) > 0) {
+    product = _dot(indexes, strides_);
+  }
+  data_[product] = value;
 }
 
 void Tensor::put_grad(std::vector<size_t> indexes, float value) {
-  grad_[_dot(indexes, strides_)] = value;
+  size_t product = 0;
+  if (std::accumulate(indexes.begin(), indexes.end(), 0) > 0) {
+    product = _dot(indexes, strides_);
+  }
+  grad_[product] = value;
 }
 
 void debug_inputs(std::shared_ptr<Tensor> grad_output,

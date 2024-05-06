@@ -52,5 +52,3 @@ assert [
     b.grad[[1, 0]].item(),
     b.grad[[1, 1]].item(),
 ] == flatten(bt.grad.tolist())
-
-print("Tests passed!")
