@@ -29,6 +29,21 @@ class ZeroNet:
 
 model = ZeroNet()
 
+def accuracy() -> int:
+    results = []
+    for i, test_image in enumerate(test_images):
+        output = model(train_images[i].shape)
+        output = int(output.data[0, 0].item())
+        results.append(output)
+
+    import numpy as np
+    return (np.sum(np.array(results) == test_labels.flatten()) / len(test_labels)) * 100
+
+for i, train_image in enumerate(train_images):
+    if i % (len(train_images) // 10) == 0:
+        a = accuracy()
+        print(f"{a}%", " " if a < 98 else "🔥")
+
 num_row = 3
 num_col = 4
 fig, axes = plt.subplots(num_row, num_col)
