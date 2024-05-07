@@ -38,7 +38,7 @@ class CMakeBuild(build_ext):
 
         subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=self.build_temp)
         subprocess.check_call(['cmake', '--build', '.', '--target', ext.name] + build_args, cwd=self.build_temp)
-        subprocess.check_call(['cp', os.path.join(self.build_lib, 'tensor.so'), os.path.join(extdir, 'cudagrad', 'tensor.so')])
+        move(os.path.join(self.build_lib, 'tensor.so'), os.path.join(extdir, 'cudagrad', 'tensor.so'))
 
 def get_version_from_toml():
     data = toml.load("pyproject.toml")
