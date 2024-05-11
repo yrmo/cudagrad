@@ -26,7 +26,7 @@ class ZeroNet:
         pass
 
     def __call__(self, x: NDArray[np.int32]) -> Tensor:
-        return Tensor.zeros(x)
+        return Tensor.zeros(x.shape)
 
 
 model = ZeroNet()
@@ -35,7 +35,7 @@ model = ZeroNet()
 def accuracy() -> int:
     outputs = []
     for i, test_image in enumerate(test_images):
-        output = model(train_images[i].shape)
+        output = model(train_images[i])
         output = int(output.data[0, 0].item())
         outputs.append(output)
 
@@ -59,7 +59,7 @@ fig, axes = plt.subplots(num_row, num_col)
 for i in range(num_row * num_col):
     ax = axes[i // num_col, i % num_col]
     ax.imshow(test_images[i], cmap="viridis")
-    output = model(train_images[i].shape)
+    output = model(train_images[i])
     output = int(output.data[0, 0].item())
     ax.set_title(f"Output: {output}")
     ax.set_xticks([])
