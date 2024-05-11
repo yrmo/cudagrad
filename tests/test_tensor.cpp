@@ -23,6 +23,13 @@ TEST(Basic, Equal) {
   EXPECT_EQ((foo == bar).get()->data_[0], 0.0);
 }
 
+TEST(Basic, NotEqual) {
+  auto foo = cg::tensor({1}, {42.0});
+  auto bar = cg::tensor({1}, {24.0});
+  EXPECT_EQ((foo != foo).get()->data_[0], 0.0);
+  EXPECT_EQ((foo != bar).get()->data_[0], 1.0);
+}
+
 TEST(Basic, Add) {
   auto a = cg::tensor({1}, {42.0});
   auto b = cg::tensor({1}, {42.0});

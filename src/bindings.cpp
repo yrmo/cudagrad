@@ -71,6 +71,8 @@ PYBIND11_MODULE(tensor, m) {
       .def_static("rand", &cg::Tensor::rand)
       .def("__eq__", [](std::shared_ptr<cg::Tensor> a,
                          std::shared_ptr<cg::Tensor> b) { return a == b; })
+      .def("__ne__", [](std::shared_ptr<cg::Tensor> a,
+                         std::shared_ptr<cg::Tensor> b) { return a != b; })
       .def("__add__", [](std::shared_ptr<cg::Tensor> a,
                          std::shared_ptr<cg::Tensor> b) { return a + b; })
       .def("__sub__", [](std::shared_ptr<cg::Tensor> a,
