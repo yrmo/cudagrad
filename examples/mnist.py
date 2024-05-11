@@ -32,16 +32,19 @@ model = ZeroNet()
 
 
 def accuracy() -> int:
-    results = []
+    outputs = []
     for i, test_image in enumerate(test_images):
         output = model(train_images[i].shape)
         output = int(output.data[0, 0].item())
-        results.append(output)
+        outputs.append(output)
+
+    targets = test_labels.flatten().tolist()
     return (
-        sum(1 for x, y in zip(results, test_labels.flatten().tolist()) if x == y)
-        / len(test_labels)
-        * 100
-    )
+        (Tensor([len(outputs)], outputs) == Tensor([len(targets)], targets))
+        .sum()
+        .item()
+        / len(targets)
+    ) * 100
 
 
 for i, train_image in enumerate(train_images):
