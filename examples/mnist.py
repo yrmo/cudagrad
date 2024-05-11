@@ -3,6 +3,7 @@ from os.path import isfile
 
 import matplotlib.pyplot as plt
 import numpy as np
+from numpy.typing import NDArray
 
 from cudagrad import Tensor
 
@@ -24,7 +25,7 @@ class ZeroNet:
     def __init__(self):
         pass
 
-    def __call__(self, x):
+    def __call__(self, x: NDArray[np.int32]) -> Tensor:
         return Tensor.zeros(x)
 
 
