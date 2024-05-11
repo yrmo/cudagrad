@@ -442,6 +442,17 @@ std::shared_ptr<Tensor> operator/(std::shared_ptr<Tensor> lhs,
       std::make_shared<DivBackward>());
 }
 
+std::shared_ptr<Tensor> operator==(std::shared_ptr<Tensor> lhs, std::shared_ptr<Tensor> rhs) {
+  assert(lhs.get()->data_.size() == rhs.get()->data_.size());
+  std::vector<float> equal;
+  equal.reserve(lhs.get()->data_.size());
+  for (size_t i = 0; i < lhs.get()->data_.size(); ++i) {
+      equal.push_back(lhs.get()->data_[i] == rhs.get()->data_[i] ? 1.0f : 0.0f);
+  }
+  assert(lhs.get()->data_.size() == equal.size());
+  return tensor(std::vector<size_t>{(lhs.get()->data_.size())}, equal);
+}
+
 template <typename T>
 std::shared_ptr<Tensor> binaryForwardOperator(std::shared_ptr<Tensor> lhs,
                                               std::shared_ptr<Tensor> rhs,
