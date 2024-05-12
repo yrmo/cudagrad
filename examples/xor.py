@@ -1,18 +1,14 @@
 from os import getenv
+from random import choice, random
+
+from cudagrad.nn import Module, mse, sgd
+from cudagrad.tensor import Tensor
 
 PROFILING = int(getenv("PROFILING", "0"))
 
 if not PROFILING:
     import matplotlib.pyplot as plt
     import numpy as np
-
-###############################################################################
-
-
-from random import choice, random
-
-from cudagrad.nn import Module, mse, sgd
-from cudagrad.tensor import Tensor
 
 
 class MLP(Module):

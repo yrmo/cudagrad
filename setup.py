@@ -5,7 +5,6 @@ from shutil import move
 
 import toml
 from setuptools import Extension, find_packages, setup
-from setuptools.command.build_ext import build_ext
 
 from pybind11.setup_helpers import build_ext
 
@@ -19,7 +18,7 @@ class CMakeExtension(Extension):
 class CMakeBuild(build_ext):
     def run(self) -> None:
         try:
-            out = subprocess.check_output(["cmake", "--version"])
+            subprocess.check_output(["cmake", "--version"])
         except OSError:
             raise RuntimeError(
                 "CMake must be installed to build the following extensions: "

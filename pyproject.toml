@@ -16,8 +16,8 @@ name = "Ryan Moore"
 email = "ryanm.inbox@gmail.com"
 
 [project.urls]
-Homepage = "https://github.com/rv3c/cudagrad"
-"Bug Tracker" = "https://github.com/rv3c/cudagrad/issues"
+Homepage = "https://github.com/yrmo/cudagrad"
+"Bug Tracker" = "https://github.com/yrmo/cudagrad/issues"
 
 [tool.pytest.ini_options]
 addopts = [ "--import-mode=importlib",]
@@ -28,7 +28,7 @@ skip_glob = ["**/googletest/*", "**/googletest*", "**/cccl/*", "**/cccl*", "**/p
 [tool.mypy]
 pretty = true
 ignore_missing_imports = true
-exclude = "(googletest)|(examples)"
+exclude = "(googletest)|(cccl)|(pybind11)"
 
 [tool.black]
 exclude = '''
@@ -45,4 +45,4 @@ exclude = '''
 '''
 
 [tool.ruff]
-exclude = ['googletest/', 'pybind11/']
+exclude = ['googletest/', 'pybind11/', 'cccl/']

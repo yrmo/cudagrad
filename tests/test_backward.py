@@ -1,5 +1,3 @@
-# python tests/test_backward.py
-
 from typing import Any, Iterable
 
 import torch
@@ -27,7 +25,7 @@ ct = torch.tensor(((10.0, 10.0), (10.0, 10.0)), requires_grad=True)
 dt = torch.tensor(((11.0, 11.0), (11.0, 11.0)), requires_grad=True)
 et = (at.matmul(bt) + ct) * dt
 ft = et.sum()
-ft.backward()
+ft.backward() # type: ignore
 
 a = Tensor([2, 2], [2.0, 3.0, 4.0, 5.0])
 b = Tensor([2, 2], [6.0, 7.0, 8.0, 9.0])

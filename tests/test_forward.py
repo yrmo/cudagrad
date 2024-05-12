@@ -106,7 +106,7 @@
 from random import choice, random
 
 from cudagrad import Tensor
-from cudagrad.nn import Module, mse, sgd
+from cudagrad.nn import Module
 
 
 class MLP(Module):

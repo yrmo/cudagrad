@@ -1,20 +1,16 @@
 from os import getenv
-
-PROFILING = int(getenv("PROFILING", "0"))
-
-if not PROFILING:
-    import matplotlib.pyplot as plt
-    import numpy as np
-
-###############################################################################
-
-
 from random import choice, random
 
 from sklearn.datasets import make_moons
 
 from cudagrad.nn import Module, mse, sgd
 from cudagrad.tensor import Tensor
+
+PROFILING = int(getenv("PROFILING", "0"))
+
+if not PROFILING:
+    import matplotlib.pyplot as plt
+    import numpy as np
 
 
 class MLP(Module):
@@ -63,7 +59,7 @@ if __name__ == "__main__":
                     round(model(Tensor([2, 1], inputs[i])).item()) == target.item()
                 )
             print(f"{round(sum(accuracy) / len(accuracy), 2) * 100}%")
-            print("".join(["🔥" if x == True else " " for x in accuracy]))
+            print("".join(["🔥" if x else " " for x in accuracy]))
 
     if not PROFILING:
         x = np.linspace(-2.5, 2.5, 50)

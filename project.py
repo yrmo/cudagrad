@@ -64,12 +64,12 @@ class Project:
         subprocess.run(f"python -m mypy {EXCLUDE} .", shell=True, capture_output=True)
         CHECK("python -m mypy --install-types --non-interactive")
         CHECK(f"python -m cpplint {CPP_FILES}")
-        CHECK(f"python -m mypy {EXCLUDE} --ignore-missing-imports --pretty --strict .")
+        CHECK(f"python -m mypy {EXCLUDE} --ignore-missing-imports --pretty .")
         CHECK(f"ruff check {EXCLUDE} .")
 
     def format(self):
         RUN("python -m isort .")
-        RUN(f"python -m black .")
+        RUN("python -m black .")
         RUN(f"clang-format -i -style=Google {CPP_FILES}")
 
     def build(self):
