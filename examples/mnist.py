@@ -29,7 +29,7 @@ class ZeroNet:
         # TODO should be one line but bug right now
         # return Tensor.zeros(x.shape).data[0, 0].item()
         t = Tensor.zeros(x.shape)
-        return t.data[0, 0].item()
+        return Tensor([1], [t.data[0, 0].item()])
 
 
 model = ZeroNet()
@@ -39,7 +39,7 @@ def accuracy() -> int:
     outputs = []
     for i, test_image in enumerate(test_images):
         output = model(train_images[i])
-        output = int(output)
+        output = int(output.item())
         outputs.append(output)
 
     targets = test_labels.flatten().tolist()
@@ -63,7 +63,7 @@ for i in range(num_row * num_col):
     ax = axes[i // num_col, i % num_col]
     ax.imshow(test_images[i], cmap="viridis")
     output = model(train_images[i])
-    output = int(output)
+    output = int(output.item())
     ax.set_title(f"Output: {output}")
     ax.set_xticks([])
     ax.set_yticks([])
