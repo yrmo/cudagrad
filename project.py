@@ -56,11 +56,12 @@ class Project:
         RUN("cp tensor.so ../cudagrad/")
 
     def lint(self):
-        CHECK("python -m mypy --install-types")
-        CHECK(f"python -m cpplint {CPP_FILES}")
         EXCLUDE = (
             "--exclude build --exclude cccl --exclude pybind11 --exclude googletest"
         )
+        subprocess.run(f"python -m mypy {EXCLUDE} .", shell=True, capture_output=True)
+        CHECK("python -m mypy --install-types --non-interactive")
+        CHECK(f"python -m cpplint {CPP_FILES}")
         CHECK(f"python -m mypy {EXCLUDE} --ignore-missing-imports --pretty --strict .")
         CHECK(f"ruff check {EXCLUDE} .")
 
