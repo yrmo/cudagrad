@@ -35,6 +35,11 @@ def RUN(input: str) -> None:
     os.system(input)
 
 
+@echo
+def CHECK(input: str) -> None:
+    subprocess.check_call(input, shell=True)
+
+
 class Project:
     def __init__(self):
         global CPP_FILES
@@ -51,11 +56,13 @@ class Project:
         RUN("cp tensor.so ../cudagrad/")
 
     def lint(self):
-        RUN("python -m mypy --install-types")
-        RUN(f"python -m cpplint {CPP_FILES}")
-        EXCLUDE = "--exclude build --exclude cccl --exclude pybind11 --exclude googletest"
-        RUN(f"python -m mypy {EXCLUDE} --ignore-missing-imports --pretty --strict .")
-        RUN(f"ruff check {EXCLUDE} .")
+        CHECK("python -m mypy --install-types")
+        CHECK(f"python -m cpplint {CPP_FILES}")
+        EXCLUDE = (
+            "--exclude build --exclude cccl --exclude pybind11 --exclude googletest"
+        )
+        CHECK(f"python -m mypy {EXCLUDE} --ignore-missing-imports --pretty --strict .")
+        CHECK(f"ruff check {EXCLUDE} .")
 
     def clean(self):
         RUN("python -m isort .")
@@ -83,66 +90,71 @@ class Project:
 
         TEST_CUDA_FILENAME = "test_cuda_setup"
 
-        process = subprocess.run(['nvcc', '-x', 'cu', '-o', TEST_CUDA_FILENAME, '-'], input=code, text=True, capture_output=True)
+        process = subprocess.run(
+            ["nvcc", "-x", "cu", "-o", TEST_CUDA_FILENAME, "-"],
+            input=code,
+            text=True,
+            capture_output=True,
+        )
 
         if process.returncode != 0:
             print(process.stderr)
         else:
-            run_command = [f'./{TEST_CUDA_FILENAME}']
+            run_command = [f"./{TEST_CUDA_FILENAME}"]
             run_process = subprocess.run(run_command, capture_output=True, text=True)
-            
+
             if run_process.returncode == 0:
                 print(run_process.stdout)
             else:
                 print(repr(run_process.stderr))
-            
+
             assert run_process.stdout == "no error"
             os.remove(TEST_CUDA_FILENAME)
 
     def test(self, processor):
-        @echo
-        def RUN(input: str) -> None:
-            subprocess.check_call(input, shell=True)
-
         if processor == "CUDA":
             self._test_cuda_setup()
-            RUN("nvcc tests/test_setup.cu && ./a.out")
-            RUN("rm a.out")
+            CHECK("nvcc tests/test_setup.cu && ./a.out")
+            CHECK("rm a.out")
 
         if processor == "CPU":
-            RUN("cp tests/CMakeListsCPU.txt tests/CMakeLists.txt")
+            CHECK("cp tests/CMakeListsCPU.txt tests/CMakeLists.txt")
         elif processor == "CUDA":
-            RUN("cp tests/CMakeListsCUDA.txt tests/CMakeLists.txt")
+            CHECK("cp tests/CMakeListsCUDA.txt tests/CMakeLists.txt")
         else:
             raise ValueError(f"Unknown option for {processor=}!")
 
-        RUN("git submodule update --init --recursive")
+        CHECK("git submodule update --init --recursive")
         if os.path.exists("build"):
             shutil.rmtree("build")
         os.makedirs("build", exist_ok=True)
         os.chdir("build")
-        RUN("cmake -DCMAKE_PREFIX_PATH=" + torch.utils.cmake_prefix_path + f" {Path('../tests').resolve()}")
-        RUN("cmake ../tests")
-        RUN("make")
-        RUN("./tensor_test")
+        CHECK(
+            "cmake -DCMAKE_PREFIX_PATH="
+            + torch.utils.cmake_prefix_path
+            + f" {Path('../tests').resolve()}"
+        )
+        CHECK("cmake ../tests")
+        CHECK("make")
+        CHECK("./tensor_test")
         # FIXME skipping installation 'tests' on github runner for now
         if (str(Path(".").resolve()).split("/")[2]) == "runner":
             return
 
         os.chdir("..")
-        RUN("rm ./tests/CMakeLists.txt")
+        CHECK("rm ./tests/CMakeLists.txt")
 
-        RUN("python -m pip uninstall -y cudagrad")
-        RUN("python -m pip cache purge")
+        CHECK("python -m pip uninstall -y cudagrad")
+        CHECK("python -m pip cache purge")
         os.chdir(os.path.expanduser("~/cudagrad"))
-        RUN("pip install .")
-        RUN("python tests/test_backward.py")
-        RUN("python tests/test_forward.py")
-        RUN("python ./examples/or.py")
-        RUN("python ./examples/xor.py")
-        RUN("python ./examples/moons.py")
-        RUN("python ./examples/mnist.py")
-        RUN("git restore examples/plots/*.jpg")
+        CHECK("pip install .")
+        CHECK("python tests/test_backward.py")
+        CHECK("python tests/test_forward.py")
+        CHECK("python ./examples/or.py")
+        CHECK("python ./examples/xor.py")
+        CHECK("python ./examples/moons.py")
+        CHECK("python ./examples/mnist.py")
+        CHECK("git restore examples/plots/*.jpg")
 
     def test_python_3_7(self):
         RUN("pyenv global 3.7")
