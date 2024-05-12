@@ -65,9 +65,9 @@ class Project:
         CHECK(f"python -m mypy {EXCLUDE} --ignore-missing-imports --pretty --strict .")
         CHECK(f"ruff check {EXCLUDE} .")
 
-    def clean(self):
+    def format(self):
         RUN("python -m isort .")
-        RUN("python -m black .")
+        RUN(f"python -m black .")
         RUN(f"clang-format -i -style=Google {CPP_FILES}")
 
     def build(self):

@@ -23,7 +23,7 @@ Homepage = "https://github.com/rv3c/cudagrad"
 addopts = [ "--import-mode=importlib",]
 
 [tool.isort]
-skip_glob = ["**/examples/*", "**/examples*", "**/googletest/*", "**/googletest*"]
+skip_glob = ["**/googletest/*", "**/googletest*", "**/cccl/*", "**/cccl*", "**/pybind11/*", "**/pybind11*"]
 
 [tool.mypy]
 pretty = true
@@ -37,8 +37,9 @@ exclude = '''
       \.git
     | \.env
     | \.venv
-    | examples
     | googletest
+    | cccl
+    | pybind11
   )/
 )
 '''
