@@ -16,7 +16,7 @@ from cudagrad.tensor import Tensor
 
 
 class MLP(Module):
-    def __init__(self):
+    def __init__(self) -> None:
         self.w0 = Tensor(
             [2, 2], [choice([-1 * random(), random()]) for _ in range(2 * 2)]
         )
@@ -80,7 +80,7 @@ if __name__ == "__main__":
     if not PROFILING:
         x = np.linspace(0, 1, 50)
         y = np.linspace(0, 1, 50)
-        X, Y = np.meshgrid(x, y)
+        X, Y = np.meshgrid(x, y)  # type: ignore [no-untyped-call]
         Z = np.zeros(X.shape)
 
         for i in range(X.shape[0]):

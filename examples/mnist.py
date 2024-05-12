@@ -14,7 +14,7 @@ if not isfile(filename):
         filename,
     )
 
-with np.load(filename, allow_pickle=True) as data:
+with np.load(filename, allow_pickle=True) as data:  # type: ignore [no-untyped-call]
     train_images = data["x_train"]
     train_labels = data["y_train"]
     test_images = data["x_test"]
@@ -22,7 +22,7 @@ with np.load(filename, allow_pickle=True) as data:
 
 
 class ZeroNet:
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     def __call__(self, x: NDArray[np.int32]) -> Tensor:

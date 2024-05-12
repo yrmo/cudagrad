@@ -16,12 +16,15 @@ from sklearn.datasets import make_moons
 from cudagrad.nn import Module, mse, sgd
 from cudagrad.tensor import Tensor
 
+
 class MLP(Module):
-    def __init__(self):
+    def __init__(self) -> None:
         self.w0 = Tensor(
             [16, 2], [choice([-1 * random(), random()]) for _ in range(2 * 16)]
         )
-        self.b0 = Tensor([16, 1], [choice([-1 * random(), random()]) for _ in range(16)])
+        self.b0 = Tensor(
+            [16, 1], [choice([-1 * random(), random()]) for _ in range(16)]
+        )
         self.w1 = Tensor(
             [1, 16], [choice([-1 * random(), random()]) for _ in range(1 * 16)]
         )
@@ -31,6 +34,7 @@ class MLP(Module):
         return Tensor.sigmoid(
             self.w1 @ Tensor.sigmoid((self.w0 @ x + self.b0)) + self.b1
         )
+
 
 if __name__ == "__main__":
     moons = make_moons()  # two moons
@@ -55,14 +59,16 @@ if __name__ == "__main__":
             losses.append(loss.item())
             accuracy = []
             for i, target in enumerate(targets):
-                accuracy.append(round(model(Tensor([2, 1], inputs[i])).item()) == target.item())
+                accuracy.append(
+                    round(model(Tensor([2, 1], inputs[i])).item()) == target.item()
+                )
             print(f"{round(sum(accuracy) / len(accuracy), 2) * 100}%")
             print("".join(["🔥" if x == True else " " for x in accuracy]))
 
     if not PROFILING:
         x = np.linspace(-2.5, 2.5, 50)
         y = np.linspace(-1.5, 1.5, 50)
-        X, Y = np.meshgrid(x, y)
+        X, Y = np.meshgrid(x, y)  # type: ignore [no-untyped-call]
         Z = np.zeros(X.shape)
 
         for i in range(X.shape[0]):
@@ -71,15 +77,19 @@ if __name__ == "__main__":
                 Z[i, j] = model(input_data).item()
 
         fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
+        ax = fig.add_subplot(111, projection="3d")
 
-        surf = ax.plot_surface(X, Y, Z, cmap='viridis', alpha=0.6)
+        surf = ax.plot_surface(X, Y, Z, cmap="viridis", alpha=0.6)
 
-        ax.scatter(inputs[targets == 0, 0], inputs[targets == 0, 1], 0, c='#440154', label='0')
-        ax.scatter(inputs[targets == 1, 0], inputs[targets == 1, 1], 0, c='#fde725', label='1')
+        ax.scatter(
+            inputs[targets == 0, 0], inputs[targets == 0, 1], 0, c="#440154", label="0"
+        )
+        ax.scatter(
+            inputs[targets == 1, 0], inputs[targets == 1, 1], 0, c="#fde725", label="1"
+        )
 
-        ax.set_xlabel('X')
-        ax.set_ylabel('Y')
-        ax.set_zlabel('Z')
+        ax.set_xlabel("X")
+        ax.set_ylabel("Y")
+        ax.set_zlabel("Z")
 
         plt.savefig("./examples/plots/moons-3d.jpg")

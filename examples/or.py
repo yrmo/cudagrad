@@ -71,7 +71,7 @@ if __name__ == "__main__":
     if not PROFILING:
         x = np.linspace(0, 1, 100)
         y = np.linspace(0, 1, 100)
-        X, Y = np.meshgrid(x, y)
+        X, Y = np.meshgrid(x, y)  # type: ignore [no-untyped-call]
         Z = np.zeros(X.shape)
 
         for i in range(X.shape[0]):
@@ -79,10 +79,10 @@ if __name__ == "__main__":
                 Z[i, j] = model(Tensor([2, 1], [X[i, j], Y[i, j]])).item()
 
         fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
-        ax.plot_surface(X, Y, Z, cmap='viridis')
+        ax = fig.add_subplot(111, projection="3d")
+        ax.plot_surface(X, Y, Z, cmap="viridis")
 
-        plt.xlabel('X')
-        plt.ylabel('Y')
-        ax.set_zlabel('Z')
+        plt.xlabel("X")
+        plt.ylabel("Y")
+        ax.set_zlabel("Z")
         plt.savefig("./examples/plots/or-3d.jpg")
