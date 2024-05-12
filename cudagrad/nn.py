@@ -10,6 +10,7 @@
 # Geoffrey Hinton
 
 from itertools import product
+from typing import Generator, Tuple
 
 from cudagrad.tensor import Tensor
 
@@ -19,21 +20,21 @@ def mse(predicted: Tensor, actual: Tensor) -> Tensor:
 
 
 class Module:
-    def parameters(self):
+    def parameters(self) -> list[Tensor]:
         return [
             getattr(self, attr)
             for attr in dir(self)
             if type(getattr(self, attr)) == Tensor
         ]
 
-    def zero_grad(self):
+    def zero_grad(self) -> None:
         for parameter in self.parameters():
             assert type(parameter) == Tensor
             parameter.zero_grad()
 
 
 def sgd(model: Module, lr: float) -> None:
-    def positions(tensor):
+    def positions(tensor: Tensor) -> Generator[Tuple[int, ...], None, None]:
         indices = [list(range(size)) for size in tensor.size]
         for index in product(*indices):
             yield index
