@@ -106,7 +106,8 @@
 from random import choice, random
 
 from cudagrad import Tensor
-from cudagrad.nn import mse, sgd, Module
+from cudagrad.nn import Module, mse, sgd
+
 
 class MLP(Module):
     def __init__(self):
@@ -123,6 +124,7 @@ class MLP(Module):
         return Tensor.sigmoid(
             self.w1 @ Tensor.sigmoid((self.w0 @ x + self.b0)) + self.b1
         )
+
 
 model = MLP()
 

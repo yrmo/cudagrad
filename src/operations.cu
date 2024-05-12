@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <thrust/device_vector.h>
+
 #include <cub/cub.cuh>
 #include <cuda/std/atomic>
 
@@ -21,4 +22,4 @@ extern "C" void hello() {
   cudaDeviceSynchronize();
 }
 
-} // namespace cg
+}  // namespace cg
