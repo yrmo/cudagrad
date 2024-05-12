@@ -110,7 +110,7 @@ from cudagrad.nn import Module, mse, sgd
 
 
 class MLP(Module):
-    def __init__(self):
+    def __init__(self) -> None:
         self.w0 = Tensor(
             [2, 2], [choice([-1 * random(), random()]) for _ in range(2 * 2)]
         )

@@ -11,13 +11,13 @@ from pybind11.setup_helpers import build_ext
 
 
 class CMakeExtension(Extension):
-    def __init__(self, name, sourcedir=""):
+    def __init__(self, name: str, sourcedir: str = "") -> None:
         Extension.__init__(self, name, sources=[])
         self.sourcedir = os.path.abspath(sourcedir)
 
 
 class CMakeBuild(build_ext):
-    def run(self):
+    def run(self) -> None:
         try:
             out = subprocess.check_output(["cmake", "--version"])
         except OSError:
@@ -29,7 +29,7 @@ class CMakeBuild(build_ext):
         for ext in self.extensions:
             self.build_extension(ext)
 
-    def build_extension(self, ext):
+    def build_extension(self, ext: CMakeExtension) -> None:
         extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
         cmake_args = [
             "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=" + extdir,
@@ -55,9 +55,9 @@ class CMakeBuild(build_ext):
         )
 
 
-def get_version_from_toml():
+def get_version_from_toml() -> str:
     data = toml.load("pyproject.toml")
-    version = data.get("project", {}).get("version", None)
+    version = str(data.get("project", {}).get("version", None))
     if version is None:
         raise RuntimeError("Can't get version in TOML!")
     else:

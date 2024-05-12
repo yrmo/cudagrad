@@ -1,5 +1,7 @@
 # python tests/test_backward.py
 
+from typing import Any, Iterable
+
 import torch
 
 from cudagrad import Tensor
@@ -9,7 +11,7 @@ from cudagrad import Tensor
 # assert cg.subtract(1, 2) == -1
 
 
-def flatten(iterable):
+def flatten(iterable: Iterable[Any]) -> list[Any]:
     out = []
     for item in iterable:
         if isinstance(item, (list, tuple)):
