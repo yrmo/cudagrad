@@ -16,7 +16,12 @@ from cudagrad.tensor import Tensor
 
 
 def mse(predicted: Tensor, actual: Tensor) -> Tensor:
-    return (predicted - actual) * (predicted - actual)
+    # TODO this assumes column tensor
+    difference = predicted - actual
+    squared = difference * difference
+    summed = squared.sum()
+    mean = summed / Tensor([1], [summed.size[0]])
+    return mean
 
 
 class Module:
