@@ -35,7 +35,7 @@ class ZeroNet:
 model = ZeroNet()
 
 
-def accuracy() -> int:
+def accuracy() -> float:
     outputs = []
     for i, test_image in enumerate(test_images):
         outputs.append(int(model(train_images[i]).item()))
