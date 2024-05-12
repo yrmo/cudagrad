@@ -63,7 +63,7 @@ std::shared_ptr<Tensor> tensor(std::vector<size_t>, std::vector<float>,
                                std::vector<std::shared_ptr<Tensor>>,
                                std::shared_ptr<AutoGradBackward>, std::string);
 
-const std::string DEFAULT_BACKWARD_STRING = "DefaultBackward";
+const char DEFAULT_BACKWARD_STRING[] = "DefaultBackward";
 
 class Tensor : public std::enable_shared_from_this<Tensor> {
  public:
