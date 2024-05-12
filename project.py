@@ -51,9 +51,11 @@ class Project:
         RUN("cp tensor.so ../cudagrad/")
 
     def lint(self):
+        RUN("python -m mypy --install-types")
         RUN(f"python -m cpplint {CPP_FILES}")
-        RUN("python -m mypy --exclude build --ignore-missing-imports --pretty .")
-        RUN("ruff .")
+        EXCLUDE = "--exclude build --exclude cccl --exclude pybind11 --exclude googletest"
+        RUN(f"python -m mypy {EXCLUDE} --ignore-missing-imports --pretty --strict .")
+        RUN(f"ruff check {EXCLUDE} .")
 
     def clean(self):
         RUN("python -m isort .")
