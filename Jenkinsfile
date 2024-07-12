@@ -14,7 +14,7 @@ pipeline {
         }
         stage('Test CUDA') {
             steps {
-                python project.py test CPU
+                sh 'python project.py test CPU'
             }
         }
     }
