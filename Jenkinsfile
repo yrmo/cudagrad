@@ -6,11 +6,6 @@ pipeline {
     }
 
     stages {
-        stage('Hello') {
-            steps {
-                sh 'echo "Hello World"'
-            }
-        }
         stage('python') {
             steps {
                 sh 'which python'
@@ -21,14 +16,12 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/yrmo/cudagrad.git']]])
             }
         }
-        stage('pip') {
+        stage('Post checkout') {
             steps {
-                sh 'pip install -r /var/lib/jenkins/workspace/cudagrad/dev-requirements.txt'
-            }
-        }
-        stage('Test CUDA') {
-            steps {
-                sh 'python project.py test CUDA'
+                dir('/var/lib/jenkins/workspace/cudagrad') {
+                    sh 'pip install -r dev-requirements.txt'
+                    sh 'python project.py test CUDA'
+                }
             }
         }
     }

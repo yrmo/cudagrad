@@ -115,6 +115,7 @@ class Project:
             os.remove(TEST_CUDA_FILENAME)
 
     def test(self, processor):
+        CWD = os.getcwd()
         if processor == "CUDA":
             self._test_cuda_setup()
             CHECK("nvcc tests/test_setup.cu && ./a.out")
@@ -149,7 +150,7 @@ class Project:
 
         CHECK("python -m pip uninstall -y cudagrad")
         CHECK("python -m pip cache purge")
-        os.chdir(os.path.expanduser("~/cudagrad"))
+        os.chdir(CWD)
         CHECK("pip install .")
         CHECK("python tests/test_backward.py")
         CHECK("python tests/test_forward.py")
