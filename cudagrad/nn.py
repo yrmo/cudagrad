@@ -29,12 +29,12 @@ class Module:
         return [
             getattr(self, attr)
             for attr in dir(self)
-            if type(getattr(self, attr)) == Tensor
+            if type(getattr(self, attr)) is Tensor
         ]
 
     def zero_grad(self) -> None:
         for parameter in self.parameters():
-            assert type(parameter) == Tensor
+            assert type(parameter) is Tensor
             parameter.zero_grad()
 
 
