@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    options { 
+        disableConcurrentBuilds() 
+    }
+
     environment {
         PATH = "/home/ryan/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/ryan/.local/bin:/home/ryan/.local/bin:${env.PATH}"
     }
