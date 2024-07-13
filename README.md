@@ -1,16 +1,30 @@
-# cudagrad 🐟∇
+<div align="center">
+<h1>
+    <div>cudagrad</div>
+</h1>
 
-A tensor-valued autograd engine for Python
+CUDA C++ strided float tensor automatic differentiation engine with Python bindings
 
-# Docs
+<h4>
+    <div>
+        <a href='https://github.com/yrmo/cudagrad'>Repository</a> – <a href='./Tensor.ipynb'>Documentation</a>
+    </div>
+</h4>
+</div>
 
-In-depth `cudagrad.Tensor` documentation can be found in [Tensor.ipynb](./Tensor.ipynb)
+# Install
+
+This project is available on [PyPI](https://pypi.org/project/cudagrad/), but requires `cmake` and `nvcc` to be available at installation time:
+
+```
+pip install cudagrad
+```
 
 # Examples
 
 The following examples were written purely in Python using only `cudagrad.Tensor` for learning
 
-## Neuron/Linear
+## Neuron
 
 ### OR
 
@@ -39,3 +53,11 @@ The following examples were written purely in Python using only `cudagrad.Tensor
 ![](examples/plots/mnist-grid.jpg)
 
 [`/examples/mnist.py`](https://github.com/yrmo/cudagrad/blob/main/examples/mnist.py)
+
+# Performance
+
+| Dataset | Time (seconds) |
+|---------|----------------|
+| or | 0.54 |
+| xor | 24.42 |
+| moons | 89.17 |

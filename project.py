@@ -227,6 +227,25 @@ class Project:
         environ["PROFILING"] = "1"
         RUN(f"python -m cProfile -o ./profiles/{model}.prof -m cudagrad.{model}")
 
+    def _profiles_total_tt(self) -> list[tuple([str, float])]:
+        from pathlib import Path
+        from pstats import Stats
+        p = Path("./examples/profiles")
+        ans = []
+        for profile in p.glob('*'):
+            ans.append(tuple([profile.stem, Stats(str(profile.resolve())).total_tt]))
+        return sorted(ans, key=lambda x: x[-1])
+
+    def profiles_markdown_table(self) -> str:
+        data = self._profiles_total_tt()
+        header = "| Dataset | Time (seconds) |\n"
+        divider = "|---------|----------------|\n"
+        table = header + divider
+        for dataset, time in data:
+            row = f"| {dataset} | {time:.2f} |\n"
+            table += row
+        return table
+
     def release(self):
         self.bump("patch")
         # TODO
