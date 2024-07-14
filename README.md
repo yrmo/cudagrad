@@ -58,6 +58,6 @@ The following examples were written purely in Python using only `cudagrad.Tensor
 
 | Dataset | Time (seconds) |
 |---------|----------------|
-| or | 0.54 |
-| xor | 24.42 |
-| moons | 89.17 |
+| or | 0.57 |
+| xor | 4.83 |
+| moons | 12.79 |
