@@ -371,18 +371,17 @@ class DataProxy {
     return parent_tensor.select_data(indexes);
   }
 
-  std::shared_ptr<Tensor> get(const py::slice& index) {
-    std::cout << "slice data proxy index" << std::endl;
-    return parent_tensor.select_data(std::vector<size_t>{0, 0});
-      // py::slice slice = index.cast<py::slice>();
-      // py::ssize_t start, stop, step, slicelength;
-      // if (slice.compute(10, &start, &stop, &step, &slicelength)) { // assume array length 10
-      //   std::cout << "Slice: start=" << start << ", stop=" << stop << ", step=" << step << std::endl;
-      // }
-  }
+  // std::shared_ptr<Tensor> get(const py::slice& index) {
+  //   return parent_tensor.select_data(std::vector<size_t>{0, 0});
+  // }
 
   void set(std::vector<size_t> indexes, float value) {
     parent_tensor.put_data(indexes, value);
+  }
+
+  void set(const py::slice& index, std::shared_ptr<Tensor> tensor) {
+    // TODO(yrmo): only [:] supported CHECK!
+    parent_tensor.data_ = tensor.get()->data_;
   }
 
  private:
