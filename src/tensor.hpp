@@ -365,7 +365,7 @@ class DataProxy {
  public:
   explicit DataProxy(Tensor &tensor) : parent_tensor(tensor) {}
 
-  std::vector<float> operator()() { return parent_tensor.get_data(); }
+  // std::vector<float> operator()() { return parent_tensor.get_data(); }
 
   std::shared_ptr<Tensor> get(std::vector<size_t> indexes) {
     return parent_tensor.select_data(indexes);
@@ -392,7 +392,8 @@ class GradProxy {
  public:
   explicit GradProxy(Tensor &tensor) : parent_tensor(tensor) {}
 
-  std::vector<float> operator()() { return parent_tensor.get_grad(); }
+  // bit hacky
+  std::shared_ptr<Tensor> operator()() { return tensor(parent_tensor.size_, parent_tensor.grad_); }
 
   std::shared_ptr<Tensor> get(std::vector<size_t> indexes) {
     return parent_tensor.select_grad(indexes);

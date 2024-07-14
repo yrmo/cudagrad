@@ -38,7 +38,7 @@ PYBIND11_MODULE(tensor, m) {
     )pbdoc");
 
   py::class_<cg::DataProxy>(m, "_DataProxy")
-    .def("__call__", &cg::DataProxy::operator())
+    // .def("__call__", &cg::DataProxy::operator())
     .def("__getitem__", static_cast<std::shared_ptr<cg::Tensor> (cg::DataProxy::*)(std::vector<size_t>)>(&cg::DataProxy::get), "Get list")
     // .def("__getitem__", static_cast<std::shared_ptr<cg::Tensor> (cg::DataProxy::*)(const py::slice&)>(&cg::DataProxy::get), "Get slice")
     .def("__setitem__", 
