@@ -25,12 +25,16 @@
 #include <utility>
 #include <vector>
 
+#include <pybind11/pybind11.h>
+
 template <typename... Args>
 void UNUSED(Args &&...args) {
   ([&args]() { (void)args; }(), ...);
 }
 
 namespace cg {
+
+namespace py = pybind11;
 
 extern "C" void hello();
 
@@ -365,6 +369,16 @@ class DataProxy {
 
   std::shared_ptr<Tensor> get(std::vector<size_t> indexes) {
     return parent_tensor.select_data(indexes);
+  }
+
+  std::shared_ptr<Tensor> get(const py::slice& index) {
+    std::cout << "slice data proxy index" << std::endl;
+    return parent_tensor.select_data(std::vector<size_t>{0, 0});
+      // py::slice slice = index.cast<py::slice>();
+      // py::ssize_t start, stop, step, slicelength;
+      // if (slice.compute(10, &start, &stop, &step, &slicelength)) { // assume array length 10
+      //   std::cout << "Slice: start=" << start << ", stop=" << stop << ", step=" << step << std::endl;
+      // }
   }
 
   void set(std::vector<size_t> indexes, float value) {
