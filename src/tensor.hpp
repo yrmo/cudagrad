@@ -11,6 +11,8 @@
 #ifndef SRC_TENSOR_HPP_
 #define SRC_TENSOR_HPP_
 
+#include <pybind11/pybind11.h>
+
 #include <algorithm>
 #include <cassert>
 #include <cmath>
@@ -24,8 +26,6 @@
 #include <string>
 #include <utility>
 #include <vector>
-
-#include <pybind11/pybind11.h>
 
 template <typename... Args>
 void UNUSED(Args &&...args) {
@@ -379,7 +379,7 @@ class DataProxy {
     parent_tensor.put_data(indexes, value);
   }
 
-  void set(const py::slice& index, std::shared_ptr<Tensor> tensor) {
+  void set(const py::slice &index, std::shared_ptr<Tensor> tensor) {
     // TODO(yrmo): only [:] supported CHECK!
     parent_tensor.data_ = tensor.get()->data_;
   }
@@ -393,7 +393,9 @@ class GradProxy {
   explicit GradProxy(Tensor &tensor) : parent_tensor(tensor) {}
 
   // bit hacky
-  std::shared_ptr<Tensor> operator()() { return tensor(parent_tensor.size_, parent_tensor.grad_); }
+  std::shared_ptr<Tensor> operator()() {
+    return tensor(parent_tensor.size_, parent_tensor.grad_);
+  }
 
   std::shared_ptr<Tensor> get(std::vector<size_t> indexes) {
     return parent_tensor.select_grad(indexes);
