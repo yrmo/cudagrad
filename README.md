@@ -30,7 +30,7 @@ The following examples were written purely in Python using only `cudagrad.Tensor
 
 ![](examples/plots/or-3d.jpg)
 
-[`/examples/or.py`](https://github.com/yrmo/cudagrad/blob/main/examples/or.py)
+[`/examples/or.py`](https://github.com/yrmo/cudagrad/blob/main/examples/or.py) (in 0.57 seconds)
 
 ## Multilayer perceptron (MLP)
 
@@ -38,13 +38,13 @@ The following examples were written purely in Python using only `cudagrad.Tensor
 
 ![](examples/plots/xor-3d.jpg)
 
-[`/examples/xor.py`](https://github.com/yrmo/cudagrad/blob/main/examples/xor.py)
+[`/examples/xor.py`](https://github.com/yrmo/cudagrad/blob/main/examples/xor.py) (in 4.83 seconds)
 
 ### Two moons
 
 ![](examples/plots/moons-3d.jpg)
 
-[`/examples/moons.py`](https://github.com/yrmo/cudagrad/blob/main/examples/moons.py)
+[`/examples/moons.py`](https://github.com/yrmo/cudagrad/blob/main/examples/moons.py) (in 12.79 seconds)
 
 ## Convolutional neural network (CNN) WIP!
 
@@ -53,11 +53,3 @@ The following examples were written purely in Python using only `cudagrad.Tensor
 ![](examples/plots/mnist-grid.jpg)
 
 [`/examples/mnist.py`](https://github.com/yrmo/cudagrad/blob/main/examples/mnist.py)
-
-# Performance
-
-| Dataset | Time (seconds) |
-|---------|----------------|
-| or | 0.57 |
-| xor | 4.83 |
-| moons | 12.79 |
