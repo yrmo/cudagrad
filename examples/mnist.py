@@ -1,11 +1,12 @@
 import urllib.request
 from os.path import isfile
+from random import random, choice
 
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy.typing import NDArray
 
-from cudagrad import Tensor
+from cudagrad import Tensor, Module
 
 filename = "mnist.npz"
 if not isfile(filename):
@@ -21,24 +22,25 @@ with np.load(filename, allow_pickle=True) as data:  # type: ignore [no-untyped-c
     test_labels = data["y_test"]
 
 
-class ZeroNet:
-    def __init__(self) -> None:
-        pass
+class Model(Module):
+    def __init__(self, inputs: int, outputs: int):
+        self.inputs = inputs
+        self.outputs = outputs
+        self.w = Tensor([outputs, inputs], [random() for _ in range(outputs * inputs)])
+        self.b = Tensor([outputs], [random() for _ in range(outputs)])
 
-    def __call__(self, x: NDArray[np.int32]) -> Tensor:
-        # TODO should be one line but bug right now
-        # return Tensor.zeros(x.shape).data[0, 0].item()
-        t = Tensor.zeros(x.shape)
-        return Tensor([1], [t.data[0, 0].item()])
+    def __call__(self, arr: NDArray) -> Tensor:
+        assert len(arr.flatten().tolist()) == 784
+        x = Tensor([self.inputs, self.outputs], arr.flatten().tolist())
+        return (self.w @ x) + self.b
 
-
-model = ZeroNet()
+model = Model(784, 1)
 
 
 def accuracy() -> float:
     outputs = []
     for i, test_image in enumerate(test_images):
-        outputs.append(int(model(train_images[i]).item()))
+        outputs.append(int(model(test_image).item()))
 
     targets = test_labels.flatten().tolist()
     return (
