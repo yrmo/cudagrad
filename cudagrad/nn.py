@@ -9,9 +9,6 @@
 #
 # Geoffrey Hinton
 
-from itertools import product
-from typing import Generator, Tuple
-
 from cudagrad.tensor import Tensor
 
 
@@ -40,4 +37,6 @@ class Module:
 
 def sgd(model: Module, lr: float) -> None:
     for parameter in model.parameters():
-        parameter.data[:] = parameter + (Tensor.explode(parameter.size, -lr) * parameter.grad())
+        parameter.data[:] = parameter + (
+            Tensor.explode(parameter.size, -lr) * parameter.grad()
+        )

@@ -230,9 +230,10 @@ class Project:
     def _profiles_total_tt(self) -> list[tuple([str, float])]:
         from pathlib import Path
         from pstats import Stats
+
         p = Path("./examples/profiles")
         ans = []
-        for profile in p.glob('*'):
+        for profile in p.glob("*"):
             ans.append(tuple([profile.stem, Stats(str(profile.resolve())).total_tt]))
         return sorted(ans, key=lambda x: x[-1])
 
