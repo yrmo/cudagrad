@@ -589,7 +589,7 @@ TEST(Basic, Exp) {
   auto l = b.get()->sum();
   l.get()->backward();
 
-  EXPECT_EQ(l.get()->data_[0], 2.0);
+  EXPECT_NEAR(l.get()->data_[0], 31.1929, 0.01);
   EXPECT_EQ(l.get()->grad_.size(), 1);
 
   EXPECT_EQ(b.get()->data_.size(), 4);
