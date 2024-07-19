@@ -50,6 +50,7 @@ struct ReluBackward;
 struct SigmoidBackward;
 struct MatMulBackward;
 using SelectBackward = AddBackward;
+struct ExpBackward;
 
 struct AutoGradForward;
 struct MatMulForward;
@@ -141,6 +142,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   std::shared_ptr<Tensor> sum();
   std::shared_ptr<Tensor> relu();
   std::shared_ptr<Tensor> sigmoid();
+  std::shared_ptr<Tensor> exponential();
   std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> other);
 
   std::shared_ptr<Tensor> select_data(std::vector<size_t> indexes);
@@ -528,6 +530,16 @@ std::shared_ptr<Tensor> Tensor::sigmoid() {
       std::make_shared<SigmoidBackward>(), "SigmoidBackward");
 }
 
+std::shared_ptr<Tensor> Tensor::exponential() {
+  std::vector<float> result_data(data_.size());
+  for (size_t i = 0; i < data_.size(); ++i) {
+    result_data[i] = exp(data_[i]);
+  }
+  return std::make_shared<Tensor>(
+      size_, result_data, std::vector<std::shared_ptr<Tensor>>{get_shared()},
+      std::make_shared<ExpBackward>(), "ExpBackward");
+}
+
 std::shared_ptr<Tensor> tensor(std::initializer_list<size_t> size,
                                std::initializer_list<float> data) {
   return std::make_shared<Tensor>(size, data);
@@ -797,6 +809,19 @@ struct SigmoidBackward : public AutoGradBackward {
       input.get()->grad_[i] += temp_debug;
     }
     debug_outputs(grad_output, grad_inputs, "SigmoidBackward");
+  }
+};
+
+struct ExpBackward : public AutoGradBackward {
+  ExpBackward() = default;
+
+  void apply(std::shared_ptr<Tensor> grad_output,
+             std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
+    assert(grad_inputs.size() == 1);
+    std::shared_ptr<Tensor> input = grad_inputs[0];
+    for (size_t i = 0; i < input.get()->grad_.size(); ++i) {
+      input.get()->grad_[i] += grad_output.get()->grad_[i] * exp(input.get()->data_[i]);
+    }
   }
 };
 
