@@ -17,6 +17,11 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/cccl/thrust)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/cccl/libcudacxx/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/cccl/cub)
 
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+include_directories(${Python3_INCLUDE_DIRS})
+add_subdirectory(pybind11)
+include_directories(./pybind11/include)
+
 add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/test_tensor.cpp ${CMAKE_CURRENT_SOURCE_DIR}/../src/operations.cu)
 target_link_libraries(${PROJECT_NAME} gtest gtest_main ${Python3_LIBRARIES})
 target_compile_options(${PROJECT_NAME} PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler -Icccl/thrust,-Icccl/libcudacxx/include,-Icccl/cub>)
