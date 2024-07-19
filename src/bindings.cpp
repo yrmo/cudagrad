@@ -73,6 +73,7 @@ PYBIND11_MODULE(tensor, m) {
       .def("sigmoid", &cg::Tensor::sigmoid)
       .def("exp", &cg::Tensor::exponential)
       .def("max", &cg::Tensor::max)
+      .def("exp", &cg::Tensor::exponential)
       .def_property_readonly("data", &cg::Tensor::data_proxy)
       .def_property_readonly("grad", &cg::Tensor::grad_proxy)
       // .def("__getitem__", &cg::Tensor::select)
