@@ -10,3 +10,4 @@ torch
 numpy
 ruff
 types-setuptools
+scikit-learn

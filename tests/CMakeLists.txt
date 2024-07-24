@@ -5,22 +5,19 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CUDA_ARCHITECTURES "86")
 enable_language(CUDA)
+
 find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
-execute_process(
-    COMMAND ${Python3_EXECUTABLE} -c "import pybind11; print(pybind11.get_cmake_dir())"
-    OUTPUT_VARIABLE PYBIND11_CMAKE_DIR
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-set(pybind11_DIR ${PYBIND11_CMAKE_DIR})
-find_package(pybind11 REQUIRED)
-include_directories(${Python3_INCLUDE_DIRS} ${pybind11_INCLUDE_DIRS})
-link_directories(${Python3_LIBRARY_DIRS})
+include_directories(${Python3_INCLUDE_DIRS})
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../pybind11 ${CMAKE_CURRENT_BINARY_DIR}/pybind11/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../pybind11/include)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../googletest ${CMAKE_CURRENT_BINARY_DIR}/googletest)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../cccl ${CMAKE_CURRENT_BINARY_DIR}/cccl)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/cccl/thrust)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/cccl/libcudacxx/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/cccl/cub)
-include_directories(${PROJECT_SOURCE_DIR}/../pybind11/include)
+
 add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/test_tensor.cpp ${CMAKE_CURRENT_SOURCE_DIR}/../src/operations.cu)
-target_link_libraries(${PROJECT_NAME} gtest gtest_main pybind11::pybind11 Python3::Python)
+target_link_libraries(${PROJECT_NAME} gtest gtest_main ${Python3_LIBRARIES})
+target_compile_options(${PROJECT_NAME} PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler -Icccl/thrust,-Icccl/libcudacxx/include,-Icccl/cub>)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../src/tensor.hpp ${CMAKE_CURRENT_BINARY_DIR}/tensor.hpp COPYONLY)
