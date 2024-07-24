@@ -115,19 +115,12 @@ class Project:
             assert run_process.stdout == "no error"
             os.remove(TEST_CUDA_FILENAME)
 
-    def test(self, processor):
+    def test(self):
         CWD = os.getcwd()
-        if processor == "CUDA":
-            self._test_cuda_setup()
-            CHECK("nvcc tests/test_setup.cu && ./a.out")
-            CHECK("rm a.out")
 
-        if processor == "CPU":
-            CHECK("cp tests/CMakeListsCPU.txt tests/CMakeLists.txt")
-        elif processor == "CUDA":
-            CHECK("cp tests/CMakeListsCUDA.txt tests/CMakeLists.txt")
-        else:
-            raise ValueError(f"Unknown option for {processor=}!")
+        self._test_cuda_setup()
+        CHECK("nvcc tests/test_setup.cu && ./a.out")
+        CHECK("rm a.out")
 
         CHECK("git submodule update --init --recursive")
         if os.path.exists("build"):

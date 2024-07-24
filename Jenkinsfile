@@ -24,7 +24,7 @@ pipeline {
             steps {
                 dir('/var/lib/jenkins/workspace/cudagrad') {
                     sh 'pip install -r dev-requirements.txt'
-                    sh 'python project.py test CUDA'
+                    sh 'python project.py test'
                 }
             }
         }
