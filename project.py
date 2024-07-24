@@ -139,7 +139,6 @@ class Project:
             return
 
         os.chdir("..")
-        CHECK("rm ./tests/CMakeLists.txt")
 
         CHECK("python -m pip uninstall -y cudagrad")
         CHECK("python -m pip cache purge")
