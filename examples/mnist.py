@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from numpy.typing import NDArray
 
-from cudagrad import Tensor, Module
+from cudagrad import Module, Tensor
 
 filename = "mnist.npz"
 if not isfile(filename):
@@ -33,6 +33,7 @@ class Model(Module):
         assert len(arr.flatten().tolist()) == 784
         x = Tensor([self.inputs, self.outputs], arr.flatten().tolist())
         return (self.w @ x) + self.b
+
 
 model = Model(784, 1)
 

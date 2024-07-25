@@ -1,10 +1,10 @@
 # type: ignore
 
-import sys
 import os
 import re
 import shutil
 import subprocess
+import sys
 from functools import wraps
 from itertools import chain
 from os import environ

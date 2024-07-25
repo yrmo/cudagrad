@@ -599,7 +599,7 @@ TEST(Basic, Exp) {
   >>> a
   tensor([0., 1., 2., 3.], requires_grad=True)
   >>> b = a.exp()
-  >>> 
+  >>>
   >>> b
   tensor([ 1.0000,  2.7183,  7.3891, 20.0855], grad_fn=<ExpBackward0>)
   >>> l = b.sum()
@@ -629,7 +629,6 @@ TEST(Basic, Exp) {
   EXPECT_NEAR(a.get()->grad_[2], 7.3891, 0.01);
   EXPECT_NEAR(a.get()->grad_[3], 20.0855, 0.01);
 }
-
 
 TEST(Broadcast, Divide) {
   /*

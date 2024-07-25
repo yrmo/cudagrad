@@ -54,7 +54,6 @@ struct ExpBackward;
 struct MaxBackward;
 struct ExpBackward;
 
-
 struct AutoGradForward;
 struct MatMulForward;
 
@@ -418,7 +417,8 @@ class GradProxy {
 DataProxy Tensor::data_proxy() { return DataProxy(*this); }
 GradProxy Tensor::grad_proxy() { return GradProxy(*this); }
 
-std::vector<float> broadcast(std::vector<size_t>, std::vector<float>, std::vector<size_t>);
+std::vector<float> broadcast(std::vector<size_t>, std::vector<float>,
+                             std::vector<size_t>);
 
 template <typename T>
 std::shared_ptr<Tensor> binaryElementwiseOperator(
@@ -430,11 +430,11 @@ std::shared_ptr<Tensor> binaryElementwiseOperator(
   children.push_back(rhs);
 
   if (lhs.get()->data_.size() < rhs.get()->data_.size()) {
-    lhs.get()->data_ = broadcast(lhs.get()->size_, lhs.get()->data_, rhs.get()->size_);
-  }
-  else if (lhs.get()->data_.size() > rhs.get()->data_.size()) {
-    rhs.get()->data_ = broadcast(rhs.get()->size_, rhs.get()->data_, lhs.get()->size_);
-
+    lhs.get()->data_ =
+        broadcast(lhs.get()->size_, lhs.get()->data_, rhs.get()->size_);
+  } else if (lhs.get()->data_.size() > rhs.get()->data_.size()) {
+    rhs.get()->data_ =
+        broadcast(rhs.get()->size_, rhs.get()->data_, lhs.get()->size_);
   }
   assert(lhs.get()->data_.size() == rhs.get()->data_.size());
   std::vector<float> result_data(lhs.get()->data_.size());
@@ -865,7 +865,8 @@ struct ExpBackward : public AutoGradBackward {
     assert(grad_inputs.size() == 1);
     std::shared_ptr<Tensor> input = grad_inputs[0];
     for (size_t i = 0; i < input.get()->grad_.size(); ++i) {
-      input.get()->grad_[i] += grad_output.get()->grad_[i] * exp(input.get()->data_[i]);
+      input.get()->grad_[i] +=
+          grad_output.get()->grad_[i] * exp(input.get()->data_[i]);
     }
   }
 };
