@@ -75,7 +75,7 @@ if __name__ == "__main__":
         fig = plt.figure()
         ax = fig.add_subplot(111, projection="3d")
 
-        surf = ax.plot_surface(X, Y, Z, cmap="viridis", alpha=0.6) # type: ignore [attr-defined]
+        surf = ax.plot_surface(X, Y, Z, cmap="viridis", alpha=0.6)  # type: ignore [attr-defined]
 
         ax.scatter(
             inputs[targets == 0, 0], inputs[targets == 0, 1], 0, c="#440154", label="0"
@@ -84,8 +84,8 @@ if __name__ == "__main__":
             inputs[targets == 1, 0], inputs[targets == 1, 1], 0, c="#fde725", label="1"
         )
 
-        ax.set_xlabel("X") # type: ignore [attr-defined]
-        ax.set_ylabel("Y") # type: ignore [attr-defined]
-        ax.set_zlabel("Z") # type: ignore [attr-defined]
+        ax.set_xlabel("X")  # type: ignore [attr-defined]
+        ax.set_ylabel("Y")  # type: ignore [attr-defined]
+        ax.set_zlabel("Z")  # type: ignore [attr-defined]
 
         plt.savefig("./examples/plots/moons-3d.jpg")

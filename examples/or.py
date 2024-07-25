@@ -77,9 +77,9 @@ if __name__ == "__main__":
 
         fig = plt.figure()
         ax = fig.add_subplot(111, projection="3d")
-        ax.plot_surface(X, Y, Z, cmap="viridis") # type: ignore [attr-defined]
+        ax.plot_surface(X, Y, Z, cmap="viridis")  # type: ignore [attr-defined]
 
         plt.xlabel("X")
         plt.ylabel("Y")
-        ax.set_zlabel("Z") # type: ignore [attr-defined]
+        ax.set_zlabel("Z")  # type: ignore [attr-defined]
         plt.savefig("./examples/plots/or-3d.jpg")

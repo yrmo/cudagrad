@@ -4,6 +4,7 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 from functools import wraps
 from itertools import chain
 from os import environ
@@ -126,10 +127,11 @@ class Project:
             shutil.rmtree("build")
         os.makedirs("build", exist_ok=True)
         os.chdir("build")
+        cmake_args = ["-DPYTHON_EXECUTABLE=" + sys.executable]
         CHECK(
             "cmake -DCMAKE_PREFIX_PATH="
             + torch.utils.cmake_prefix_path
-            + f" {Path('../tests').resolve()}"
+            + f" {Path('../tests').resolve()} {' '.join(cmake_args)}"
         )
         CHECK("cmake ../tests")
         CHECK("make")
