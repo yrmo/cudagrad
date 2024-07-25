@@ -144,7 +144,6 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   std::shared_ptr<Tensor> sum();
   std::shared_ptr<Tensor> relu();
   std::shared_ptr<Tensor> sigmoid();
-  std::shared_ptr<Tensor> exponential();
   std::shared_ptr<Tensor> max();
   std::shared_ptr<Tensor> exponential();
   std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> other);
