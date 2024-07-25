@@ -1,6 +1,7 @@
 import unittest
 
 import torch
+import torch.nn as nn
 
 import cudagrad
 
@@ -31,6 +32,13 @@ class TestNN(unittest.TestCase):
             self.assertAlmostEqual(
                 t_softmax.data[i].item(), u_softmax.data[[i]].item(), places=5
             )
+
+    def test_cross_entropy_loss(self):
+        logits = torch.tensor([[0.7, 1.3], [1.1, 0.9], [0.2, 2.0]])
+        targets = torch.tensor([1, 0, 1])
+        criterion = nn.CrossEntropyLoss()
+        loss = criterion(logits, targets)
+        self.assertAlmostEqual(loss.item(), 42)
 
 if __name__ == "__main__":
     unittest.main()
