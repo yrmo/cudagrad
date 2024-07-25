@@ -40,3 +40,7 @@ def sgd(model: Module, lr: float) -> None:
         parameter.data[:] = parameter + (
             Tensor.explode(parameter.size, -lr) * parameter.grad()
         )
+
+def softmax(t: Tensor) -> Tensor:
+    e = t.exp() 
+    return e / e.sum()
