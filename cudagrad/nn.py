@@ -43,5 +43,6 @@ def sgd(model: Module, lr: float) -> None:
 
 
 def softmax(t: Tensor) -> Tensor:
-    e = t.exp()
+    D = Tensor([1], [-1]) * t.max()
+    e = (t + D).exp()
     return e / e.sum()
