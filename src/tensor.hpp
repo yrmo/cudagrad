@@ -50,6 +50,7 @@ struct ReluBackward;
 struct SigmoidBackward;
 struct MatMulBackward;
 using SelectBackward = AddBackward;
+struct MaxBackward;
 
 struct AutoGradForward;
 struct MatMulForward;
@@ -141,6 +142,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   std::shared_ptr<Tensor> sum();
   std::shared_ptr<Tensor> relu();
   std::shared_ptr<Tensor> sigmoid();
+  std::shared_ptr<Tensor> max();
   std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> other);
 
   std::shared_ptr<Tensor> select_data(std::vector<size_t> indexes);
@@ -508,6 +510,19 @@ std::shared_ptr<Tensor> Tensor::sum() {
       std::make_shared<SumBackward>(), "SumBackward");
 }
 
+std::shared_ptr<Tensor> Tensor::max() {
+  float ans = data_[0];
+  for (float x : data_) {
+    if (x > ans) {
+      ans = x;
+    }
+  }
+  return std::make_shared<Tensor>(
+      std::vector<size_t>{1}, std::vector<float>{ans},
+      std::vector<std::shared_ptr<Tensor>>{get_shared()},
+      std::make_shared<MaxBackward>(), "MaxBackward");
+}
+
 std::shared_ptr<Tensor> Tensor::relu() {
   std::vector<float> result_data(data_.size());
   for (size_t i = 0; i < data_.size(); ++i) {
@@ -715,6 +730,25 @@ struct AddBackward : public AutoGradBackward {
       }
     }
     debug_outputs(grad_output, grad_inputs, "AddBackward");
+  }
+};
+
+struct MaxBackward : public AutoGradBackward {
+  MaxBackward() = default;
+
+  void apply(std::shared_ptr<Tensor> grad_output,
+             std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
+    for (std::shared_ptr<Tensor> grad_input : grad_inputs) {
+      int index = 0;
+      float biggest = grad_input.get()->data_[0];
+      for (int i = 0; i < grad_input.get()->data_.size(); i++) {
+        if (grad_input.get()->data_[i] > biggest) {
+          biggest = grad_input.get()->data_[i];
+          index = i;
+        }
+      }
+      grad_input.get()->grad_[index] += grad_output.get()->grad_[0];
+    }
   }
 };
 

@@ -64,6 +64,31 @@ TEST(Basic, Sum) {
   EXPECT_EQ(a.get()->grad_[2], 1.0);
 }
 
+TEST(Basic, Max) {
+  /*
+  >>> import torch
+  >>> a = torch.tensor([1,2,1,3,1.], requires_grad=True)
+  >>> l = a.max()
+  >>> l.backward()
+  >>> l.data
+  tensor(3.)
+  >>> a.grad
+  tensor([0., 0., 0., 1., 0.])
+  */
+  auto a = cg::tensor({5}, {1.0, 2.0, 1.0, 3.0, 1.0});
+  auto l = a.get()->max();
+  l.get()->backward();
+
+  EXPECT_EQ(l.get()->data_[0], 3.0);
+  EXPECT_EQ(l.get()->grad_.size(), 1);
+  EXPECT_EQ(a.get()->grad_.size(), 5);
+  EXPECT_EQ(a.get()->grad_[0], 0.0);
+  EXPECT_EQ(a.get()->grad_[1], 0.0);
+  EXPECT_EQ(a.get()->grad_[2], 0.0);
+  EXPECT_EQ(a.get()->grad_[3], 1.0);
+  EXPECT_EQ(a.get()->grad_[4], 0.0);
+}
+
 TEST(Basic, Minus) {
   /*
   >>> a = torch.tensor((5.0, 4.0, 3.0, 2.0), requires_grad=True)
