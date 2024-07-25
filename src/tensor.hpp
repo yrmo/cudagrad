@@ -417,6 +417,8 @@ class GradProxy {
 DataProxy Tensor::data_proxy() { return DataProxy(*this); }
 GradProxy Tensor::grad_proxy() { return GradProxy(*this); }
 
+std::vector<float> broadcast(std::vector<size_t>, std::vector<float>, std::vector<size_t>);
+
 template <typename T>
 std::shared_ptr<Tensor> binaryElementwiseOperator(
     std::shared_ptr<Tensor> lhs, std::shared_ptr<Tensor> rhs,
@@ -426,6 +428,13 @@ std::shared_ptr<Tensor> binaryElementwiseOperator(
   children.push_back(lhs);
   children.push_back(rhs);
 
+  if (lhs.get()->data_.size() < rhs.get()->data_.size()) {
+    lhs.get()->data_ = broadcast(lhs.get()->size_, lhs.get()->data_, rhs.get()->size_);
+  }
+  else if (lhs.get()->data_.size() > rhs.get()->data_.size()) {
+    rhs.get()->data_ = broadcast(rhs.get()->size_, rhs.get()->data_, lhs.get()->size_);
+
+  }
   assert(lhs.get()->data_.size() == rhs.get()->data_.size());
   std::vector<float> result_data(lhs.get()->data_.size());
   for (size_t i = 0; i < lhs.get()->data_.size(); ++i) {

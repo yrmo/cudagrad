@@ -630,6 +630,39 @@ TEST(Basic, Exp) {
   EXPECT_NEAR(a.get()->grad_[3], 20.0855, 0.01);
 }
 
+
+TEST(Broadcast, Divide) {
+  /*
+  >>> import torch
+  >>> t = torch.tensor((5.0, 4.0, -3.0, 2.0), requires_grad=True)
+  >>> t
+  tensor([ 5.,  4., -3.,  2.], requires_grad=True)
+  >>> t / torch.tensor([2.], requires_grad=True)
+  tensor([ 2.5000,  2.0000, -1.5000,  1.0000], grad_fn=<DivBackward0>)
+  */
+  auto a = cg::tensor({4}, {5.0, 4.0, 3.0, 2.0});
+  auto b = cg::tensor({4}, {2.0, 3.0, 4.0, 5.0});
+  auto c = a / b;
+  auto l = c.get()->sum();
+  l.get()->backward();
+
+  EXPECT_NEAR(l.get()->data_[0], 4.9833, 0.01);
+  EXPECT_EQ(l.get()->grad_.size(), 1);
+
+  EXPECT_EQ(a.get()->grad_.size(), 4);
+  EXPECT_EQ(b.get()->grad_.size(), 4);
+
+  EXPECT_NEAR(a.get()->grad_[0], 0.5, 0.01);
+  EXPECT_NEAR(a.get()->grad_[1], 0.3333, 0.01);
+  EXPECT_NEAR(a.get()->grad_[2], 0.25, 0.01);
+  EXPECT_NEAR(a.get()->grad_[3], 0.2, 0.01);
+
+  EXPECT_NEAR(b.get()->grad_[0], -1.25, 0.01);
+  EXPECT_NEAR(b.get()->grad_[1], -0.444, 0.01);
+  EXPECT_NEAR(b.get()->grad_[2], -0.1875, 0.01);
+  EXPECT_NEAR(b.get()->grad_[3], -0.08, 0.01);
+}
+
 TEST(SigmoidGauntlet, MatmulAddSigmoid0) {
   // Tensor.sigmoid(w0 @ x + b0)
 
