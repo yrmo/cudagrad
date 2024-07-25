@@ -18,6 +18,19 @@ class TestNN(unittest.TestCase):
                 t_softmax.data[i].item(), u_softmax.data[[i]].item(), places=5
             )
 
+    def test_softmax_big(self):
+        data = [0.0, 1000, 2000, 4000]
+
+        t = torch.tensor(data)
+        t_softmax = torch.nn.functional.softmax(t, dim=0)
+
+        u = cudagrad.Tensor([4], data)
+        u_softmax = cudagrad.nn.softmax(u)
+
+        for i in range(t.shape[0]):
+            self.assertAlmostEqual(
+                t_softmax.data[i].item(), u_softmax.data[[i]].item(), places=5
+            )
 
 if __name__ == "__main__":
     unittest.main()
