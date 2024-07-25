@@ -1,6 +1,6 @@
 import urllib.request
 from os.path import isfile
-from random import random, choice
+from random import random
 
 import matplotlib.pyplot as plt
 import numpy as np
