@@ -630,6 +630,35 @@ TEST(Basic, Exp) {
   EXPECT_NEAR(a.get()->grad_[3], 20.0855, 0.01);
 }
 
+TEST(Basic, Ln) {
+  /*
+  >>> a = torch.tensor([1, 2.], requires_grad=True)
+  >>> l = a.log().sum()
+  >>> l.backward()
+  >>> a.grad
+  tensor([1.0000, 0.5000])
+  >>> l
+  tensor(0.6931, grad_fn=<SumBackward0>)
+  >>> a
+  tensor([1., 2.], requires_grad=True)
+  >>> l
+  tensor(0.6931, grad_fn=<SumBackward0>)
+  >>> l.grad
+  <stdin>:1: UserWarning: The .grad attribute of a Tensor that is not a leaf Tensor is being accessed. Its .grad attribute won't be populated during autograd.backward(). If you indeed want the .grad field to be populated for a non-leaf Tensor, use .retain_grad() on the non-leaf Tensor. If you access the non-leaf Tensor by mistake, make sure you access the leaf Tensor instead. See github.com/pytorch/pytorch/pull/30531 for more informations. (Triggered internally at aten/src/ATen/core/TensorBody.h:489.)
+  */
+  auto a = cg::tensor({2}, {1.0, 2.0});
+  auto b = a.get()->ln();
+  auto l = b.get()->sum();
+  l.get()->backward();
+
+  EXPECT_NEAR(l.get()->data_[0], 0.6931, 0.01);
+  EXPECT_EQ(l.get()->grad_.size(), 1);
+
+  EXPECT_EQ(a.get()->grad_.size(), 2);
+  EXPECT_NEAR(a.get()->grad_[0], 1.0, 0.01);
+  EXPECT_NEAR(a.get()->grad_[1], 0.5, 0.01);
+}
+
 TEST(Broadcast, Divide) {
   /*
   >>> import torch
