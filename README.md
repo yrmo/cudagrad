@@ -5,16 +5,9 @@
 
 CUDA C++ strided float tensor automatic differentiation engine with Python bindings
 
-<h4>
-    <div>
-        <a href='https://github.com/yrmo/cudagrad'>Repository</a> – <a href='./Tensor.ipynb'>Documentation</a>
-    </div>
-</h4>
 </div>
 
 # Install
-
-This project is available on [PyPI](https://pypi.org/project/cudagrad/), but requires `cmake` and `nvcc` to be available at installation time:
 
 ```
 pip install cudagrad
@@ -22,34 +15,33 @@ pip install cudagrad
 
 # Examples
 
-The following examples were written purely in Python using only `cudagrad.Tensor` for learning
+The following examples were written purely in Python using only [`cudagrad.Tensor`](./Tensor.ipynb) for learning:
 
-## Neuron
 
 ### OR
 
-![](examples/plots/or-3d.jpg)
+![](benchmarks/_cudagrad/plots/or.jpg)
 
-[`/examples/or.py`](https://github.com/yrmo/cudagrad/blob/main/examples/or.py) (in 0.57 seconds)
+[`/benchmarks/_cudagrad/or.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/or.py) (in 0.57 seconds)
 
-## Multilayer perceptron (MLP)
 
 ### XOR
 
-![](examples/plots/xor-3d.jpg)
+![](benchmarks/_cudagrad/plots/xor.jpg)
 
-[`/examples/xor.py`](https://github.com/yrmo/cudagrad/blob/main/examples/xor.py) (in 4.83 seconds)
+[`/benchmarks/_cudagrad/xor.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/xor.py) (in 4.83 seconds)
 
-### Two moons
 
-![](examples/plots/moons-3d.jpg)
+### MOONS
 
-[`/examples/moons.py`](https://github.com/yrmo/cudagrad/blob/main/examples/moons.py) (in 12.79 seconds)
+![](benchmarks/_cudagrad/plots/moons.jpg)
 
-## Convolutional neural network (CNN) WIP!
+[`/benchmarks/_cudagrad/moons.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/moons.py) (in 12.79 seconds)
+
 
 ### MNIST
 
-![](examples/plots/mnist-grid.jpg)
+![](benchmarks/_cudagrad/plots/mnist.jpg)
 
-[`/examples/mnist.py`](https://github.com/yrmo/cudagrad/blob/main/examples/mnist.py)
+[`/benchmarks/_cudagrad/mnist.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/mnist.py) (in 3.52 seconds)
+
