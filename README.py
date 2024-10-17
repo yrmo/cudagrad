@@ -26,26 +26,33 @@ The following examples were written purely in Python using only [`cudagrad.Tenso
 """
 
 
-def profile(examples: list[str], x):
+def compare(c: float, t: float) -> str:
+    if t == 0:
+        raise ValueError
+    return ((c - t) / t) * 100
+
+def profile(examples: list[str]):
     global README
+    
     for example in examples:
-        # system(f"python -m cProfile -o ./benchmarks/{x}/profiles/{example}.prof ./benchmarks/{x}/{example}.py")
-        p = Stats(f"./benchmarks/_{x}/profiles/{example}.prof")
+        # system(f"python -m cProfile -o ./benchmarks/_cudagrad/profiles/{example}.prof ./benchmarks/_cudagrad/{example}.py")
+        # system(f"python -m cProfile -o ./benchmarks/_torch/profiles/{example}.prof ./benchmarks/_torch/{example}.py")
+        t = Stats(f"./benchmarks/_torch/profiles/{example}.prof")
+        c = Stats(f"./benchmarks/_cudagrad/profiles/{example}.prof")
         README = README + dedent(f"""\
 
 ### {example.upper()}
 
-![](benchmarks/_{x}/plots/{example}.jpg)
+![](benchmarks/_cudagrad/plots/{example}.jpg)
 
-[`/benchmarks/_{x}/{example}.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/{example}.py) (in {round(p.total_tt, 2)} seconds)
+[`/benchmarks/_cudagrad/{example}.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/{example}.py) ({compare(c.total_tt, t.total_tt):+}% {"faster" if c.total_tt <= t.total_tt else "slower"} than `torch`)
 
 """)
 
 
 if __name__ == "__main__":
     environ["PROFILING"] = "1"
-    profile([x.stem for x in list(Path('.').glob('./benchmarks/_cudagrad/*.py'))], "cudagrad")
-    # profile([x.stem for x in list(Path('.').glob('./examples/_torch/*.py'))], "torch")
+    profile([x.stem for x in list(Path('.').glob('./benchmarks/_torch/*.py'))])
 
     with open("README.md", "w") as f:
         f.write(README)
