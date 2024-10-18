@@ -46,3 +46,4 @@ exclude = '''
 
 [tool.ruff]
 exclude = ['googletest/', 'pybind11/', 'cccl/']
+ignore = ["E703"]
