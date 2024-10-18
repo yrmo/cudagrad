@@ -23,5 +23,9 @@ jobs:
     - name: Install Requirements
       run: python -m pip install -r dev-requirements.txt
 
+    # https://github.com/python/mypy/issues/10600
+    - name: Setup mypy
+      run: mkdir .mypy_cache
+
     - name: Run lint script
       run: python project.py lint
