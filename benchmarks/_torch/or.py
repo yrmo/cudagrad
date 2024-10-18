@@ -42,7 +42,23 @@ if __name__ == "__main__":
             out1 = round(model(inputs[1].unsqueeze(0)).item())
             out2 = round(model(inputs[2].unsqueeze(0)).item())
             out3 = round(model(inputs[3].unsqueeze(0)).item())
-            print("0 OR 0 = ", round(model(inputs[0].unsqueeze(0)).item(), 2), "🔥" if out0 == 0 else "")
-            print("0 OR 1 = ", round(model(inputs[1].unsqueeze(0)).item(), 2), "🔥" if out1 == 1 else "")
-            print("1 OR 0 = ", round(model(inputs[2].unsqueeze(0)).item(), 2), "🔥" if out2 == 1 else "")
-            print("1 OR 1 = ", round(model(inputs[3].unsqueeze(0)).item(), 2), "🔥" if out3 == 1 else "")
+            print(
+                "0 OR 0 = ",
+                round(model(inputs[0].unsqueeze(0)).item(), 2),
+                "🔥" if out0 == 0 else "",
+            )
+            print(
+                "0 OR 1 = ",
+                round(model(inputs[1].unsqueeze(0)).item(), 2),
+                "🔥" if out1 == 1 else "",
+            )
+            print(
+                "1 OR 0 = ",
+                round(model(inputs[2].unsqueeze(0)).item(), 2),
+                "🔥" if out2 == 1 else "",
+            )
+            print(
+                "1 OR 1 = ",
+                round(model(inputs[3].unsqueeze(0)).item(), 2),
+                "🔥" if out3 == 1 else "",
+            )

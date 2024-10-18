@@ -21,7 +21,7 @@ CPP_FILES = " ".join(
     ]
 )
 
-DATABASE = "performance.db"
+print(CPP_FILES)
 
 
 def echo(function):
@@ -65,13 +65,15 @@ class Project:
         subprocess.run(f"python -m mypy {EXCLUDE} .", shell=True, capture_output=True)
         CHECK("python -m mypy --install-types --non-interactive")
         CHECK(f"python -m cpplint {CPP_FILES}")
-        CHECK(f"python -m mypy {EXCLUDE} --ignore-missing-imports --pretty .")
+        CHECK(
+            f"python -m mypy {EXCLUDE} --exclude benchmarks/_torch --ignore-missing-imports --pretty ."
+        )
         CHECK(f"ruff check {EXCLUDE} .")
 
     def format(self):
         RUN("python -m isort .")
         RUN("python -m black .")
-        RUN(f"clang-format -i -style=Google {CPP_FILES}")
+        RUN(f"clang-format -i {CPP_FILES}")
 
     def build(self):
         RUN("pip install .")

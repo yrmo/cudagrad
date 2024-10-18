@@ -32,5 +32,6 @@ class TestNN(unittest.TestCase):
                 t_softmax.data[i].item(), u_softmax.data[[i]].item(), places=5
             )
 
+
 if __name__ == "__main__":
     unittest.main()

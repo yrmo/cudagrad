@@ -7,7 +7,9 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include <memory>
 #include <sstream>
+#include <vector>
 
 #include "tensor.hpp"  // NOLINT(build/include_subdir)
 
@@ -51,7 +53,7 @@ PYBIND11_MODULE(tensor, m) {
                &cg::DataProxy::set),
            "Set list")
       .def("__setitem__",
-           static_cast<void (cg::DataProxy::*)(const py::slice&,
+           static_cast<void (cg::DataProxy::*)(const py::slice &,
                                                std::shared_ptr<cg::Tensor>)>(
                &cg::DataProxy::set),
            "Set tensor");

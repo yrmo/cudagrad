@@ -4,9 +4,8 @@ import sys
 from shutil import move
 
 import toml
-from setuptools import Extension, find_packages, setup
-
 from pybind11.setup_helpers import build_ext
+from setuptools import Extension, find_packages, setup
 
 
 class CMakeExtension(Extension):

@@ -5,7 +5,7 @@ black
 fire
 toml
 isort
-cpplint
+cpplint==1.6.1
 torch
 numpy
 ruff

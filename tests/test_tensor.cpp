@@ -644,7 +644,13 @@ TEST(Basic, Ln) {
   >>> l
   tensor(0.6931, grad_fn=<SumBackward0>)
   >>> l.grad
-  <stdin>:1: UserWarning: The .grad attribute of a Tensor that is not a leaf Tensor is being accessed. Its .grad attribute won't be populated during autograd.backward(). If you indeed want the .grad field to be populated for a non-leaf Tensor, use .retain_grad() on the non-leaf Tensor. If you access the non-leaf Tensor by mistake, make sure you access the leaf Tensor instead. See github.com/pytorch/pytorch/pull/30531 for more informations. (Triggered internally at aten/src/ATen/core/TensorBody.h:489.)
+  <stdin>:1: UserWarning: The .grad attribute of a Tensor that is not a leaf
+  Tensor is being accessed. Its .grad attribute won't be populated during
+  autograd.backward(). If you indeed want the .grad field to be populated for a
+  non-leaf Tensor, use .retain_grad() on the non-leaf Tensor. If you access the
+  non-leaf Tensor by mistake, make sure you access the leaf Tensor instead. See
+  github.com/pytorch/pytorch/pull/30531 for more informations. (Triggered
+  internally at aten/src/ATen/core/TensorBody.h:489.)
   */
   auto a = cg::tensor({2}, {1.0, 2.0});
   auto b = a.get()->ln();
@@ -1135,7 +1141,7 @@ TEST(MLP, InnerSigmoid) {
   EXPECT_NEAR(w0.get()->grad_[3], 0.2286, 0.01);
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
