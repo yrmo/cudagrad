@@ -82,4 +82,4 @@ if __name__ == "__main__":
         plt.xlabel("X")
         plt.ylabel("Y")
         ax.set_zlabel("Z")  # type: ignore [attr-defined]
-        plt.savefig("./examples/plots/or-3d.jpg")
+        plt.savefig("./benchmarks/_cudagrad/plots/or.jpg")

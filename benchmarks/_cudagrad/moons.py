@@ -88,4 +88,4 @@ if __name__ == "__main__":
         ax.set_ylabel("Y")  # type: ignore [attr-defined]
         ax.set_zlabel("Z")  # type: ignore [attr-defined]
 
-        plt.savefig("./examples/plots/moons-3d.jpg")
+        plt.savefig("./benchmarks/_cudagrad/plots/moons.jpg")

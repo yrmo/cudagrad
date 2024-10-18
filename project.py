@@ -150,11 +150,11 @@ class Project:
         CHECK("pip install .")
         CHECK("python tests/test_backward.py")
         CHECK("python tests/test_forward.py")
-        CHECK("python ./examples/or.py")
-        CHECK("python ./examples/xor.py")
-        CHECK("python ./examples/moons.py")
-        CHECK("python ./examples/mnist.py")
-        CHECK("git restore examples/plots/*.jpg")
+        CHECK("python ./benchmarks/_cudagrad/or.py")
+        CHECK("python ./benchmarks/_cudagrad/xor.py")
+        CHECK("python ./benchmarks/_cudagrad/moons.py")
+        CHECK("python ./benchmarks/_cudagrad/mnist.py")
+        CHECK("git restore benchmarks/_cudagrad/plots/*.jpg")
 
     def test_python_3_7(self):
         RUN("pyenv global 3.7")

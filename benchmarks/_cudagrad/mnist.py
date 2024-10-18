@@ -71,4 +71,4 @@ for i in range(num_row * num_col):
     ax.set_yticklabels([])
 
 fig.tight_layout()
-plt.savefig("./examples/plots/mnist-grid.jpg")
+plt.savefig("./benchmarks/_cudagrad/plots/mnist.jpg")

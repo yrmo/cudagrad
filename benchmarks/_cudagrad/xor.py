@@ -89,4 +89,4 @@ if __name__ == "__main__":
         ax.plot_surface(X, Y, Z, cmap="viridis")  # type: ignore [attr-defined]
         plt.xlabel("X")
         plt.ylabel("Y")
-        plt.savefig("./examples/plots/xor-3d.jpg")
+        plt.savefig("./benchmarks/_cudagrad/plots/xor.jpg")
