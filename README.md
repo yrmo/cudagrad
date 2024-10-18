@@ -20,28 +20,40 @@ The following examples were written purely in Python using only [`cudagrad.Tenso
 
 ### OR
 
+
 ![](benchmarks/_cudagrad/plots/or.jpg)
 
-[`/benchmarks/_cudagrad/or.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/or.py) (69.9% slower than `torch`)
+0.57 seconds (69.9% slower than `torch`)
+
+[`/benchmarks/_cudagrad/or.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/or.py)
 
 
 ### XOR
 
+
 ![](benchmarks/_cudagrad/plots/xor.jpg)
 
-[`/benchmarks/_cudagrad/xor.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/xor.py) (0.0% faster than `torch`)
+4.83 seconds (0.0% faster than `torch`)
+
+[`/benchmarks/_cudagrad/xor.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/xor.py)
 
 
 ### MOONS
 
+
 ![](benchmarks/_cudagrad/plots/moons.jpg)
 
-[`/benchmarks/_cudagrad/moons.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/moons.py) (0.0% faster than `torch`)
+12.79 seconds (0.0% faster than `torch`)
+
+[`/benchmarks/_cudagrad/moons.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/moons.py)
 
 
 ### MNIST
 
+
 ![](benchmarks/_cudagrad/plots/mnist.jpg)
 
-[`/benchmarks/_cudagrad/mnist.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/mnist.py) (0.0% faster than `torch`)
+3.52 seconds (0.0% faster than `torch`)
+
+[`/benchmarks/_cudagrad/mnist.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/mnist.py)
 

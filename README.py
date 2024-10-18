@@ -44,9 +44,12 @@ def profile(examples: list[str]):
 
 ### {example.upper()}
 
+
 ![](benchmarks/_cudagrad/plots/{example}.jpg)
 
-[`/benchmarks/_cudagrad/{example}.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/{example}.py) ({abs(percent):.1f}% {"faster" if percent >= 0 else "slower"} than `torch`)
+{round(c.total_tt, 2)} seconds ({abs(percent):.1f}% {"faster" if percent >= 0 else "slower"} than `torch`)
+
+[`/benchmarks/_cudagrad/{example}.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/{example}.py)
 
 """)
 
