@@ -1,85 +1,48 @@
-from os import getenv
-from random import random
-
-from cudagrad.nn import Module, mse, sgd
-from cudagrad.tensor import Tensor
-
-PROFILING = int(getenv("PROFILING", "0"))
-
-if not PROFILING:
-    import matplotlib.pyplot as plt
-    import numpy as np
+import torch
+import torch.nn as nn
+import torch.optim as optim
 
 
-class Linear(Module):
-    def __init__(self, inputs: int, outputs: int):
-        self.w = Tensor([outputs, inputs], [random() for _ in range(outputs * inputs)])
-        self.b = Tensor([outputs], [random() for _ in range(outputs)])
+class Linear(nn.Module):
+    def __init__(self, inputs, outputs):
+        super().__init__()
+        self.linear = nn.Linear(inputs, outputs)
 
-    def __call__(self, x: Tensor) -> Tensor:
-        return (self.w @ x) + self.b
+    def forward(self, x):
+        return self.linear(x)
 
 
 if __name__ == "__main__":
     # OR
-    inputs = [[0, 0], [0, 1], [1, 0], [1, 1]]
-    targets = [0, 1, 1, 1]
+    inputs = torch.tensor([[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]])
+    targets = torch.tensor([[0.0], [1.0], [1.0], [1.0]])
 
     EPOCHS = 1000
     lr = 0.0001
     epochs = []
     losses = []
     model = Linear(2, 1)
+    optimizer = optim.SGD(model.parameters(), lr=lr)
+    criterion = nn.MSELoss()
+
     for epoch in range(EPOCHS + 1):
         for i, input in enumerate(inputs):
-            model.zero_grad()
-            loss = mse(Tensor([1], [targets[i]]), model(Tensor([2, 1], input)))
+            optimizer.zero_grad()
+            output = model(input.unsqueeze(0))
+            loss = criterion(output, targets[i].unsqueeze(0))
             loss.backward()
-            sgd(model, lr)
+            optimizer.step()
+
         if epoch % (EPOCHS // 10) == 0:
             print(f"{epoch=}", f"{loss.item()}")
             epochs.append(epoch)
             losses.append(loss.item())
-            out0 = round(model(Tensor([2, 1], inputs[0])).item())
-            out1 = round(model(Tensor([2, 1], inputs[1])).item())
-            out2 = round(model(Tensor([2, 1], inputs[2])).item())
-            out3 = round(model(Tensor([2, 1], inputs[3])).item())
-            print(
-                "0 OR 0 = ",
-                round(model(Tensor([2, 1], inputs[0])).item(), 2),
-                "🔥" if out0 == 0 else "",
-            )
-            print(
-                "0 OR 1 = ",
-                round(model(Tensor([2, 1], inputs[1])).item(), 2),
-                "🔥" if out1 == 1 else "",
-            )
-            print(
-                "1 OR 0 = ",
-                round(model(Tensor([2, 1], inputs[2])).item(), 2),
-                "🔥" if out2 == 1 else "",
-            )
-            print(
-                "1 OR 1 = ",
-                round(model(Tensor([2, 1], inputs[3])).item(), 2),
-                "🔥" if out3 == 1 else "",
-            )
-
-    if not PROFILING:
-        x = np.linspace(0, 1, 100)
-        y = np.linspace(0, 1, 100)
-        X, Y = np.meshgrid(x, y)  # type: ignore [no-untyped-call]
-        Z = np.zeros(X.shape)
-
-        for i in range(X.shape[0]):
-            for j in range(X.shape[1]):
-                Z[i, j] = model(Tensor([2, 1], [X[i, j], Y[i, j]])).item()
-
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection="3d")
-        ax.plot_surface(X, Y, Z, cmap="viridis")  # type: ignore [attr-defined]
-
-        plt.xlabel("X")
-        plt.ylabel("Y")
-        ax.set_zlabel("Z")  # type: ignore [attr-defined]
-        plt.savefig("./examples/plots/or-3d.jpg")
+            print(inputs[0])
+            out0 = round(model(inputs[0].unsqueeze(0)).item())
+            out1 = round(model(inputs[1].unsqueeze(0)).item())
+            out2 = round(model(inputs[2].unsqueeze(0)).item())
+            out3 = round(model(inputs[3].unsqueeze(0)).item())
+            print("0 OR 0 = ", round(model(inputs[0].unsqueeze(0)).item(), 2), "🔥" if out0 == 0 else "")
+            print("0 OR 1 = ", round(model(inputs[1].unsqueeze(0)).item(), 2), "🔥" if out1 == 1 else "")
+            print("1 OR 0 = ", round(model(inputs[2].unsqueeze(0)).item(), 2), "🔥" if out2 == 1 else "")
+            print("1 OR 1 = ", round(model(inputs[3].unsqueeze(0)).item(), 2), "🔥" if out3 == 1 else "")
