@@ -23,7 +23,7 @@ The following examples were written purely in Python using only [`cudagrad.Tenso
 
 ![](benchmarks/_cudagrad/plots/or.jpg)
 
-0.57 seconds (69.9% slower than `torch`)
+0.57 seconds (55.3% slower than `torch`)
 
 [`/benchmarks/_cudagrad/or.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/or.py)
 
