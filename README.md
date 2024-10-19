@@ -33,7 +33,7 @@ The following examples were written purely in Python using only [`cudagrad.Tenso
 
 ![](benchmarks/_cudagrad/plots/xor.jpg)
 
-4.83 seconds (0.0% faster than `torch`)
+4.83 seconds (34.7% slower than `torch`)
 
 [`/benchmarks/_cudagrad/xor.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/xor.py)
 

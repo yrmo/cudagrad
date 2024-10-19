@@ -1,92 +1,57 @@
-from os import getenv
-from random import choice, random
+import torch
+import torch.nn as nn
+import torch.optim as optim
 
-from cudagrad.nn import Module, mse, sgd
-from cudagrad.tensor import Tensor
+class MLP(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(2, 2)
+        self.fc2 = nn.Linear(2, 1)
+        self.sigmoid = nn.Sigmoid()
 
-PROFILING = int(getenv("PROFILING", "0"))
-
-if not PROFILING:
-    import matplotlib.pyplot as plt
-    import numpy as np
-
-
-class MLP(Module):
-    def __init__(self) -> None:
-        self.w0 = Tensor(
-            [2, 2], [choice([-1 * random(), random()]) for _ in range(2 * 2)]
-        )
-        self.b0 = Tensor([2, 1], [choice([-1 * random(), random()]) for _ in range(2)])
-        self.w1 = Tensor(
-            [1, 2], [choice([-1 * random(), random()]) for _ in range(1 * 2)]
-        )
-        self.b1 = Tensor([1], [choice([-1 * random(), random()]) for _ in range(1)])
-
-    def __call__(self, x: Tensor) -> Tensor:
-        return Tensor.sigmoid(
-            self.w1 @ Tensor.sigmoid((self.w0 @ x + self.b0)) + self.b1
-        )
+    def forward(self, x):
+        x = self.sigmoid(self.fc1(x))
+        x = self.sigmoid(self.fc2(x))
+        return x
 
 
 if __name__ == "__main__":
     # XOR
-    inputs = [[0, 0], [0, 1], [1, 0], [1, 1]]
-    targets = [0, 1, 1, 0]
+    inputs = torch.tensor([[0, 0], [0, 1], [1, 0], [1, 1]], dtype=torch.float32)
+    targets = torch.tensor([[0], [1], [1], [0]], dtype=torch.float32)
 
     EPOCHS = 5000
     lr = 0.05
+
+    model = MLP()
+    criterion = nn.MSELoss()
+    optimizer = optim.SGD(model.parameters(), lr=lr)
+
     epochs = []
     losses = []
-    model = MLP()
+
     for epoch in range(EPOCHS + 1):
-        for i, input in enumerate(inputs):
-            model.zero_grad()
-            loss = mse(Tensor([1], [targets[i]]), model(Tensor([2, 1], input)))
+        epoch_loss = 0.0
+        for i in range(inputs.size(0)):
+            input_data = inputs[i].unsqueeze(0)
+            target = targets[i].unsqueeze(0)
+
+            output = model(input_data)
+            loss = criterion(output, target)
+
+            optimizer.zero_grad()
             loss.backward()
-            sgd(model, lr)
+            optimizer.step()
+
+            epoch_loss += loss.item()
+
         if epoch % (EPOCHS // 10) == 0:
-            print(f"{epoch=}", f"{loss.item()}")
+            avg_loss = epoch_loss / inputs.size(0)
+            print(f"epoch={epoch}, loss={avg_loss:.4f}")
             epochs.append(epoch)
-            losses.append(loss.item())
-            out0 = round(model(Tensor([2, 1], inputs[0])).item())
-            out1 = round(model(Tensor([2, 1], inputs[1])).item())
-            out2 = round(model(Tensor([2, 1], inputs[2])).item())
-            out3 = round(model(Tensor([2, 1], inputs[3])).item())
-            print(
-                "0 XOR 0 = ",
-                round(model(Tensor([2, 1], inputs[0])).item(), 2),
-                "🔥" if out0 == 0 else "",
-            )
-            print(
-                "0 XOR 1 = ",
-                round(model(Tensor([2, 1], inputs[1])).item(), 2),
-                "🔥" if out1 == 1 else "",
-            )
-            print(
-                "1 XOR 0 = ",
-                round(model(Tensor([2, 1], inputs[2])).item(), 2),
-                "🔥" if out2 == 1 else "",
-            )
-            print(
-                "1 XOR 1 = ",
-                round(model(Tensor([2, 1], inputs[3])).item(), 2),
-                "🔥" if out3 == 0 else "",
-            )
+            losses.append(avg_loss)
 
-    if not PROFILING:
-        x = np.linspace(0, 1, 50)
-        y = np.linspace(0, 1, 50)
-        X, Y = np.meshgrid(x, y)  # type: ignore [no-untyped-call]
-        Z = np.zeros(X.shape)
-
-        for i in range(X.shape[0]):
-            for j in range(X.shape[1]):
-                input_data = Tensor([2, 1], [X[i, j], Y[i, j]])
-                Z[i, j] = model(input_data).item()
-
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection="3d")
-        ax.plot_surface(X, Y, Z, cmap="viridis")  # type: ignore [attr-defined]
-        plt.xlabel("X")
-        plt.ylabel("Y")
-        plt.savefig("./examples/plots/xor-3d.jpg")
+            outputs = model(inputs).round()
+            for i, (input_data, output) in enumerate(zip(inputs, outputs)):
+                correct = "🔥" if output.item() == targets[i].item() else ""
+                print(f"{input_data.tolist()} XOR = {output.item():.2f} {correct}")
