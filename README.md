@@ -43,7 +43,7 @@ The following examples were written purely in Python using only [`cudagrad.Tenso
 
 ![](benchmarks/_cudagrad/plots/moons.jpg)
 
-12.79 seconds (0.0% faster than `torch`)
+12.79 seconds (5.0% slower than `torch`)
 
 [`/benchmarks/_cudagrad/moons.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/moons.py)
 

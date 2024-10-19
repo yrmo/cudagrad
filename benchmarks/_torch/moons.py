@@ -1,91 +1,64 @@
-from os import getenv
-from random import choice, random
-
+import torch
+import torch.nn as nn
+import torch.optim as optim
 from sklearn.datasets import make_moons
+import os
 
-from cudagrad.nn import Module, mse, sgd
-from cudagrad.tensor import Tensor
-
-PROFILING = int(getenv("PROFILING", "0"))
-
-if not PROFILING:
-    import matplotlib.pyplot as plt
-    import numpy as np
+PROFILING = int(os.getenv("PROFILING", "0"))
 
 
-class MLP(Module):
-    def __init__(self) -> None:
-        self.w0 = Tensor(
-            [16, 2], [choice([-1 * random(), random()]) for _ in range(2 * 16)]
-        )
-        self.b0 = Tensor(
-            [16, 1], [choice([-1 * random(), random()]) for _ in range(16)]
-        )
-        self.w1 = Tensor(
-            [1, 16], [choice([-1 * random(), random()]) for _ in range(1 * 16)]
-        )
-        self.b1 = Tensor([1], [choice([-1 * random(), random()]) for _ in range(1)])
+class MLP(nn.Module):
+    def __init__(self):
+        super(MLP, self).__init__()
+        self.fc1 = nn.Linear(2, 16)
+        self.fc2 = nn.Linear(16, 1)
+        self.sigmoid = nn.Sigmoid()
 
-    def __call__(self, x: Tensor) -> Tensor:
-        return Tensor.sigmoid(
-            self.w1 @ Tensor.sigmoid((self.w0 @ x + self.b0)) + self.b1
-        )
+    def forward(self, x):
+        x = self.sigmoid(self.fc1(x))
+        x = self.sigmoid(self.fc2(x))
+        return x
 
 
 if __name__ == "__main__":
-    moons = make_moons()  # two moons
-
-    inputs = moons[0]
-    targets = moons[1]
+    # two moons
+    inputs, targets = make_moons(n_samples=100, noise=0.2)
+    inputs = torch.tensor(inputs, dtype=torch.float32)
+    targets = torch.tensor(targets, dtype=torch.float32).unsqueeze(1)
 
     EPOCHS = 500
-    lr = 0.05
+    lr = 0.1
+
+    model = MLP()
+    criterion = nn.MSELoss()
+    optimizer = optim.SGD(model.parameters(), lr=lr)
+
     epochs = []
     losses = []
-    model = MLP()
+
     for epoch in range(EPOCHS + 1):
-        for i, input in enumerate(inputs):
-            model.zero_grad()
-            loss = mse(Tensor([1], [targets[i]]), model(Tensor([2, 1], input)))
+        epoch_loss = 0.0
+        for i in range(inputs.size(0)):
+            input_data = inputs[i].unsqueeze(0)
+            target = targets[i].unsqueeze(0)
+
+            output = model(input_data)
+            loss = criterion(output, target)
+
+            optimizer.zero_grad()
             loss.backward()
-            sgd(model, lr)
+            optimizer.step()
+
+            epoch_loss += loss.item()
+
         if epoch % (EPOCHS // 10) == 0:
-            print(f"{epoch=}", f"{loss.item()=}")
+            avg_loss = epoch_loss / inputs.size(0)
+            print(f"epoch={epoch}, loss={avg_loss:.4f}")
             epochs.append(epoch)
-            losses.append(loss.item())
-            accuracy = []
-            for i, target in enumerate(targets):
-                accuracy.append(
-                    round(model(Tensor([2, 1], inputs[i])).item()) == target.item()
-                )
-            print(f"{round(sum(accuracy) / len(accuracy), 2) * 100}%")
-            print("".join(["🔥" if x else " " for x in accuracy]))
+            losses.append(avg_loss)
 
-    if not PROFILING:
-        x = np.linspace(-2.5, 2.5, 50)
-        y = np.linspace(-1.5, 1.5, 50)
-        X, Y = np.meshgrid(x, y)  # type: ignore [no-untyped-call]
-        Z = np.zeros(X.shape)
-
-        for i in range(X.shape[0]):
-            for j in range(X.shape[1]):
-                input_data = Tensor([2, 1], [X[i, j], Y[i, j]])
-                Z[i, j] = model(input_data).item()
-
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection="3d")
-
-        surf = ax.plot_surface(X, Y, Z, cmap="viridis", alpha=0.6)  # type: ignore [attr-defined]
-
-        ax.scatter(
-            inputs[targets == 0, 0], inputs[targets == 0, 1], 0, c="#440154", label="0"
-        )
-        ax.scatter(
-            inputs[targets == 1, 0], inputs[targets == 1, 1], 0, c="#fde725", label="1"
-        )
-
-        ax.set_xlabel("X")  # type: ignore [attr-defined]
-        ax.set_ylabel("Y")  # type: ignore [attr-defined]
-        ax.set_zlabel("Z")  # type: ignore [attr-defined]
-
-        plt.savefig("./examples/plots/moons-3d.jpg")
+            with torch.no_grad():
+                outputs = model(inputs).round()
+                accuracy = (outputs.eq(targets).sum().item() / len(targets)) * 100
+                print(f"Accuracy: {accuracy:.2f}%")
+                print("".join(["🔥" if pred == target else " " for pred, target in zip(outputs, targets)]))
