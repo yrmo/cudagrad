@@ -26,7 +26,7 @@ class Module:
         params = []
         for x in self.__dict__:
             param = getattr(self, x)
-            if type(param) == Tensor:
+            if type(param) is Tensor:
                 params.append(param)
         return params
 
