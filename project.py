@@ -62,7 +62,11 @@ class Project:
         EXCLUDE = (
             "--exclude build --exclude cccl --exclude pybind11 --exclude googletest"
         )
-        subprocess.run(f"python -m mypy {EXCLUDE} --exclude benchmarks/_torch .", shell=True, capture_output=True)
+        subprocess.run(
+            f"python -m mypy {EXCLUDE} --exclude benchmarks/_torch .",
+            shell=True,
+            capture_output=True,
+        )
         CHECK("python -m mypy --install-types --non-interactive")
         CHECK(f"python -m cpplint {CPP_FILES}")
         CHECK(

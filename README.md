@@ -47,13 +47,3 @@ The following examples were written purely in Python using only [`cudagrad.Tenso
 
 [`/benchmarks/_cudagrad/moons.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/moons.py)
 
-
-### MNIST
-
-
-![](benchmarks/_cudagrad/plots/mnist.jpg)
-
-3.52 seconds (0.0% faster than `torch`)
-
-[`/benchmarks/_cudagrad/mnist.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/mnist.py)
-

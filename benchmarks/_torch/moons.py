@@ -1,8 +1,9 @@
+import os
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from sklearn.datasets import make_moons
-import os
 
 PROFILING = int(os.getenv("PROFILING", "0"))
 
@@ -61,4 +62,11 @@ if __name__ == "__main__":
                 outputs = model(inputs).round()
                 accuracy = (outputs.eq(targets).sum().item() / len(targets)) * 100
                 print(f"Accuracy: {accuracy:.2f}%")
-                print("".join(["🔥" if pred == target else " " for pred, target in zip(outputs, targets)]))
+                print(
+                    "".join(
+                        [
+                            "🔥" if pred == target else " "
+                            for pred, target in zip(outputs, targets)
+                        ]
+                    )
+                )

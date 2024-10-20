@@ -1,6 +1,7 @@
 # type: ignore
 
 from os import environ
+
 # from pathlib import Path
 from pstats import Stats
 from textwrap import dedent
@@ -61,7 +62,7 @@ def profile(examples: list[str]):
 
 if __name__ == "__main__":
     environ["PROFILING"] = "1"
-    profile(["or", "xor", "moons", "mnist"])
+    profile(["or", "xor", "moons"])  # , "mnist"])
     # profile([x.stem for x in list(Path(".").glob("./benchmarks/_torch/*.py"))])
 
     with open("README.md", "w") as f:
