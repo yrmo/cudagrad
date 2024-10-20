@@ -1,6 +1,6 @@
 # type: ignore
 
-from os import environ
+from os import environ, system
 
 # from pathlib import Path
 from pstats import Stats
@@ -39,10 +39,12 @@ def profile(examples: list[str]):
     global README
 
     for example in examples:
-        # system(f"python -m cProfile -o ./benchmarks/_cudagrad/profiles/{example}.prof ./benchmarks/_cudagrad/{example}.py")
+        system(f"python -m cProfile -o ./benchmarks/_cudagrad/profiles/{example}.prof ./benchmarks/_cudagrad/{example}.py")
         # system(f"python -m cProfile -o ./benchmarks/_torch/profiles/{example}.prof ./benchmarks/_torch/{example}.py")
         t = Stats(f"./benchmarks/_torch/profiles/{example}.prof")
         c = Stats(f"./benchmarks/_cudagrad/profiles/{example}.prof")
+        print(f"{t.total_tt=}")
+        print(f"{c.total_tt=}")
         percent = compare(c.total_tt, t.total_tt)
         README = README + dedent(
             f"""\
@@ -52,7 +54,7 @@ def profile(examples: list[str]):
 
 ![](benchmarks/_cudagrad/plots/{example}.jpg)
 
-{round(c.total_tt, 2)} seconds ({abs(percent):.1f}% {"faster" if percent >= 0 else "slower"} than `torch`)
+{round(c.total_tt, 2)} seconds ({abs(percent):.1f}% {"faster" if percent <= 0 else "slower"} than `torch`)
 
 [`/benchmarks/_cudagrad/{example}.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/{example}.py)
 

@@ -23,11 +23,12 @@ def mse(predicted: Tensor, actual: Tensor) -> Tensor:
 
 class Module:
     def parameters(self) -> list[Tensor]:
-        return [
-            getattr(self, attr)
-            for attr in dir(self)
-            if type(getattr(self, attr)) is Tensor
-        ]
+        params = []
+        for x in self.__dict__:
+            param = getattr(self, x)
+            if type(param) == Tensor:
+                params.append(param)
+        return params
 
     def zero_grad(self) -> None:
         for parameter in self.parameters():

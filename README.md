@@ -23,7 +23,7 @@ The following examples were written purely in Python using only [`cudagrad.Tenso
 
 ![](benchmarks/_cudagrad/plots/or.jpg)
 
-0.57 seconds (55.3% slower than `torch`)
+0.52 seconds (59.5% faster than `torch`)
 
 [`/benchmarks/_cudagrad/or.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/or.py)
 
@@ -33,7 +33,7 @@ The following examples were written purely in Python using only [`cudagrad.Tenso
 
 ![](benchmarks/_cudagrad/plots/xor.jpg)
 
-4.83 seconds (34.7% slower than `torch`)
+4.5 seconds (39.2% faster than `torch`)
 
 [`/benchmarks/_cudagrad/xor.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/xor.py)
 
@@ -43,7 +43,7 @@ The following examples were written purely in Python using only [`cudagrad.Tenso
 
 ![](benchmarks/_cudagrad/plots/moons.jpg)
 
-12.79 seconds (5.0% slower than `torch`)
+14.25 seconds (5.8% slower than `torch`)
 
 [`/benchmarks/_cudagrad/moons.py`](https://github.com/yrmo/cudagrad/blob/main/benchmarks/_cudagrad/moons.py)
 
