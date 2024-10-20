@@ -1,7 +1,7 @@
 # type: ignore
 
 from os import environ
-from pathlib import Path
+# from pathlib import Path
 from pstats import Stats
 from textwrap import dedent
 
