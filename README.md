@@ -9,19 +9,21 @@ CUDA C++ strided float tensor automatic differentiation engine with Python bindi
 
 # Install
 
+Available on [PyPI](https://pypi.org/project/cudagrad/) as a source distribution, requires `cmake` and optionally `nvcc` if available:
+
 ```
 pip install cudagrad
 ```
 
 # Examples
 
-The following examples were written purely in Python using only [`cudagrad.Tensor`](./Tensor.ipynb) for learning:
+The following examples were written purely in Python using only [`cudagrad.Tensor`](https://github.com/yrmo/cudagrad/blob/main/Tensor.ipynb) for learning:
 
 
 ### OR
 
 
-![](benchmarks/_cudagrad/plots/or.jpg)
+![](https://raw.githubusercontent.com/yrmo/cudagrad/refs/heads/main/benchmarks/_cudagrad/plots/or.jpg)
 
 0.52 seconds (59.5% faster than `torch`)
 
@@ -31,7 +33,7 @@ The following examples were written purely in Python using only [`cudagrad.Tenso
 ### XOR
 
 
-![](benchmarks/_cudagrad/plots/xor.jpg)
+![](https://raw.githubusercontent.com/yrmo/cudagrad/refs/heads/main/benchmarks/_cudagrad/plots/xor.jpg)
 
 4.5 seconds (39.2% faster than `torch`)
 
@@ -41,7 +43,7 @@ The following examples were written purely in Python using only [`cudagrad.Tenso
 ### MOONS
 
 
-![](benchmarks/_cudagrad/plots/moons.jpg)
+![](https://raw.githubusercontent.com/yrmo/cudagrad/refs/heads/main/benchmarks/_cudagrad/plots/moons.jpg)
 
 14.25 seconds (5.8% slower than `torch`)
 

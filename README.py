@@ -18,13 +18,15 @@ CUDA C++ strided float tensor automatic differentiation engine with Python bindi
 
 # Install
 
+Available on [PyPI](https://pypi.org/project/cudagrad/) as a source distribution, requires `cmake` and optionally `nvcc` if available:
+
 ```
 pip install cudagrad
 ```
 
 # Examples
 
-The following examples were written purely in Python using only [`cudagrad.Tensor`](./Tensor.ipynb) for learning:
+The following examples were written purely in Python using only [`cudagrad.Tensor`](https://github.com/yrmo/cudagrad/blob/main/Tensor.ipynb) for learning:
 
 """
 
@@ -39,7 +41,7 @@ def profile(examples: list[str]):
     global README
 
     for example in examples:
-        system(f"python -m cProfile -o ./benchmarks/_cudagrad/profiles/{example}.prof ./benchmarks/_cudagrad/{example}.py")
+        # system(f"python -m cProfile -o ./benchmarks/_cudagrad/profiles/{example}.prof ./benchmarks/_cudagrad/{example}.py")
         # system(f"python -m cProfile -o ./benchmarks/_torch/profiles/{example}.prof ./benchmarks/_torch/{example}.py")
         t = Stats(f"./benchmarks/_torch/profiles/{example}.prof")
         c = Stats(f"./benchmarks/_cudagrad/profiles/{example}.prof")
@@ -52,7 +54,7 @@ def profile(examples: list[str]):
 ### {example.upper()}
 
 
-![](benchmarks/_cudagrad/plots/{example}.jpg)
+![](https://raw.githubusercontent.com/yrmo/cudagrad/refs/heads/main/benchmarks/_cudagrad/plots/{example}.jpg)
 
 {round(c.total_tt, 2)} seconds ({abs(percent):.1f}% {"faster" if percent <= 0 else "slower"} than `torch`)
 

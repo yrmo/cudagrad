@@ -4,4 +4,4 @@ from cudagrad.nn import sgd as sgd
 from cudagrad.tensor import Tensor as Tensor
 from cudagrad.tensor import hello as hello
 
-__version__ = "0.2.1"
+__version__ = "0.2.3"
