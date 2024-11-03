@@ -1,4 +1,7 @@
+include CMakeLists.txt
 include src/tensor.hpp
 include src/operations.cu
+include src/operations.cpp
 include src/bindings.cpp
 recursive-include pybind11 *
+recursive-include cccl *
