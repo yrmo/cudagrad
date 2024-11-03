@@ -1,3 +1,5 @@
+// Copyright 2023-2024 Ryan Moore
+
 #include <stdio.h>
 
 namespace cg {
