@@ -169,7 +169,6 @@ class Project:
         RUN("cd ~/cudagrad")
 
     def publish(self):
-        RUN = os.system
         nb = "Tensor.ipynb"
         assert os.path.isfile(nb)
         RUN(f"jupyter nbconvert --to notebook --execute --inplace {nb}")
@@ -177,9 +176,10 @@ class Project:
         RUN("python -m pip cache purge")
         if os.path.exists("dist"):
             shutil.rmtree("dist")
-        RUN("python setup.py sdist")
+        RUN("python setup.py sdist bdist_wheel")
+        CHECK("python -m twine check dist/*")
         RUN("python -m pip install --upgrade twine")
-        RUN("python -m twine upload dist/*")
+        CHECK("python -m twine upload dist/*")
 
     def bump(self, version_type):
         # __version__ is in two places for now
