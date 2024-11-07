@@ -79,12 +79,6 @@ class Project:
         RUN("python -m black .")
         RUN(f"clang-format -i {CPP_FILES}")
 
-    def build(self):
-        RUN("pip install .")
-        RUN(
-            "cp build/lib.macosx-13.2-arm64-cpython-311/cudagrad/tensor.cpython-311-darwin.so ./cudagrad/"
-        )
-
     def _test_cuda_setup(self):
         code = """\
         #include <stdio.h>
@@ -168,16 +162,16 @@ class Project:
         RUN('python -c "import cudagrad as cg; print(cg.tensor([1], [4.2]))"')
         RUN("cd ~/cudagrad")
 
-    def publish(self):
-        nb = "Tensor.ipynb"
-        assert os.path.isfile(nb)
-        RUN(f"jupyter nbconvert --to notebook --execute --inplace {nb}")
+    def build(self):
         RUN("python -m pip uninstall -y cudagrad")
         RUN("python -m pip cache purge")
         if os.path.exists("dist"):
             shutil.rmtree("dist")
         RUN("python setup.py sdist bdist_wheel")
         CHECK("python -m twine check dist/*")
+
+    def publish(self):
+        self.build()
         RUN("python -m pip install --upgrade twine")
         CHECK("python -m twine upload dist/*")
 
