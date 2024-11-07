@@ -49,15 +49,6 @@ class Project:
         for file in CPP_FILES.split():
             assert os.path.isfile(f"{file}") is True
 
-    def install(self):
-        RUN("git submodule update --init --recursive")
-        RUN("rm -rf build")
-        RUN("mkdir build")
-        os.chdir("build")
-        RUN("cmake ..")
-        RUN("make")
-        RUN("cp tensor.so ../cudagrad/")
-
     def lint(self):
         EXCLUDE = (
             "--exclude build --exclude cccl --exclude pybind11 --exclude googletest"
@@ -169,6 +160,12 @@ class Project:
             shutil.rmtree("dist")
         RUN("python setup.py sdist bdist_wheel")
         CHECK("python -m twine check dist/*")
+
+    def install(self):
+        self.build()
+        RUN("pip uninstall -y cudagrad")
+        RUN("pip cache purge")
+        RUN("pip install dist/cudagrad-*-cp3*-cp3*-linux_x86_64.whl")
 
     def publish(self):
         self.build()
