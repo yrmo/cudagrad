@@ -1,8 +1,6 @@
 # type: ignore
 
 from os import environ, system
-
-# from pathlib import Path
 from pstats import Stats
 from textwrap import dedent
 
@@ -41,8 +39,12 @@ def profile(examples: list[str]):
     global README
 
     for example in examples:
-        # system(f"python -m cProfile -o ./benchmarks/_cudagrad/profiles/{example}.prof ./benchmarks/_cudagrad/{example}.py")
-        # system(f"python -m cProfile -o ./benchmarks/_torch/profiles/{example}.prof ./benchmarks/_torch/{example}.py")
+        system(
+            f"python -m cProfile -o ./benchmarks/_cudagrad/profiles/{example}.prof ./benchmarks/_cudagrad/{example}.py"
+        )
+        system(
+            f"python -m cProfile -o ./benchmarks/_torch/profiles/{example}.prof ./benchmarks/_torch/{example}.py"
+        )
         t = Stats(f"./benchmarks/_torch/profiles/{example}.prof")
         c = Stats(f"./benchmarks/_cudagrad/profiles/{example}.prof")
         print(f"{t.total_tt=}")
@@ -66,8 +68,7 @@ def profile(examples: list[str]):
 
 if __name__ == "__main__":
     environ["PROFILING"] = "1"
-    profile(["or", "xor", "moons"])  # , "mnist"])
-    # profile([x.stem for x in list(Path(".").glob("./benchmarks/_torch/*.py"))])
+    profile(["or", "xor", "moons"])
 
     with open("README.md", "w") as f:
         f.write(README)

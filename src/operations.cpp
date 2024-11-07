@@ -6,8 +6,6 @@ namespace cg {
 
 void helloFromCPU() { printf("Hello, CPU!\n"); }
 
-extern "C" void hello() {
-  helloFromCPU();
-}
+extern "C" void hello() { helloFromCPU(); }
 
 }  // namespace cg
