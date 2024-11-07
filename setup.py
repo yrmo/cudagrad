@@ -74,6 +74,7 @@ setup(
     url="https://github.com/yrmo/cudagrad",
     description="A tensor-valued autograd engine for Python",
     long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
     ext_modules=[CMakeExtension("tensor")],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
