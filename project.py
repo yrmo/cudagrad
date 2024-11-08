@@ -166,7 +166,7 @@ class Project:
         self.build()
         RUN("pip uninstall -y cudagrad")
         RUN("pip cache purge")
-        RUN("pip install dist/cudagrad-*-cp3*-cp3*-linux_x86_64.whl")
+        RUN("pip install --force-reinstall dist/cudagrad-*-cp3*-cp3*-linux_x86_64.whl")
 
     def publish(self):
         self.build()
