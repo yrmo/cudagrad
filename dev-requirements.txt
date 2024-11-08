@@ -6,7 +6,7 @@ fire
 toml
 isort
 cpplint==1.6.1
-torch
+# torch
 numpy
 ruff
 types-setuptools

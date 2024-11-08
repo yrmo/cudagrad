@@ -11,7 +11,6 @@ from os import environ
 from pathlib import Path
 
 import fire
-import torch
 
 glob_cpp = "*[.cpp|.hpp|.cu]"
 CPP_FILES = " ".join(
@@ -107,6 +106,8 @@ class Project:
             os.remove(TEST_CUDA_FILENAME)
 
     def test(self):
+        import torch
+
         CWD = os.getcwd()
 
         self._test_cuda_setup()
