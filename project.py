@@ -172,6 +172,10 @@ class Project:
         RUN("python -m pip install --upgrade twine")
         CHECK("python -m twine upload dist/*")
 
+    def docker(self):
+        RUN("docker build . -t manylinux-ubuntu")
+        RUN("docker run -it --entrypoint /bin/bash manylinux-ubuntu")
+
     def bump(self, version_type):
         # __version__ is in two places for now
         # not good, but keeps things simpleish
