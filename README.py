@@ -1,6 +1,6 @@
 # type: ignore
 
-from os import environ, system
+from os import environ
 from pstats import Stats
 from textwrap import dedent
 
