@@ -9,11 +9,18 @@ CUDA C++ strided float tensor automatic differentiation engine with Python bindi
 
 # Install
 
-Available on [PyPI](https://pypi.org/project/cudagrad/) as a source distribution, requires `cmake` and optionally `nvcc` if available:
+Available on [PyPI](https://pypi.org/project/cudagrad/):
 
 ```
 pip install cudagrad
 ```
+
+Distributed as:
+
+- A source distribution, requiring the `cmake` command, and optionally the `nvcc` command, to be available at installation time.
+- A binary distribution, targetting the [Kaggle Python docker images](https://github.com/Kaggle/docker-python):
+    - CPU-only binary: [Kaggle notebook example](https://www.kaggle.com/code/yrmoore/cudagrad-0-2-4-whl)
+    - GPU accelerator binary: Work in Progress
 
 # Examples
 
