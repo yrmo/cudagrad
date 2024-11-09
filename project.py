@@ -174,8 +174,18 @@ class Project:
         CHECK("python -m twine upload dist/*")
 
     def docker(self):
+        version = self.get_version()
         RUN("docker build . -t manylinux-ubuntu")
-        RUN("docker run -it --entrypoint /bin/bash manylinux-ubuntu")
+        RUN("docker rm manylinux-container")
+        RUN('docker run -it --name manylinux-container manylinux-ubuntu python -c "import time; time.sleep(10)" &')
+        RUN(f"docker cp manylinux-container:/cudagrad/dist/cudagrad-{version}-cp310-cp310-linux_x86_64.whl ~/cudagrad/dist/")
+        RUN(f"mv ~/cudagrad/dist/cudagrad-{version}-cp310-cp310-linux_x86_64.whl ~/cudagrad/dist/cudagrad-{version}-cp310-cp310-manylinux2014_x86_64.whl")
+
+    def get_version(self):
+        with open("pyproject.toml", "r+") as f:
+            content = f.read()
+        version_match = re.search(r'version = "(\d+)\.(\d+)\.(\d+)"', content)
+        return ".".join(map(str, version_match.groups()))
 
     def bump(self, version_type):
         # __version__ is in two places for now
