@@ -1,5 +1,6 @@
 import urllib.request
-from os.path import getenv, isfile
+from os import getenv
+from os.path import isfile
 from random import random
 
 import numpy as np
