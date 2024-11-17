@@ -138,6 +138,7 @@ class Project:
         CHECK("python -m pip cache purge")
         os.chdir(CWD)
         CHECK("pip install .")
+        CHECK("python tests/test_nn.py")
         CHECK("python tests/test_backward.py")
         CHECK("python tests/test_forward.py")
         CHECK("python ./benchmarks/_cudagrad/or.py")
