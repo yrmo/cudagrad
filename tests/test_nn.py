@@ -32,9 +32,9 @@ class TestNN(unittest.TestCase):
                 t_softmax.data[i].item(), u_softmax.data[[i]].item(), places=5
             )
 
-    # def test_cross_entropy_loss(self):
-    #    x = cudagrad.nn.cross_entropy(cudagrad.Tensor([1, 2], [0.1782, 0.2920]), cudagrad.Tensor([1], [0])).data[0, 0].item()
-    #    self.assertAlmostEqual(x, 0.7517)
+    def test_cross_entropy_loss(self):
+        x = cudagrad.nn.cross_entropy(cudagrad.Tensor([1, 2], [0.1782, 0.2920]), cudagrad.Tensor([1], [0])).item()
+        self.assertAlmostEqual(x, 0.7517, places=3)
 
 if __name__ == "__main__":
     unittest.main()
