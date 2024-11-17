@@ -36,17 +36,19 @@ class Model(Module):
 
     def __call__(self, arr: NDArray) -> Tensor:
         assert len(arr.flatten().tolist()) == 784
-        x = Tensor([self.inputs, self.outputs], arr.flatten().tolist())
+        x = Tensor([self.inputs, 1], arr.flatten().tolist())
+        # should be x @ W.T
         return (self.w @ x) + self.b
 
 
-model = Model(784, 1)
+model = Model(784, 10)
 
 
 def accuracy() -> float:
     outputs = []
     for i, test_image in enumerate(test_images):
-        outputs.append(int(model(test_image).item()))
+        x = model(test_image)
+        outputs.append(int(x.data[0, 0].item()))
 
     targets = test_labels.flatten().tolist()
     return (
@@ -69,7 +71,8 @@ if not PROFILING:
     for i in range(num_row * num_col):
         ax = axes[i // num_col, i % num_col]
         ax.imshow(test_images[i], cmap="viridis")
-        output = int(model(train_images[i]).item())
+        x = model(test_images[i])
+        output = int(x.data[0, 0].item())
         ax.set_title(f"Output: {output}")
         ax.set_xticks([])
         ax.set_yticks([])
