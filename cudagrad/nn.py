@@ -51,7 +51,6 @@ def softmax(t: Tensor) -> Tensor:
 def cross_entropy(inputs: Tensor, target: Tensor) -> Tensor:
     probs = softmax(inputs)
 
-    num_classes = inputs.size[1]
     one_hot_target = Tensor.zeros(inputs.size)
     one_hot_target.data[0, int(target.data[0, 0].item())] = 1.0 # TODO 0 index is wrong?
 
