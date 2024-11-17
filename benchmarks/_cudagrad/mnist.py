@@ -7,6 +7,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from cudagrad import Module, Tensor
+from cudagrad.nn import cross_entropy
 
 PROFILING = int(getenv("PROFILING", "0"))
 
@@ -48,8 +49,13 @@ def accuracy() -> float:
     outputs = []
     for i, test_image in enumerate(test_images):
         x = model(test_image)
-        outputs.append(int(x.data[0, 0].item()))
+        m = x.max().item()
+        for index in range(10):
+            if x.data[0, index].item() == m:
+                break 
+        outputs.append(int(index))
 
+    print(outputs)
     targets = test_labels.flatten().tolist()
     return (
         (Tensor([len(outputs)], outputs) == Tensor([len(targets)], targets))
