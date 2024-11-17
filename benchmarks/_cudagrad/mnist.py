@@ -7,7 +7,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from cudagrad import Module, Tensor
-from cudagrad.nn import cross_entropy
+from cudagrad.nn import cross_entropy, sgd
 
 PROFILING = int(getenv("PROFILING", "0"))
 
@@ -67,9 +67,11 @@ def accuracy() -> float:
 
 for i, train_image in enumerate(train_images):
     model.zero_grad()
-    loss = cross_entropy(model(train_image), Tensor([1], [train_labels[i]]))
-    loss.backward()
-    sgd(model, 0.0001)
+    loss = cross_entropy(model(train_image), Tensor([1, 1], [train_labels[i]]))
+    print(loss)
+    # loss.backward()
+    exit()
+    # sgd(model, 0.0001)
 
     if i % (len(train_images) // 10) == 0:
         print("E: ", 0, "I: ", i, "L: ", loss.item())
