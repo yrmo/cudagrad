@@ -49,15 +49,10 @@ def softmax(t: Tensor) -> Tensor:
     return e / e.sum()
 
 def cross_entropy(inputs: Tensor, target: Tensor) -> Tensor:
-    print(0)
+    assert inputs.size[0] < inputs.size[1]
     probs = softmax(inputs)
-    print(1)
     one_hot_target = Tensor.zeros(inputs.size)
-    print(2)
     one_hot_target.data[0, int(target.data[0, 0].item())] = 1.0 # TODO 0 index is wrong?
-    print(3)
     log_probs = Tensor.log(probs)
-    print(4)
     loss = Tensor([1], [-1.0]) * (one_hot_target * log_probs).sum() / Tensor([1], [inputs.size[0]])
-    print(5)
     return loss
