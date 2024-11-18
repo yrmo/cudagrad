@@ -42,8 +42,8 @@ class Model(Module):
         assert len(normalized.flatten().tolist()) == 784
         x = Tensor([self.inputs, 1], arr.flatten().tolist())
         # should be x @ W.T
-        print(self.w.size)
-        print(x.size)
+        # print(self.w.size)
+        # print(x.size)
         return (self.w @ x) + self.b
 
 
@@ -60,7 +60,7 @@ def accuracy() -> float:
                 break 
         outputs.append(int(index))
 
-    print(outputs)
+    # print(outputs)
     targets = test_labels.flatten().tolist()
     return (
         (Tensor([len(outputs)], outputs) == Tensor([len(targets)], targets))
@@ -80,21 +80,21 @@ for i, train_image in enumerate(train_images):
                               output.data[0, 8].item(), output.data[0, 9].item()]
     import numpy as np
     normalized = (arr - np.mean(arr)) / np.std(arr)
-    print(normalized.tolist())
+    # print(normalized.tolist())
     output = Tensor([1, 10], normalized.tolist())
-    print(output)
-    print(output.size)
+    # print(output)
+    # print(output.size)
     target = Tensor([1], [train_labels[i]])
-    print(target)
-    print(target.size)
+    # print(target)
+    # print(target.size)
     loss = cross_entropy(output, target)
-    print(loss)
+    # print(loss)
     loss.backward()
-    exit()
-    # sgd(model, 0.0001)
+    # exit()
+    sgd(model, 0.0001)
 
     if i % (len(train_images) // 10) == 0:
-        print("E: ", 0, "I: ", i, "L: ", loss.item())
+        print("E: ", 0, "I: ", i , f"/ {len(train_images)}", "L: ", loss.item())
         a = accuracy()
         print(f"{a}%", " " if a < 98 else "🔥")
 

@@ -691,6 +691,14 @@ struct AutoGradBackward {
 
 std::vector<float> broadcast(std::vector<size_t> from, std::vector<float> data,
                              std::vector<size_t> to) {
+
+  // for (auto x : from) {
+  //   std::cout << x << std::endl;
+  // }
+  // std::cout << std::string("--------------------------------") << std::endl;
+  // for (auto x : to) {
+  //   std::cout << x << std::endl;
+  // }
   // TODO(yrmo) only scalar, vector, and matrix until a nn needs rank > 2
   assert(from.size() < 3);
   assert(to.size() < 3);
@@ -704,6 +712,11 @@ std::vector<float> broadcast(std::vector<size_t> from, std::vector<float> data,
   // e.g. {1} -> {2, 2}
   if (from.size() == 1 && to.size() == 2 && from[0] == 1) {
     return std::vector<float>(to[0] * to[1], data[0]);
+  }
+
+  // MNIST TEMP HARD CODE
+  if (from.size() == 2 && to.size() == 1 && from[0] == 1 && from[1] == 10 && to[0] == 1) {
+    return std::vector<float>(to[0], data[0]);
   }
 
   // 2D -> 1D
