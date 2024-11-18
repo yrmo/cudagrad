@@ -36,9 +36,14 @@ class Model(Module):
         self.b = Tensor([outputs], [random() for _ in range(outputs)])
 
     def __call__(self, arr: NDArray) -> Tensor:
-        assert len(arr.flatten().tolist()) == 784
+        mean = np.mean(arr)
+        std = np.std(arr)
+        normalized = (arr - mean) / std
+        assert len(normalized.flatten().tolist()) == 784
         x = Tensor([self.inputs, 1], arr.flatten().tolist())
         # should be x @ W.T
+        print(self.w.size)
+        print(x.size)
         return (self.w @ x) + self.b
 
 
@@ -67,9 +72,24 @@ def accuracy() -> float:
 
 for i, train_image in enumerate(train_images):
     model.zero_grad()
-    loss = cross_entropy(model(train_image), Tensor([1, 1], [train_labels[i]]))
+    output = model(train_image)
+    arr = [output.data[0, 0].item(), output.data[0, 1].item(),
+                              output.data[0, 2].item(), output.data[0, 3].item(),
+                              output.data[0, 4].item(), output.data[0, 5].item(),
+                              output.data[0, 6].item(), output.data[0, 7].item(),
+                              output.data[0, 8].item(), output.data[0, 9].item()]
+    import numpy as np
+    normalized = (arr - np.mean(arr)) / np.std(arr)
+    print(normalized.tolist())
+    output = Tensor([1, 10], normalized.tolist())
+    print(output)
+    print(output.size)
+    target = Tensor([1], [train_labels[i]])
+    print(target)
+    print(target.size)
+    loss = cross_entropy(output, target)
     print(loss)
-    # loss.backward()
+    loss.backward()
     exit()
     # sgd(model, 0.0001)
 
