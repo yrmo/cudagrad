@@ -48,11 +48,17 @@ def softmax(t: Tensor) -> Tensor:
     e = (t + D).exp()
     return e / e.sum()
 
+def log_softmax(t: Tensor) -> Tensor:
+    return Tensor.log(softmax(t))
+
+def nll_loss(inputs: Tensor, target: int):
+    ...
+
 def cross_entropy(inputs: Tensor, target: Tensor) -> Tensor:
     assert inputs.size[0] < inputs.size[1]
-    probs = softmax(inputs)
+    log_probs = log_softmax(inputs)
+
     one_hot_target = Tensor.zeros(inputs.size)
     one_hot_target.data[0, int(target.data[0, 0].item())] = 1.0 # TODO 0 index is wrong?
-    log_probs = Tensor.log(probs)
     loss = Tensor([1], [-1.0]) * (one_hot_target * log_probs).sum() / Tensor([1], [inputs.size[0]])
     return loss
