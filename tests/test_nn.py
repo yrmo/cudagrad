@@ -54,5 +54,46 @@ class TestNN(unittest.TestCase):
         x = cudagrad.nn.cross_entropy(cudagrad.Tensor([1, 10], [2.0991, -0.3244, -1.4904, -0.9129, -0.1676,  0.9251,  0.1822, -0.0762,0.3743, -0.6091]), cudagrad.Tensor([1], [5])).item()
         self.assertAlmostEqual(x, 1.9081392288208008, places=3)
 
+    def test_cross_entropy_loss_cross_backward(self):
+        """
+        arr.unsqueeze(0)
+        tensor([[-0.1600,  0.4920,  0.9304, -1.5375, -0.0106,  1.3549, -0.9282,  1.3031,
+                -0.5426, -0.9015]])
+        output = torch.tensor(arr.unsqueeze(0), requires_grad=True)
+        <stdin>:1: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+        output = torch.tensor(arr.unsqueeze(0).data, requires_grad=True)
+        target = torch.tensor([5], dtype=torch.long)
+        loss = F.cross_entropy(output, target)
+        loss
+        tensor(1.3642, grad_fn=<NllLossBackward0>)
+        loss.backward()
+        output
+        tensor([[-0.1600,  0.4920,  0.9304, -1.5375, -0.0106,  1.3549, -0.9282,  1.3031,
+                -0.5426, -0.9015]], requires_grad=True)
+        output.grad
+        tensor([[ 0.0562,  0.1078,  0.1672,  0.0142,  0.0652, -0.7444,  0.0261,  0.2427,
+                0.0383,  0.0268]])
+        target
+        tensor([5])
+        target.grad
+        """
+        output = cudagrad.Tensor([1, 10], [-0.1600,  0.4920,  0.9304, -1.5375, -0.0106,  1.3549, -0.9282,  1.3031, -0.5426, -0.9015])
+        target = cudagrad.Tensor([1], [5.0])
+        loss = cudagrad.nn.cross_entropy(output, target)
+        self.assertAlmostEqual(loss.item(), 1.364, places=3)
+        loss.backward()
+
+        self.assertAlmostEqual(target.grad[0, 0].item(), 0.0562, places=3)
+        self.assertAlmostEqual(target.grad[0, 1].item(), 0.1078, places=3)
+        self.assertAlmostEqual(target.grad[0, 2].item(), 0.1672, places=3)
+        self.assertAlmostEqual(target.grad[0, 3].item(), 0.0142, places=3)
+        self.assertAlmostEqual(target.grad[0, 4].item(), 0.0652, places=3)
+
+        self.assertAlmostEqual(target.grad[0, 5].item(), -0.7444, places=3)
+        self.assertAlmostEqual(target.grad[0, 6].item(), 0.0261, places=3)
+        self.assertAlmostEqual(target.grad[0, 7].item(), 0.2427, places=3)
+        self.assertAlmostEqual(target.grad[0, 8].item(), 0.0383, places=3)
+        self.assertAlmostEqual(target.grad[0, 9].item(), 0.0268, places=3)
+
 if __name__ == "__main__":
     unittest.main()
