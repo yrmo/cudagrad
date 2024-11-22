@@ -84,9 +84,12 @@ if __name__ == "__main__":
                 input_data = Tensor([2, 1], [X[i, j], Y[i, j]])
                 Z[i, j] = model(input_data).item()
 
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection="3d")
-        ax.plot_surface(X, Y, Z, cmap="viridis")  # type: ignore [attr-defined]
-        plt.xlabel("X")
-        plt.ylabel("Y")
-        plt.savefig("./benchmarks/_cudagrad/plots/xor.jpg")
+
+       fig = plt.figure()
+       ax = fig.add_subplot(111, projection="3d")
+       ax.plot_surface(X, Y, Z, cmap="viridis")   # type: ignore [attr-defined]
+       ax.set_xlabel("X")
+       ax.set_ylabel("Y")
+       ax.set_zlabel("Output (XOR result)")  # Add label for the Z axis
+       plt.savefig("./benchmarks/_cudagrad/plots/xor.jpg")
+
