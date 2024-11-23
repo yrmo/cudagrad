@@ -54,6 +54,7 @@ struct ExpBackward;
 struct MaxBackward;
 struct ExpBackward;
 struct LnBackward;
+struct SelectBackward1;
 
 struct AutoGradForward;
 struct MatMulForward;
@@ -149,6 +150,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   std::shared_ptr<Tensor> exponential();
   std::shared_ptr<Tensor> ln();
   std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> other);
+  std::shared_ptr<Tensor> select(std::vector<size_t> indexes);
 
   std::shared_ptr<Tensor> select_data(std::vector<size_t> indexes);
   void put_data(std::vector<size_t> indexes, float value);
@@ -507,6 +509,22 @@ std::shared_ptr<Tensor> binaryForwardOperator(std::shared_ptr<Tensor> lhs,
   return (*forward)();  // forward.get()();
 }
 
+std::shared_ptr<Tensor> Tensor::select(std::vector<size_t> indexes) {
+  // there's no slices because it's too hard so just scalar select :D
+  size_t idx = _dot(indexes, strides_);
+  std::vector<float> selected(data_.size(), 0.0f);
+  selected[idx] = data_[idx];
+  auto grad_fn = std::make_shared<SelectBackward1>(idx);
+
+  return std::make_shared<Tensor>(
+    size_,
+    selected,
+    std::vector<std::shared_ptr<Tensor>>{get_shared()},
+    grad_fn,
+    "SelectBackward1"
+  );
+}
+
 std::shared_ptr<Tensor> Tensor::matmul(std::shared_ptr<Tensor> other) {
   std::shared_ptr<MatMulForward> f =
       std::make_shared<MatMulForward>(this->get_shared(), other);
@@ -761,6 +779,17 @@ std::vector<float> broadcast(std::vector<size_t> from, std::vector<float> data,
 
   throw std::runtime_error("Invalid broadcast");
 }
+
+struct SelectBackward1 : public AutoGradBackward {
+  size_t index_;
+
+  SelectBackward1(size_t idx) : index_(idx) {}
+
+  void apply(std::shared_ptr<Tensor> grad_output,
+             std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
+    grad_inputs[0]->grad_[index_] += grad_output->grad_[0];
+  }
+};
 
 struct AddBackward : public AutoGradBackward {
   AddBackward() = default;
