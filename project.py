@@ -170,6 +170,7 @@ class Project:
         RUN("pip install --force-reinstall dist/cudagrad-*-cp3*-cp3*-linux_x86_64.whl")
 
     def publish(self):
+        self.docker()
         CHECK("python -m twine check dist/*")
         RUN("python -m pip install --upgrade twine")
         CHECK("python -m twine upload dist/*")
