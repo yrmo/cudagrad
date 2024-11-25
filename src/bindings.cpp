@@ -33,7 +33,7 @@ PYBIND11_MODULE(tensor, m) {
         Tensor
     )pbdoc";
 
-  m.def("hello", &cg::hello, R"pbdoc(
+  m.def("hello", []() -> std::string { return std::string(cg::hello()); }, R"pbdoc(
         Can has CUDA?
 
         Hello!

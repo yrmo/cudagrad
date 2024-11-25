@@ -4,8 +4,8 @@
 
 namespace cg {
 
-void helloFromCPU() { printf("Hello, CPU!\n"); }
+const char* helloFromCPU() { return "Hello, CPU!"; }
 
-extern "C" void hello() { helloFromCPU(); }
+extern "C" const char* hello() { return helloFromCPU(); }
 
 }  // namespace cg
