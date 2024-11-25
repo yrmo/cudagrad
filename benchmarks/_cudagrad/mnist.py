@@ -7,7 +7,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from cudagrad import Module, Tensor
-from cudagrad.nn import cross_entropy
+from cudagrad.nn import cross_entropy, sgd
 
 PROFILING = int(getenv("PROFILING", "0"))
 
@@ -52,7 +52,7 @@ def accuracy() -> float:
         m = x.max().item()
         for index in range(10):
             if x.data[0, index].item() == m:
-                break 
+                break
         outputs.append(int(index))
 
     print(outputs)

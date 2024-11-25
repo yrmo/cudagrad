@@ -20,11 +20,11 @@ namespace cg {
 __global__ void helloFromGPU(char* device_message) {
   const char* message = "Hello, GPU!";
   for (int i = 0; i < 11; ++i) {
-      device_message[i] = message[i];
+    device_message[i] = message[i];
   }
 }
 
-extern "C" const char * hello() {
+extern "C" const char* hello() {
   static char host_message[11];
   char* device_message;
 
@@ -33,7 +33,8 @@ extern "C" const char * hello() {
   helloFromGPU<<<1, 1>>>(device_message);
   cudaDeviceSynchronize();
 
-  cudaMemcpy(host_message, device_message, 11 * sizeof(char), cudaMemcpyDeviceToHost);
+  cudaMemcpy(host_message, device_message, 11 * sizeof(char),
+             cudaMemcpyDeviceToHost);
 
   cudaFree(device_message);
   return host_message;

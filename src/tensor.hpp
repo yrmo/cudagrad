@@ -36,7 +36,7 @@ namespace cg {
 
 namespace py = pybind11;
 
-extern "C" const char * hello();
+extern "C" const char *hello();
 
 // using using for now in case in the future during operator fusion
 // I need to know what is actually happening, maybe more clear

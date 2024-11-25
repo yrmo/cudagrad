@@ -178,9 +178,15 @@ class Project:
         version = self.get_version()
         RUN("docker build . -t manylinux-ubuntu")
         RUN("docker rm manylinux-container")
-        RUN('docker run -it --name manylinux-container manylinux-ubuntu python -c "import time; time.sleep(10)" &')
-        RUN(f"docker cp manylinux-container:/cudagrad/dist/cudagrad-{version}-cp310-cp310-linux_x86_64.whl ~/cudagrad/dist/")
-        RUN(f"mv ~/cudagrad/dist/cudagrad-{version}-cp310-cp310-linux_x86_64.whl ~/cudagrad/dist/cudagrad-{version}-cp310-cp310-manylinux2014_x86_64.whl")
+        RUN(
+            'docker run -it --name manylinux-container manylinux-ubuntu python -c "import time; time.sleep(10)" &'
+        )
+        RUN(
+            f"docker cp manylinux-container:/cudagrad/dist/cudagrad-{version}-cp310-cp310-linux_x86_64.whl ~/cudagrad/dist/"
+        )
+        RUN(
+            f"mv ~/cudagrad/dist/cudagrad-{version}-cp310-cp310-linux_x86_64.whl ~/cudagrad/dist/cudagrad-{version}-cp310-cp310-manylinux2014_x86_64.whl"
+        )
 
     def get_version(self):
         with open("pyproject.toml", "r+") as f:
