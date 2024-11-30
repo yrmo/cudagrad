@@ -176,15 +176,23 @@ class Project:
 
     def docker(self):
         version = self.get_version()
-        RUN("docker build . -t manylinux-ubuntu")
+        RUN("ps -aux | awk '/docker run -it/ {print $2}' | xargs kill -9")
+        RUN("docker image prune -f")
         RUN("docker rm manylinux-container")
-        RUN(
-            'docker run -it --name manylinux-container manylinux-ubuntu python -c "import time; time.sleep(10)" &'
+        CHECK("docker build . -t manylinux-image")
+        # RUN("docker run -it --entrypoint /bin/bash manylinux-image")
+        CHECK(
+            'docker run -dit --name manylinux-container manylinux-image python -c "import time; time.sleep(10)" &'
         )
-        RUN(
+        RUN("docker ps")
+        import time
+        time.sleep(2)
+
+        RUN("mkdir ~/cudagrad/dist")
+        CHECK(
             f"docker cp manylinux-container:/cudagrad/dist/cudagrad-{version}-cp310-cp310-linux_x86_64.whl ~/cudagrad/dist/"
         )
-        RUN(
+        CHECK(
             f"mv ~/cudagrad/dist/cudagrad-{version}-cp310-cp310-linux_x86_64.whl ~/cudagrad/dist/cudagrad-{version}-cp310-cp310-manylinux2014_x86_64.whl"
         )
 
