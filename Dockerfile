@@ -1,4 +1,4 @@
-FROM gcr.io/kaggle-images/python:latest
+FROM gcr.io/kaggle-gpu-images/python
 ENV DEBIAN_FRONTEND=noninteractive
 WORKDIR /cudagrad
 COPY . /cudagrad
