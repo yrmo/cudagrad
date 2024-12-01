@@ -43,4 +43,10 @@ else()
     target_link_libraries(tensor ${Python3_LIBRARIES} pybind11::module)
 endif()
 
+if (USE_CUDA)
+    target_compile_definitions(tensor PRIVATE CUDA_ENABLED=1)
+else()
+    target_compile_definitions(tensor PRIVATE CUDA_ENABLED=0)
+endif()
+
 set_target_properties(tensor PROPERTIES PREFIX "")
