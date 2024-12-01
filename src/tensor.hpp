@@ -39,19 +39,7 @@ namespace cg {
 
 namespace py = pybind11;
 
-extern "C" bool cuda_available() {
-#ifdef CUDA_ENABLED
-  // int device_count = 0;
-  // cudaError_t error_id = cudaGetDeviceCount(&device_count);
-  // if (error_id != cudaSuccess || device_count == 0) {
-  //   return false;
-  // }
-  // std::cout << device_count << std::endl;
-  return true;
-#else
-  return false;
-#endif
-}
+extern "C" bool cuda_available();
 
 extern "C" const char *helloCPU();
 extern "C" const char *helloGPU();
