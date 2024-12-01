@@ -177,6 +177,7 @@ class Project:
 
     def docker(self):
         version = self.get_version()
+        [x.unlink() for x in (Path.home() / "cudagrad/dist").glob("*.whl")]
         RUN("ps -aux | awk '/docker run -it/ {print $2}' | xargs kill -9")
         RUN("docker image prune -f")
         RUN("docker rm manylinux-container")
