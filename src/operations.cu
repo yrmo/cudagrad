@@ -24,7 +24,7 @@ __global__ void helloFromGPU(char* device_message) {
   }
 }
 
-extern "C" const char* hello() {
+extern "C" const char* helloGPU() {
   static char host_message[11];
   char* device_message;
 

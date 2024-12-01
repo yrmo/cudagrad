@@ -26,6 +26,9 @@
 #include <string>
 #include <utility>
 #include <vector>
+#ifdef __CUDACC__
+#include <cuda_runtime.h>
+#endif
 
 template <typename... Args>
 void UNUSED(Args &&...args) {
@@ -36,7 +39,29 @@ namespace cg {
 
 namespace py = pybind11;
 
-extern "C" const char *hello();
+extern "C" bool cuda_available() {
+#ifdef __CUDACC__
+  int device_count = 0;
+  cudaError_t error_id = cudaGetDeviceCount(&device_count);
+  if (error_id != cudaSuccess || device_count == 0) {
+    return false;
+  }
+  return true;
+#else
+  return false;
+#endif
+}
+
+extern "C" const char *helloCPU();
+extern "C" const char *helloGPU();
+
+const char * hello() {
+  if (cuda_available()) {
+    return helloGPU();
+  } else {
+    return helloCPU();
+  }
+}
 
 // using using for now in case in the future during operator fusion
 // I need to know what is actually happening, maybe more clear

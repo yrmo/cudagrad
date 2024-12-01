@@ -32,11 +32,7 @@ endif()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CUDA_STANDARD 17)
 
-if (USE_CUDA)
-    set(SOURCE_FILES src/bindings.cpp src/operations.cu src/tensor.hpp)
-else()
-    set(SOURCE_FILES src/bindings.cpp src/operations.cpp src/tensor.hpp)
-endif()
+set(SOURCE_FILES src/bindings.cpp src/operations.cu src/operations.cpp src/tensor.hpp)
 
 add_library(tensor MODULE ${SOURCE_FILES})
 
