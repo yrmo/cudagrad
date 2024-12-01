@@ -18,7 +18,6 @@ extern "C" bool cuda_available() {
 const char* helloFromCPU() { return "Hello, CPU!"; }
 
 extern "C" const char* helloCPU() { return helloFromCPU(); }
-
-__attribute__((weak)) extern "C" const char* helloGPU() {}
+extern "C" const char *helloGPU() __attribute__((weak));
 
 }  // namespace cg

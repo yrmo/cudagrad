@@ -42,7 +42,7 @@ namespace py = pybind11;
 extern "C" bool cuda_available();
 
 extern "C" const char *helloCPU();
-extern "C" const char *helloGPU();
+extern "C" const char *helloGPU() __attribute__((weak));
 
 const char * hello() {
   if (cuda_available()) {
