@@ -182,6 +182,31 @@ class Project:
         RUN("docker image prune -f")
         RUN("docker rm manylinux-container")
         CHECK("docker build . -t manylinux-image")
+
+        # The published binary wheel must use the version of Python being used on Kaggle.
+        subprocess_python_version = int(subprocess.run(
+            "docker run -it manylinux-ubuntu python -c 'import sys;print(sys.version_info.minor)'",
+            shell=True,
+            capture_output=True,
+        ).stdout.decode("UTF-8").strip())
+        assert subprocess_python_version == 10
+
+        # This is important because the version of glibc can be different on
+        # Kaggle GPU images compared to non-GPU images.
+        # We want to the Docker GPU image tagged with: 
+        #   min(kaggle-python.glibc-version, kaggle-gpu-python.glibc-version)
+        # because glibc is forward compatible
+        # https://gcc.gnu.org/onlinedocs/libstdc++/manual/abi.html
+        subprocess_ldd_version = [int(x) for x in subprocess.run(
+            "ldd --version",
+            shell=True,
+            capture_output=True,
+        ).stdout.strip().splitlines()[0].split()[-1].split('.')]
+        print(subprocess_ldd_version)
+        assert subprocess_ldd_version[0] == 2
+        assert subprocess_ldd_version[1] == 31
+
+        exit()
         # RUN("docker run -it --entrypoint /bin/bash manylinux-image")
         CHECK(
             'docker run -dit --name manylinux-container manylinux-image python -c "import time; time.sleep(10)" &'
