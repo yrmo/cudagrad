@@ -15,12 +15,18 @@ Available on [PyPI](https://pypi.org/project/cudagrad/):
 pip install cudagrad
 ```
 
+To install in a Kaggle notebook:
+
+```
+!pip install cudagrad
+```
+
 Distributed as:
 
 - A source distribution, requiring the `cmake` command, and optionally the `nvcc` command, to be available at installation time.
-- A binary distribution, targeting the [Kaggle Python docker images](https://github.com/Kaggle/docker-python):
-    - CPU-only binary: [Kaggle notebook example](https://www.kaggle.com/code/yrmoore/cudagrad-0-2-4-whl)
-    - GPU accelerator binary: Work in Progress
+- A binary distribution, targeting the Kaggle environment:
+    - Kaggle Python: [Kaggle notebook](https://www.kaggle.com/code/yrmoore/cudagrad-0-2-8-whl)
+    - Kaggle Python with GPU (NVIDIA P100): [Kaggle notebook](https://www.kaggle.com/code/yrmoore/cudagrad-0-2-8-gpu-whl)
 
 # Examples
 
