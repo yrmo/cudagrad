@@ -30,7 +30,7 @@ if (USE_CUDA)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CUDA_STANDARD 17)
+set(CMAKE_CUDA_STANDARD 14)
 
 set(SOURCE_FILES src/bindings.cpp src/operations.cu src/operations.cpp src/tensor.hpp)
 
