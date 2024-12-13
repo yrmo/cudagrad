@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
-project(pybind11_cuda_project)
+project(pybind11_cuda_project LANGUAGES CXX CUDA)
 
-find_package(CUDA)
-if (CUDA_FOUND)
-    enable_language(CUDA)
+if (CMAKE_CUDA_COMPILER)
     set(USE_CUDA ON)
     set(CMAKE_CUDA_ARCHITECTURES 60)
 else()

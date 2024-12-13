@@ -132,14 +132,17 @@ class Project:
             shutil.rmtree("build")
         os.makedirs("build", exist_ok=True)
         os.chdir("build")
-        cmake_args = ["-DPYTHON_EXECUTABLE=" + sys.executable]
+        cmake_args = [
+            "-DPYTHON_EXECUTABLE=" + sys.executable
+            , f'-DCMAKE_CUDA_COMPILER="{shutil.which("nvcc")}"'
+        ]
         CHECK(
             "cmake -DCMAKE_PREFIX_PATH="
             + torch.utils.cmake_prefix_path
             + f" {Path('../tests').resolve()} {' '.join(cmake_args)}"
         )
         CHECK("cmake ../tests")
-        CHECK("make")
+        CHECK("cmake --build .")
         CHECK("./tensor_test")
         # FIXME skipping installation 'tests' on github runner for now
         if (str(Path(".").resolve()).split("/")[2]) == "runner":
