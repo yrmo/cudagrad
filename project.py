@@ -1,7 +1,5 @@
 # type: ignore
 
-import glob
-import platform
 import os
 import re
 import shutil
@@ -71,13 +69,6 @@ class Project:
         RUN("python -m black .")
         RUN(f"clang-format -i {CPP_FILES}")
 
-    def _remove_files_windows_or_unix(self, filename):
-        for file in glob.glob(f"{filename}*"):
-            try:
-                os.remove(file)
-            except Exception as e:
-                pass
-
     def _test_cuda_setup(self):
         code = """\
         #include <stdio.h>
@@ -112,7 +103,7 @@ class Project:
                 print(repr(run_process.stderr))
 
             assert run_process.stdout == "no error"
-            self._remove_files_windows_or_unix(TEST_CUDA_FILENAME)
+            os.remove(TEST_CUDA_FILENAME)
 
     def test(self):
         import torch
@@ -120,29 +111,22 @@ class Project:
         CWD = os.getcwd()
 
         self._test_cuda_setup()
-        CHECK("nvcc tests/test_setup.cu")
-        if platform.system() == "Windows":
-            CHECK(r".\a.exe")
-        else:
-            CHECK("./a.out")
-        self._remove_files_windows_or_unix("a")
+        CHECK("nvcc tests/test_setup.cu && ./a.out")
+        CHECK("rm a.out")
 
         CHECK("git submodule update --init --recursive")
         if os.path.exists("build"):
             shutil.rmtree("build")
         os.makedirs("build", exist_ok=True)
         os.chdir("build")
-        cmake_args = [
-            "-DPYTHON_EXECUTABLE=" + sys.executable
-            , f'-DCMAKE_CUDA_COMPILER="{shutil.which("nvcc")}"'
-        ]
+        cmake_args = ["-DPYTHON_EXECUTABLE=" + sys.executable]
         CHECK(
             "cmake -DCMAKE_PREFIX_PATH="
             + torch.utils.cmake_prefix_path
             + f" {Path('../tests').resolve()} {' '.join(cmake_args)}"
         )
         CHECK("cmake ../tests")
-        CHECK("cmake --build .")
+        CHECK("make")
         CHECK("./tensor_test")
         # FIXME skipping installation 'tests' on github runner for now
         if (str(Path(".").resolve()).split("/")[2]) == "runner":
