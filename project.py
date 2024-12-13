@@ -1,5 +1,7 @@
 # type: ignore
 
+import glob
+import platform
 import os
 import re
 import shutil
@@ -69,6 +71,13 @@ class Project:
         RUN("python -m black .")
         RUN(f"clang-format -i {CPP_FILES}")
 
+    def _remove_files_windows_or_unix(self, filename):
+        for file in glob.glob(f"{filename}*"):
+            try:
+                os.remove(file)
+            except Exception as e:
+                pass
+
     def _test_cuda_setup(self):
         code = """\
         #include <stdio.h>
@@ -103,7 +112,7 @@ class Project:
                 print(repr(run_process.stderr))
 
             assert run_process.stdout == "no error"
-            os.remove(TEST_CUDA_FILENAME)
+            self._remove_files_windows_or_unix(TEST_CUDA_FILENAME)
 
     def test(self):
         import torch
@@ -111,8 +120,12 @@ class Project:
         CWD = os.getcwd()
 
         self._test_cuda_setup()
-        CHECK("nvcc tests/test_setup.cu && ./a.out")
-        CHECK("rm a.out")
+        CHECK("nvcc tests/test_setup.cu")
+        if platform.system() == "Windows":
+            CHECK(r".\a.exe")
+        else:
+            CHECK("./a.out")
+        self._remove_files_windows_or_unix("a")
 
         CHECK("git submodule update --init --recursive")
         if os.path.exists("build"):
