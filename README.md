@@ -28,7 +28,7 @@ Distributed as:
         - For Windows, install the 'MSVC VS x64/x86 build tools' to ensure [CUDA compatibility on Windows](https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/) and use the 'x64 Native Tools Command Prompt' during source builds
     - `cmake`
     - `nvcc`
-- A pre-build binary wheel distribution, targeting only the Kaggle environment:
+- A pre-built binary wheel distribution, targeting only the Kaggle environment:
     - Kaggle Python: [Kaggle notebook](https://www.kaggle.com/code/yrmoore/cudagrad-0-2-8-whl)
     - Kaggle Python with GPU (NVIDIA P100): [Kaggle notebook](https://www.kaggle.com/code/yrmoore/cudagrad-0-2-8-gpu-whl)
 
