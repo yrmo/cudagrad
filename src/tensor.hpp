@@ -11,6 +11,12 @@
 #ifndef SRC_TENSOR_HPP_
 #define SRC_TENSOR_HPP_
 
+#ifdef _MSC_VER
+#define WEAK
+#else
+#define WEAK __attribute__((weak))
+#endif
+
 #include <pybind11/pybind11.h>
 
 #include <algorithm>
@@ -42,10 +48,10 @@ namespace py = pybind11;
 extern "C" bool cuda_available();
 
 extern "C" const char *helloCPU();
-extern "C" const char *helloGPU() __attribute__((weak));
+extern "C" const char *helloGPU() WEAK;
 
 const char * hello() {
-  if (cuda_available()) {
+  if (cuda_available() && helloGPU) {
     return helloGPU();
   } else {
     return helloCPU();
