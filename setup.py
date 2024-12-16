@@ -1,7 +1,9 @@
 import os
 import subprocess
 import sys
-from shutil import move
+from shutil import copy
+import platform
+from pathlib import Path
 
 import toml
 from setuptools import Extension, find_packages, setup
@@ -49,11 +51,21 @@ class CMakeBuild(build_ext):
             ["cmake", "--build", ".", "--target", ext.name] + build_args,
             cwd=self.build_temp,
         )
-        move(
-            os.path.join(self.build_lib, "tensor.so"),
-            os.path.join(extdir, "cudagrad", "tensor.so"),
+        source_extension = "dll" if platform.system() == "Windows" else "so"
+        target_extension = "pyd" if platform.system() == "Windows" else "so"
+        copy(
+            os.path.join(self.build_lib, cfg, f"tensor.{source_extension}"),
+            os.path.join(extdir, "cudagrad", f"tensor.{target_extension}"),
         )
-
+ 
+        try:
+            # for development convenience only so 'import cudagrad' has up to date build
+            copy(
+                os.path.join(self.build_lib, cfg, f"tensor.{source_extension}"),
+                os.path.join(str((Path().home() / 'cudagrad' / 'cudagrad').resolve()), f"tensor.{target_extension}"),
+            )
+        except:
+            pass
 
 def get_version_from_toml() -> str:
     data = toml.load("pyproject.toml")

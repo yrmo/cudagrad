@@ -57,7 +57,7 @@ def accuracy() -> float:
         m = x.max().item()
         for index in range(10):
             if x.data[0, index].item() == m:
-                break 
+                break
         outputs.append(int(index))
 
     # print(outputs)
@@ -106,6 +106,7 @@ if not PROFILING:
         ax = axes[i // num_col, i % num_col]
         ax.imshow(test_images[i], cmap="viridis")
         x = model(test_images[i])
+        print(x)
         output = int(x.data[0, 0].item())
         ax.set_title(f"Output: {output}")
         ax.set_xticks([])

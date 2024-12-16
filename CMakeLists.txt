@@ -1,11 +1,9 @@
 cmake_minimum_required(VERSION 3.16)
-project(pybind11_cuda_project)
+project(pybind11_cuda_project LANGUAGES CXX CUDA)
 
-find_package(CUDA)
-if (CUDA_FOUND AND 0)
-    enable_language(CUDA)
+if (CMAKE_CUDA_COMPILER)
     set(USE_CUDA ON)
-    set(CMAKE_CUDA_ARCHITECTURES 75)
+    set(CMAKE_CUDA_ARCHITECTURES 60)
 else()
     set(USE_CUDA OFF)
 endif()
@@ -30,13 +28,9 @@ if (USE_CUDA)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CUDA_STANDARD 17)
+set(CMAKE_CUDA_STANDARD 14)
 
-if (USE_CUDA)
-    set(SOURCE_FILES src/bindings.cpp src/operations.cu src/tensor.hpp)
-else()
-    set(SOURCE_FILES src/bindings.cpp src/operations.cpp src/tensor.hpp)
-endif()
+set(SOURCE_FILES src/bindings.cpp src/operations.cu src/operations.cpp src/tensor.hpp)
 
 add_library(tensor MODULE ${SOURCE_FILES})
 
@@ -45,6 +39,12 @@ if (USE_CUDA)
     target_link_libraries(tensor ${Python3_LIBRARIES} ${CUDA_LIBRARIES} pybind11::module)
 else()
     target_link_libraries(tensor ${Python3_LIBRARIES} pybind11::module)
+endif()
+
+if (USE_CUDA)
+    target_compile_definitions(tensor PRIVATE CUDA_ENABLED=1)
+else()
+    target_compile_definitions(tensor PRIVATE CUDA_ENABLED=0)
 endif()
 
 set_target_properties(tensor PROPERTIES PREFIX "")

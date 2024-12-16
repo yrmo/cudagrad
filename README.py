@@ -22,12 +22,25 @@ Available on [PyPI](https://pypi.org/project/cudagrad/):
 pip install cudagrad
 ```
 
-Distributed as:
+To install in a Kaggle notebook:
 
-- A source distribution, requiring the `cmake` command, and optionally the `nvcc` command, to be available at installation time.
-- A binary distribution, targeting the [Kaggle Python docker images](https://github.com/Kaggle/docker-python):
-    - CPU-only binary: [Kaggle notebook example](https://www.kaggle.com/code/yrmoore/cudagrad-0-2-4-whl)
-    - GPU accelerator binary: Work in Progress
+```
+!pip install cudagrad
+```
+
+- A source distribution, requiring several build tools to be available at installation time:
+    - `c++`
+    - `nvcc`
+    - `cmake`
+
+- A pre-built binary wheel distribution, targeting only the Kaggle environment:
+    - Kaggle Python: [Kaggle notebook](https://www.kaggle.com/code/yrmoore/cudagrad-0-2-8-whl)
+    - Kaggle Python with GPU (NVIDIA P100): [Kaggle notebook](https://www.kaggle.com/code/yrmoore/cudagrad-0-2-8-gpu-whl)
+
+## Installing on Windows from source
+
+- Install the 'MSVC VS x64/x86 build tools' to ensure [CUDA compatibility on Windows](https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/) and use the 'x64 Native Tools Command Prompt' during source builds
+- If CMake cannot find CUDA (`No CUDA toolset found.`), see this [NVlabs issue](https://github.com/NVlabs/tiny-cuda-nn/issues/164) and copy the four 'MSBuildExtensions' to the appropriate 'BuildCustomizations' folder for your Visual Studio installation.
 
 # Examples
 

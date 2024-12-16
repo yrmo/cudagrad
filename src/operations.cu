@@ -11,17 +11,33 @@
 
 #include <cstdio>
 
-#include "cub/cub.cuh"
-#include "cuda/std/atomic"
+// #include "cub/cub.cuh"
+// #include "cuda/std/atomic"
 #include "thrust/device_vector.h"
 
 namespace cg {
 
-__global__ void helloFromGPU() { printf("Hello, GPU!\n"); }
+__global__ void helloFromGPU(char* device_message) {
+  const char* message = "Hello, GPU!";
+  for (int i = 0; i < 11; ++i) {
+    device_message[i] = message[i];
+  }
+}
 
-extern "C" void hello() {
-  helloFromGPU<<<1, 1>>>();
+extern "C" const char* helloGPU() {
+  static char host_message[11];
+  char* device_message;
+
+  cudaMalloc(&device_message, 11 * sizeof(char));
+
+  helloFromGPU<<<1, 1>>>(device_message);
   cudaDeviceSynchronize();
+
+  cudaMemcpy(host_message, device_message, 11 * sizeof(char),
+             cudaMemcpyDeviceToHost);
+
+  cudaFree(device_message);
+  return host_message;
 }
 
 }  // namespace cg

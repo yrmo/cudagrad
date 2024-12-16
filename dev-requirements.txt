@@ -9,6 +9,7 @@ cpplint==1.6.1
 # torch
 numpy
 ruff
+matplotlib
 types-setuptools
 scikit-learn
 wheel

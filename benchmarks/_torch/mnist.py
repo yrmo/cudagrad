@@ -13,14 +13,21 @@ if not PROFILING:
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))])
+transform = transforms.Compose(
+    [transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))]
+)
 
-train_dataset = datasets.MNIST(root="./data", train=True, transform=transform, download=True)
-test_dataset = datasets.MNIST(root="./data", train=False, transform=transform, download=True)
+train_dataset = datasets.MNIST(
+    root="./data", train=True, transform=transform, download=True
+)
+test_dataset = datasets.MNIST(
+    root="./data", train=False, transform=transform, download=True
+)
 
 batch_size = 64
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=False)
 test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+
 
 class Model(nn.Module):
     def __init__(self, input_size, output_size):
@@ -32,6 +39,7 @@ class Model(nn.Module):
         x = self.flatten(x)
         x = self.linear(x)
         return x
+
 
 model = Model(28 * 28, 10).to(device)
 

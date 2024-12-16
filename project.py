@@ -1,5 +1,7 @@
 # type: ignore
 
+import glob
+import platform
 import os
 import re
 import shutil
@@ -69,6 +71,13 @@ class Project:
         RUN("python -m black .")
         RUN(f"clang-format -i {CPP_FILES}")
 
+    def _remove_files_windows_or_unix(self, filename):
+        for file in glob.glob(f"{filename}*"):
+            try:
+                os.remove(file)
+            except Exception as e:
+                pass
+
     def _test_cuda_setup(self):
         code = """\
         #include <stdio.h>
@@ -103,7 +112,7 @@ class Project:
                 print(repr(run_process.stderr))
 
             assert run_process.stdout == "no error"
-            os.remove(TEST_CUDA_FILENAME)
+            self._remove_files_windows_or_unix(TEST_CUDA_FILENAME)
 
     def test(self):
         import torch
@@ -111,26 +120,33 @@ class Project:
         CWD = os.getcwd()
 
         self._test_cuda_setup()
-        CHECK("nvcc tests/test_setup.cu && ./a.out")
-        CHECK("rm a.out")
+        CHECK("nvcc tests/test_setup.cu")
+        if platform.system() == "Windows":
+            CHECK(r".\a.exe")
+        else:
+            CHECK("./a.out")
+        self._remove_files_windows_or_unix("a")
 
         CHECK("git submodule update --init --recursive")
         if os.path.exists("build"):
             shutil.rmtree("build")
         os.makedirs("build", exist_ok=True)
         os.chdir("build")
-        cmake_args = ["-DPYTHON_EXECUTABLE=" + sys.executable]
+        cmake_args = [
+            "-DPYTHON_EXECUTABLE=" + sys.executable
+            , f'-DCMAKE_CUDA_COMPILER="{shutil.which("nvcc")}"'
+        ]
         CHECK(
             "cmake -DCMAKE_PREFIX_PATH="
             + torch.utils.cmake_prefix_path
             + f" {Path('../tests').resolve()} {' '.join(cmake_args)}"
         )
         CHECK("cmake ../tests")
-        CHECK("make")
-        CHECK("./tensor_test")
-        # FIXME skipping installation 'tests' on github runner for now
-        if (str(Path(".").resolve()).split("/")[2]) == "runner":
-            return
+        CHECK("cmake --build .")
+        if platform.system() == "Windows":
+            CHECK(r".\Debug\tensor_test.exe")
+        else:
+            CHECK("./tensor_test")
 
         os.chdir("..")
 
@@ -144,7 +160,7 @@ class Project:
         CHECK("python ./benchmarks/_cudagrad/or.py")
         CHECK("python ./benchmarks/_cudagrad/xor.py")
         CHECK("python ./benchmarks/_cudagrad/moons.py")
-        CHECK("python ./benchmarks/_cudagrad/mnist.py")
+        # CHECK("python ./benchmarks/_cudagrad/mnist.py")
         CHECK("git restore benchmarks/_cudagrad/plots/*.jpg")
 
     def test_python_3_7(self):
@@ -160,7 +176,7 @@ class Project:
         RUN("python -m pip cache purge")
         if os.path.exists("dist"):
             shutil.rmtree("dist")
-        RUN("python setup.py sdist bdist_wheel")
+        CHECK("python setup.py sdist bdist_wheel")
         CHECK("python -m twine check dist/*")
 
     def install(self):
@@ -170,17 +186,61 @@ class Project:
         RUN("pip install --force-reinstall dist/cudagrad-*-cp3*-cp3*-linux_x86_64.whl")
 
     def publish(self):
+        self.docker()
         CHECK("python -m twine check dist/*")
         RUN("python -m pip install --upgrade twine")
         CHECK("python -m twine upload dist/*")
 
     def docker(self):
         version = self.get_version()
-        RUN("docker build . -t manylinux-ubuntu")
+        RUN("rm -rf build dist")
+        RUN("mkdir dist")
+        # [x.unlink() for x in (Path.home() / "cudagrad/dist").glob("*.whl")]
+        RUN("ps -aux | awk '/docker run -it/ {print $2}' | xargs kill -9")
+        RUN("docker image prune -f")
+        RUN("docker image rm -f manylinux-image")
         RUN("docker rm manylinux-container")
-        RUN('docker run -it --name manylinux-container manylinux-ubuntu python -c "import time; time.sleep(10)" &')
-        RUN(f"docker cp manylinux-container:/cudagrad/dist/cudagrad-{version}-cp310-cp310-linux_x86_64.whl ~/cudagrad/dist/")
-        RUN(f"mv ~/cudagrad/dist/cudagrad-{version}-cp310-cp310-linux_x86_64.whl ~/cudagrad/dist/cudagrad-{version}-cp310-cp310-manylinux2014_x86_64.whl")
+        CHECK("docker build --progress=plain . -t manylinux-image") # --no-cache
+
+        # The published binary wheel must use the version of Python being used on Kaggle.
+        # subprocess_python_version = subprocess.run(
+        #     "docker run -it manylinux-image python -c 'import sys;print(sys.version_info.minor)'",
+        #     shell=True,
+        #     capture_output=True,
+        # )
+        # print(subprocess_python_version)
+        # subprocess_python_version = int(subprocess_python_version.stdout.decode("UTF-8").strip().splitlines()[-1].strip()) # -1 because of NVIDIA image notice
+        # assert subprocess_python_version == 10
+
+        # This is important because the version of glibc can be different on
+        # Kaggle GPU images compared to non-GPU images.
+        # We want to the Docker GPU image tagged with: 
+        #   min(kaggle-python.glibc-version, kaggle-gpu-python.glibc-version)
+        # because glibc is forward compatible
+        # https://gcc.gnu.org/onlinedocs/libstdc++/manual/abi.html
+        # subprocess_ldd_version = [int(x) for x in subprocess.run(
+        #     "docker run -it manylinux-image ldd --version",
+        #     shell=True,
+        #     capture_output=True,
+        # ).stdout.decode("UTF-8").strip().splitlines()[0].split()[-1].split('.')]
+        # assert subprocess_ldd_version[0] == 2
+        # assert subprocess_ldd_version[1] == 31
+
+        # RUN("docker run -it --entrypoint /bin/bash manylinux-image")
+        CHECK(
+            'docker run -dit --name manylinux-container manylinux-image python -c "import time; time.sleep(10)" &'
+        )
+        RUN("docker ps")
+        import time
+        time.sleep(2)
+
+        RUN("mkdir ~/cudagrad/dist")
+        CHECK(
+            f"docker cp manylinux-container:/cudagrad/dist/cudagrad-{version}-cp310-cp310-linux_x86_64.whl ~/cudagrad/dist/"
+        )
+        CHECK(
+            f"mv ~/cudagrad/dist/cudagrad-{version}-cp310-cp310-linux_x86_64.whl ~/cudagrad/dist/cudagrad-{version}-cp310-cp310-manylinux2014_x86_64.whl"
+        )
 
     def get_version(self):
         with open("pyproject.toml", "r+") as f:

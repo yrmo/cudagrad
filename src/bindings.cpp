@@ -29,14 +29,23 @@ PYBIND11_MODULE(tensor, m) {
            :toctree: _generate
 
         hello
+        cuda
         tensor
         Tensor
     )pbdoc";
 
-  m.def("hello", &cg::hello, R"pbdoc(
+  m.def(
+      "hello", []() -> std::string { return std::string(cg::hello()); },
+      R"pbdoc(
         Can has CUDA?
 
         Hello!
+    )pbdoc");
+
+  m.def(
+      "cuda_available", &cg::cuda_available,
+      R"pbdoc(
+        Is CUDA available?
     )pbdoc");
 
   py::class_<cg::DataProxy>(m, "_DataProxy")
