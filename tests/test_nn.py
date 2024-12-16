@@ -11,11 +11,25 @@ class TestNN(unittest.TestCase):
         t_softmax = torch.nn.functional.softmax(t, dim=0)
 
         u = cudagrad.Tensor([4], [0.0, 1.0, 2.0, 4.0])
-        u_softmax = cudagrad.nn.softmax(u)
+        u_softmax = u.softmax()
 
         for i in range(t.shape[0]):
             self.assertAlmostEqual(
                 t_softmax.data[i].item(), u_softmax.data[[i]].item(), places=5
+            )
+
+    def test_softmax_backward(self):
+        t = torch.tensor([0.0, 1.0, 2.0, 4.0], requires_grad=True)
+        t_softmax = torch.nn.functional.softmax(t, dim=0)
+        t_softmax.sum().backward()
+
+        u = cudagrad.Tensor([4], [0.0, 1.0, 2.0, 4.0])
+        u_softmax = u.softmax().sum()
+        u_softmax.backward()
+
+        for i in range(t.shape[0]):
+            self.assertAlmostEqual(
+                t.grad[i].item(), u.grad[[i]].item(), places=5
             )
 
     def test_softmax_big(self):
@@ -25,7 +39,7 @@ class TestNN(unittest.TestCase):
         t_softmax = torch.nn.functional.softmax(t, dim=0)
 
         u = cudagrad.Tensor([4], data)
-        u_softmax = cudagrad.nn.softmax(u)
+        u_softmax = u.softmax()
 
         for i in range(t.shape[0]):
             self.assertAlmostEqual(

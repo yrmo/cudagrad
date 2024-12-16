@@ -75,6 +75,7 @@ struct MaxBackward;
 struct ExpBackward;
 struct LnBackward;
 struct SelectBackward1;
+struct SoftmaxBackward;
 
 struct AutoGradForward;
 struct MatMulForward;
@@ -171,6 +172,7 @@ class Tensor : public std::enable_shared_from_this<Tensor> {
   std::shared_ptr<Tensor> ln();
   std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> select(std::vector<size_t> indexes);
+  std::shared_ptr<Tensor> softmax();
 
   std::shared_ptr<Tensor> select_data(std::vector<size_t> indexes);
   void put_data(std::vector<size_t> indexes, float value);
@@ -606,6 +608,26 @@ std::shared_ptr<Tensor> Tensor::ln() {
       std::make_shared<LnBackward>(), "LnBackward");
 }
 
+std::shared_ptr<Tensor> Tensor::softmax() {
+    float max_value = *std::max_element(data_.begin(), data_.end());
+    std::vector<float> exp_data(data_.size());
+    float sum_exp = 0.0f;
+    for (size_t i = 0; i < data_.size(); ++i) {
+        exp_data[i] = std::exp(data_[i] - max_value);
+        sum_exp += exp_data[i];
+    }
+    for (size_t i = 0; i < exp_data.size(); ++i) {
+        exp_data[i] /= sum_exp;
+    }
+    return std::make_shared<Tensor>(
+        size_,
+        exp_data,
+        std::vector<std::shared_ptr<Tensor>>{get_shared()},
+        std::make_shared<SoftmaxBackward>(shared_from_this(), exp_data),
+        "SoftmaxBackward"
+    );
+}
+
 std::shared_ptr<Tensor> Tensor::exponential() {
   std::vector<float> result_data(data_.size());
   for (size_t i = 0; i < data_.size(); ++i) {
@@ -746,12 +768,21 @@ std::vector<float> broadcast(std::vector<size_t> from, std::vector<float> data,
   if (from.size() == 1 && to.size() == 1 && from[0] == 1) {
     return std::vector<float>(to[0], data[0]);
   }
+  // 1D -> 1D (no broadcast)
+  // e.g. {2} -> {2}
+  if (from.size() == 1 && to.size() == 1 && from[0] == to[0]) {
+    return std::vector<float>(data.begin(), data.end());
+  }
   // 1D (scalar) -> 2D
   // e.g. {1} -> {2, 2}
   if (from.size() == 1 && to.size() == 2 && from[0] == 1) {
     return std::vector<float>(to[0] * to[1], data[0]);
   }
-
+  // 1D -> 1D
+  // e.g. {4} -> {1}
+  if (from.size() == 1 && to.size() == 1 && to[0] == 1) {
+    return std::vector<float>(to[0], data[0]);
+  }
   // MNIST TEMP HARD CODE
   if (from.size() == 2 && to.size() == 1 && from[0] == 1 && from[1] == 10 && to[0] == 1) {
     return std::vector<float>(to[0], data[0]);
@@ -797,8 +828,42 @@ std::vector<float> broadcast(std::vector<size_t> from, std::vector<float> data,
     return data;
   }
 
+  std::cout << "from" << " " << std::endl;
+  for (auto x: from) {
+    std::cout << x << " " << std::endl;
+  }
+  std::cout << "to" << " " << std::endl;
+  for (auto x: to) {
+    std::cout << x << " " << std::endl;
+  }
   throw std::runtime_error("Invalid broadcast");
 }
+
+struct SoftmaxBackward : public AutoGradBackward {
+    std::shared_ptr<Tensor> input_;
+    std::vector<float> output_data_;
+
+    SoftmaxBackward(std::shared_ptr<Tensor> input, const std::vector<float>& output_data)
+        : input_(std::move(input)), output_data_(output_data) {}
+
+    void apply(std::shared_ptr<Tensor> grad_output,
+               std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
+        assert(grad_inputs.size() == 1);
+        std::shared_ptr<Tensor> input = grad_inputs[0];
+
+        for (size_t i = 0; i < input->grad_.size(); ++i) {
+            float grad_sum = 0.0f;
+            for (size_t j = 0; j < output_data_.size(); ++j) {
+                if (i == j) {
+                    grad_sum += grad_output->grad_[j] * output_data_[i] * (1.0f - output_data_[j]);
+                } else {
+                    grad_sum -= grad_output->grad_[j] * output_data_[i] * output_data_[j];
+                }
+            }
+            input->grad_[i] += grad_sum;
+        }
+    }
+};
 
 struct SelectBackward1 : public AutoGradBackward {
   size_t index_;

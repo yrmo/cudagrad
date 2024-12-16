@@ -85,10 +85,11 @@ PYBIND11_MODULE(tensor, m) {
       .def("exp", &cg::Tensor::exponential)
       .def("max", &cg::Tensor::max)
       .def("exp", &cg::Tensor::exponential)
+      .def("softmax", &cg::Tensor::softmax)
       .def("log", &cg::Tensor::ln)
       .def_property_readonly("data", &cg::Tensor::data_proxy)
       .def_property_readonly("grad", &cg::Tensor::grad_proxy)
-      // .def("__getitem__", &cg::Tensor::select)
+      .def("__getitem__", &cg::Tensor::select)
       // .def("__setitem__", &cg::Tensor::put)
       .def("item", &cg::Tensor::item)
       .def_property_readonly("size",
