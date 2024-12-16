@@ -17,7 +17,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/cccl/thrust)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/cccl/libcudacxx/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/cccl/cub)
 
-add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/test_tensor.cpp ${CMAKE_CURRENT_SOURCE_DIR}/../src/operations.cu)
+add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/test_tensor.cpp ${CMAKE_CURRENT_SOURCE_DIR}/../src/operations.cu ${CMAKE_CURRENT_SOURCE_DIR}/../src/operations.cpp)
 target_link_libraries(${PROJECT_NAME} gtest gtest_main ${Python3_LIBRARIES})
 target_compile_options(${PROJECT_NAME} PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler -Icccl/thrust,-Icccl/libcudacxx/include,-Icccl/cub>)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../src/tensor.hpp ${CMAKE_CURRENT_BINARY_DIR}/tensor.hpp COPYONLY)

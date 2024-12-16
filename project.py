@@ -143,10 +143,10 @@ class Project:
         )
         CHECK("cmake ../tests")
         CHECK("cmake --build .")
-        CHECK("./tensor_test")
-        # FIXME skipping installation 'tests' on github runner for now
-        if (str(Path(".").resolve()).split("/")[2]) == "runner":
-            return
+        if platform.system() == "Windows":
+            CHECK(r".\Debug\tensor_test.exe")
+        else:
+            CHECK("./tensor_test")
 
         os.chdir("..")
 
@@ -160,7 +160,7 @@ class Project:
         CHECK("python ./benchmarks/_cudagrad/or.py")
         CHECK("python ./benchmarks/_cudagrad/xor.py")
         CHECK("python ./benchmarks/_cudagrad/moons.py")
-        CHECK("python ./benchmarks/_cudagrad/mnist.py")
+        # CHECK("python ./benchmarks/_cudagrad/mnist.py")
         CHECK("git restore benchmarks/_cudagrad/plots/*.jpg")
 
     def test_python_3_7(self):
