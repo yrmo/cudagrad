@@ -42,26 +42,23 @@ def sgd(model: Module, lr: float) -> None:
             Tensor.explode(parameter.size, -lr) * parameter.grad()
         )
 
+# def softmax(t: Tensor) -> Tensor:
+#     D = Tensor([1], [-1]) * t.max()
+#     e = (t + D).exp()
+#     return e / e.sum()
 
-def softmax(t: Tensor) -> Tensor:
-    D = Tensor([1], [-1]) * t.max()
-    e = (t + D).exp()
-    return e / e.sum()
+def log_softmax(t: Tensor) -> Tensor:
+    return Tensor.log(t.softmax())
 
+def nll_loss(inputs: Tensor, target: int):
+    ...
 
 def cross_entropy(inputs: Tensor, target: Tensor) -> Tensor:
-    probs = softmax(inputs)
+    # x = int(target.data[[0]].item())
+    assert inputs.size[0] < inputs.size[1]
+    log_probs = log_softmax(inputs)
 
     one_hot_target = Tensor.zeros(inputs.size)
-    one_hot_target.data[0, int(target.data[0, 0].item())] = (
-        1.0  # TODO 0 index is wrong?
-    )
-
-    log_probs = Tensor.log(probs)
-
-    loss = (
-        Tensor([1], [-1.0])
-        * (one_hot_target * log_probs).sum()
-        / Tensor([1], [inputs.size[0]])
-    )
+    one_hot_target.data[0, int(target.data[0, 0].item())] = 1.0 # TODO 0 index is wrong?
+    loss = Tensor([1], [-1.0]) * (one_hot_target * log_probs).sum() / Tensor([1], [inputs.size[0]])
     return loss
