@@ -45,9 +45,11 @@ def sgd(model: Module, lr: float) -> None:
 def log_softmax(t: Tensor) -> Tensor:
     return Tensor.log(t.softmax())
 
-def nll_loss(inputs: Tensor, target: int) -> Tensor:
+def nll_loss(inputs: Tensor, target: list[int]) -> Tensor:
+    print(1)
     # inputs is [num_classes] and log-softmaxed
     selected = inputs.select(target)
+    print(2)
     return Tensor([1], [-1.0]) * selected
 
 def cross_entropy(inputs: Tensor, target: Tensor) -> Tensor:

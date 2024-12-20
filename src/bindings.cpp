@@ -10,6 +10,7 @@
 #include <memory>
 #include <sstream>
 #include <vector>
+#include <fstream>
 
 #include "tensor.hpp"  // NOLINT(build/include_subdir)
 

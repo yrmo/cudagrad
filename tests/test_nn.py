@@ -46,24 +46,32 @@ class TestNN(unittest.TestCase):
                 t_softmax.data[i].item(), u_softmax.data[[i]].item(), places=5
             )
 
-    @unittest.skip("Testing softmax first")
     def test_nll_loss(self):
         t_input = torch.tensor([0.1, 0.2, 0.3, 0.4], requires_grad=True)
         t_target = torch.tensor(2)
-
         t_log_softmax = torch.nn.functional.log_softmax(t_input, dim=0)
+        print("-" * 8)
+        print(t_log_softmax)
         t_nll_loss = -t_log_softmax[t_target]
+        print("-" * 8)
+        print(t_nll_loss)
         t_nll_loss.backward()
 
         u_input = cudagrad.Tensor([4], [0.1, 0.2, 0.3, 0.4])
-        u_target = cudagrad.nn.Tensor([1], [2])
+        # u_target = cudagrad.nn.Tensor([1], [2])
+        u_target = [2]
         u_log_softmax = cudagrad.nn.log_softmax(u_input)
-        u_nll_loss = u_log_softmax.nll_loss(u_target)
+        print("-" * 8)
+        print(u_log_softmax)
+        u_nll_loss = cudagrad.nn.nll_loss(u_log_softmax, u_target)
+        print("-" * 8)
+        print(u_nll_loss)
         u_nll_loss.backward()
 
-        self.assertAlmostEqual(
-            t_nll_loss.item(), u_nll_loss.data[[0]].item(), places=5
-        )
+        for i in range(t_input.shape[0]):
+            self.assertAlmostEqual(
+                t_input.data[i].item(), u_input.data[[i]].item(), places=5
+            )
 
         for i in range(t_input.shape[0]):
             self.assertAlmostEqual(
