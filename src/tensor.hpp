@@ -870,10 +870,16 @@ struct SelectBackward1 : public AutoGradBackward {
 
   SelectBackward1(size_t idx) : index_(idx) {}
 
-  void apply(std::shared_ptr<Tensor> grad_output,
-             std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
-    grad_inputs[0]->grad_[index_] += grad_output->grad_[0];
-  }
+    void apply(std::shared_ptr<Tensor> grad_output,
+               std::vector<std::shared_ptr<Tensor>> grad_inputs) override {
+        debug_inputs(grad_output, grad_inputs, "SelectBackward1");
+        assert(grad_inputs.size() == 1);
+        std::shared_ptr<Tensor> input = grad_inputs[0];
+
+        input->grad_[index_] += grad_output->grad_[0];
+        
+        debug_outputs(grad_output, grad_inputs, "SelectBackward1");
+    }
 };
 
 struct AddBackward : public AutoGradBackward {

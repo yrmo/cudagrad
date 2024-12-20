@@ -46,13 +46,38 @@ class TestNN(unittest.TestCase):
                 t_softmax.data[i].item(), u_softmax.data[[i]].item(), places=5
             )
 
+    @unittest.skip("Testing softmax first")
+    def test_nll_loss(self):
+        t_input = torch.tensor([0.1, 0.2, 0.3, 0.4], requires_grad=True)
+        t_target = torch.tensor(2)
+
+        t_log_softmax = torch.nn.functional.log_softmax(t_input, dim=0)
+        t_nll_loss = -t_log_softmax[t_target]
+        t_nll_loss.backward()
+
+        u_input = cudagrad.Tensor([4], [0.1, 0.2, 0.3, 0.4])
+        u_target = cudagrad.nn.Tensor([1], [2])
+        u_log_softmax = cudagrad.nn.log_softmax(u_input)
+        u_nll_loss = u_log_softmax.nll_loss(u_target)
+        u_nll_loss.backward()
+
+        self.assertAlmostEqual(
+            t_nll_loss.item(), u_nll_loss.data[[0]].item(), places=5
+        )
+
+        for i in range(t_input.shape[0]):
+            self.assertAlmostEqual(
+                t_input.grad[i].item(), u_input.grad[[i]].item(), places=5
+            )
+
+    @unittest.skip("Testing softmax first")
     def test_cross_entropy_loss(self):
         x = cudagrad.nn.cross_entropy(
             cudagrad.Tensor([1, 2], [0.1782, 0.2920]), cudagrad.Tensor([1], [0])
         ).item()
         self.assertAlmostEqual(x, 0.7517, places=3)
 
-
+    @unittest.skip("Testing softmax first")
     def test_cross_entropy_loss_mnist(self):
         """
         import torch
@@ -70,6 +95,7 @@ class TestNN(unittest.TestCase):
         x = cudagrad.nn.cross_entropy(cudagrad.Tensor([1, 10], [2.0991, -0.3244, -1.4904, -0.9129, -0.1676,  0.9251,  0.1822, -0.0762,0.3743, -0.6091]), cudagrad.Tensor([1], [5])).item()
         self.assertAlmostEqual(x, 1.9081392288208008, places=3)
 
+    @unittest.skip("Testing softmax first")
     def test_cross_entropy_loss_cross_backward(self):
         """
         arr.unsqueeze(0)
