@@ -78,14 +78,16 @@ class TestNN(unittest.TestCase):
                 t_input.grad[i].item(), u_input.grad[[i]].item(), places=5
             )
 
-    @unittest.skip("Testing softmax first")
+    @unittest.skip("Skipping cross entropy")
     def test_cross_entropy_loss(self):
         x = cudagrad.nn.cross_entropy(
-            cudagrad.Tensor([1, 2], [0.1782, 0.2920]), cudagrad.Tensor([1], [0])
-        ).item()
-        self.assertAlmostEqual(x, 0.7517, places=3)
+            cudagrad.Tensor([1, 2], [0.1782, 0.2920]), [0]
+        )
+        self.assertAlmostEqual(x.item(), 0.7517, places=3)
+        self.assertAlmostEqual(x.grad[[0]].item(), -0.5284, places=3)
+        self.assertAlmostEqual(x.grad[[1]].item(), 0.5284, places=3)
 
-    @unittest.skip("Testing softmax first")
+    @unittest.skip("Skipping cross entropy")
     def test_cross_entropy_loss_mnist(self):
         """
         import torch
@@ -100,10 +102,10 @@ class TestNN(unittest.TestCase):
         loss = criterion(inputs, target)
         print(loss.item()) # 1.9081392288208008
         """
-        x = cudagrad.nn.cross_entropy(cudagrad.Tensor([1, 10], [2.0991, -0.3244, -1.4904, -0.9129, -0.1676,  0.9251,  0.1822, -0.0762,0.3743, -0.6091]), cudagrad.Tensor([1], [5])).item()
+        x = cudagrad.nn.cross_entropy(cudagrad.Tensor([1, 10], [2.0991, -0.3244, -1.4904, -0.9129, -0.1676,  0.9251,  0.1822, -0.0762,0.3743, -0.6091]), [5]).item()
         self.assertAlmostEqual(x, 1.9081392288208008, places=3)
 
-    @unittest.skip("Testing softmax first")
+    @unittest.skip("Skipping softmax first")
     def test_cross_entropy_loss_cross_backward(self):
         """
         arr.unsqueeze(0)

@@ -52,6 +52,6 @@ def nll_loss(inputs: Tensor, target: list[int]) -> Tensor:
     print(2)
     return Tensor([1], [-1.0]) * selected
 
-def cross_entropy(inputs: Tensor, target: Tensor) -> Tensor:
+def cross_entropy(inputs: Tensor, target: list[int]) -> Tensor:
     log_softmaxed = log_softmax(inputs)
     return nll_loss(log_softmaxed, target)
