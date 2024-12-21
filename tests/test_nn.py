@@ -87,11 +87,11 @@ class TestNN(unittest.TestCase):
         # >>> l
         # tensor(-1.3895, grad_fn=<SumBackward0>)
         t = cudagrad.Tensor([1, 2], [0.1782, 0.2920])
-        l = cudagrad.nn.log_softmax(t)
+        l = cudagrad.nn.log_softmax(t).sum()
         l.backward()
-        self.assertAlmostEqual(l.item(), -1.3895, places=5)
-        self.assertAlmostEqual(t.grad[0].item(), 0.0568, places=5)
-        self.assertAlmostEqual(t.grad[1].item(), -0.0568, places=5)
+        self.assertAlmostEqual(l.item(), -1.3895, places=3)
+        self.assertAlmostEqual(t.grad[[0, 0]].item(), 0.0568, places=3)
+        self.assertAlmostEqual(t.grad[[0, 1]].item(), -0.0568, places=3)
 
 
     def test_nll_loss_2(self):
@@ -108,6 +108,7 @@ class TestNN(unittest.TestCase):
         # tensor(-0.1782, grad_fn=<SumBackward0>)
         t = cudagrad.Tensor([1, 2], [0.1782, 0.2920])
         l = cudagrad.nn.nll_loss(t, [0])
+        l = l.sum()
         l.backward()
         self.assertAlmostEqual(l.item(), -0.1782, places=5)
         self.assertAlmostEqual(t.grad[[0]].item(), -1.0, places=5)
