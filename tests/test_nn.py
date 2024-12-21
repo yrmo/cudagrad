@@ -122,23 +122,44 @@ class TestNN(unittest.TestCase):
         self.assertAlmostEqual(t.grad[[0, 0]].item(), -0.5284, places=3)
         self.assertAlmostEqual(t.grad[[0, 1]].item(), 0.5284, places=3)
 
-    @unittest.skip("Skipping cross entropy")
     def test_cross_entropy_loss_mnist(self):
         """
-        import torch
-        import torch.nn as nn
-        inputs = torch.tensor([[2.0991, -0.3244, -1.4904, -0.9129, -0.1676,  0.9251,  0.1822, -0.0762,0.3743, -0.6091]])
-        target = torch.tensor([5])
-        inputs_shape = [1, 10]
-        target_shape = [1]
-        assert inputs.shape == torch.Size(inputs_shape), f"Expected inputs shape {inputs_shape}, got {inputs.shape}"
-        assert target.shape == torch.Size(target_shape), f"Expected target shape {target_shape}, got {target.shape}"
-        criterion = nn.CrossEntropyLoss()
-        loss = criterion(inputs, target)
-        print(loss.item()) # 1.9081392288208008
+        >>> import torch
+        >>> inputs = torch.tensor([[2.0991, -0.3244, -1.4904, -0.9129, -0.1676,  0.9251,  0.1822, -0.0762,0.3743, -0.6091]], requires_grad=True)
+        >>> target = torch.tensor([5])
+        >>> inputs_shape = [1, 10]
+        >>> target_shape = [1]
+        >>> assert inputs.shape == torch.Size(inputs_shape), f"Expected inputs shape {inputs_shape}, got {inputs.shape}"
+        >>> assert target.shape == torch.Size(target_shape), f"Expected target shape {target_shape}, got {target.shape}"
+        >>> criterion = torch.nn.CrossEntropyLoss()
+        >>> loss = criterion(inputs, target)
+        >>> loss.backward()
+        >>> loss
+        tensor(1.9081, grad_fn=<NllLossBackward0>)
+        >>> loss.grad
+        <stdin>:1: UserWarning: The .grad attribute of a Tensor that is not a leaf Tensor is being accessed. Its .grad attribute won't be populated during autograd.backward(). If you indeed want the .grad field to be populated for a non-leaf Tensor, use .retain_grad() on the non-leaf Tensor. If you access the non-leaf Tensor by mistake, make sure you access the leaf Tensor instead. See github.com/pytorch/pytorch/pull/30531 for more informations. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\build\aten\src\ATen/core/TensorBody.h:494.)
+        >>> inputs
+        tensor([[ 2.0991, -0.3244, -1.4904, -0.9129, -0.1676,  0.9251,  0.1822, -0.0762,
+                0.3743, -0.6091]], requires_grad=True)
+        >>> inputs.grad
+        tensor([[ 0.4799,  0.0425,  0.0133,  0.0236,  0.0497, -0.8516,  0.0706,  0.0545,
+                0.0855,  0.0320]])
         """
-        x = cudagrad.nn.cross_entropy(cudagrad.Tensor([1, 10], [2.0991, -0.3244, -1.4904, -0.9129, -0.1676,  0.9251,  0.1822, -0.0762,0.3743, -0.6091]), [5]).item()
-        self.assertAlmostEqual(x, 1.9081392288208008, places=3)
+        t = cudagrad.Tensor([1, 10], [2.0991, -0.3244, -1.4904, -0.9129, -0.1676,  0.9251,  0.1822, -0.0762,0.3743, -0.6091])
+        x = cudagrad.nn.cross_entropy(t, [0, 5])
+        x = x.sum()
+        x.backward()
+        self.assertAlmostEqual(x.data[[0, 0]].item(), 1.9081392288208008, places=3)
+        self.assertAlmostEqual(t.grad[[0, 0]].item(), 0.4799, places=3)
+        self.assertAlmostEqual(t.grad[[0, 1]].item(), 0.0425, places=3)
+        self.assertAlmostEqual(t.grad[[0, 2]].item(), 0.0133, places=3)
+        self.assertAlmostEqual(t.grad[[0, 3]].item(), 0.0236, places=3)
+        self.assertAlmostEqual(t.grad[[0, 4]].item(), 0.0497, places=3)
+        self.assertAlmostEqual(t.grad[[0, 5]].item(), -0.8516, places=3)
+        self.assertAlmostEqual(t.grad[[0, 6]].item(), 0.0706, places=3)
+        self.assertAlmostEqual(t.grad[[0, 7]].item(), 0.0545, places=3)
+        self.assertAlmostEqual(t.grad[[0, 8]].item(), 0.0855, places=3)
+        self.assertAlmostEqual(t.grad[[0, 9]].item(), 0.0320, places=3)
 
     @unittest.skip("Skipping softmax first")
     def test_cross_entropy_loss_cross_backward(self):

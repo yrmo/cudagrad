@@ -534,15 +534,9 @@ std::shared_ptr<Tensor> binaryForwardOperator(std::shared_ptr<Tensor> lhs,
 }
 
 std::shared_ptr<Tensor> Tensor::select(std::vector<size_t> indexes) {
-  // there's no slices because it's too hard so just scalar select :D
   assert(indexes.size() == 1);
   size_t idx = _dot(indexes, strides_);
-  std::vector<float> selected(data_.size(), 0.0f);
-  selected[idx] = data_[idx];
-  // std::ofstream myfile;
-  // myfile.open("example.txt");
-  // myfile << selected[idx];
-  // myfile.close();
+  std::vector<float> selected(1, data_[idx]);
   auto grad_fn = std::make_shared<SelectBackward1>(idx);
   return std::make_shared<Tensor>(
     std::vector<size_t>{1},
