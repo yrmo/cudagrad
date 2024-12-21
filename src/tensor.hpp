@@ -545,7 +545,7 @@ std::shared_ptr<Tensor> Tensor::select(std::vector<size_t> indexes) {
   // myfile.close();
   auto grad_fn = std::make_shared<SelectBackward1>(idx);
   return std::make_shared<Tensor>(
-    size_,
+    std::vector<size_t>{1},
     selected,
     std::vector<std::shared_ptr<Tensor>>{get_shared()},
     grad_fn,

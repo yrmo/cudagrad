@@ -78,14 +78,49 @@ class TestNN(unittest.TestCase):
                 t_input.grad[i].item(), u_input.grad[[i]].item(), places=5
             )
 
+    def test_log_softmax_2(self):
+        # >>> t = torch.tensor([[0.1782, 0.2920]], requires_grad=True)
+        # >>> l = torch.nn.functional.log_softmax(t).sum()
+        # >>> l.backward()
+        # >>> t.grad
+        # tensor([[ 0.0568, -0.0568]])
+        # >>> l
+        # tensor(-1.3895, grad_fn=<SumBackward0>)
+        t = cudagrad.Tensor([1, 2], [0.1782, 0.2920])
+        l = cudagrad.nn.log_softmax(t)
+        l.backward()
+        self.assertAlmostEqual(l.item(), -1.3895, places=5)
+        self.assertAlmostEqual(t.grad[0].item(), 0.0568, places=5)
+        self.assertAlmostEqual(t.grad[1].item(), -0.0568, places=5)
+
+
+    def test_nll_loss_2(self):
+        # >>> t = torch.tensor([[0.1782, 0.2920]], requires_grad=True)
+        # >>> target = torch.tensor([0])
+        # >>>
+        # >>> l = torch.nn.functional.nll_loss(t, target).sum()
+        # >>> l.backward()
+        # >>> t
+        # tensor([[0.1782, 0.2920]], requires_grad=True)
+        # >>> t.grad
+        # tensor([[-1.,  0.]])
+        # >>> l
+        # tensor(-0.1782, grad_fn=<SumBackward0>)
+        t = cudagrad.Tensor([1, 2], [0.1782, 0.2920])
+        l = cudagrad.nn.nll_loss(t, [0])
+        l.backward()
+        self.assertAlmostEqual(l.item(), -0.1782, places=5)
+        self.assertAlmostEqual(t.grad[[0]].item(), -1.0, places=5)
+        self.assertAlmostEqual(t.grad[[1]].item(), 0.0, places=5)
+
     @unittest.skip("Skipping cross entropy")
     def test_cross_entropy_loss(self):
-        x = cudagrad.nn.cross_entropy(
-            cudagrad.Tensor([1, 2], [0.1782, 0.2920]), [0]
-        )
+        t = cudagrad.Tensor([1, 2], [0.1782, 0.2920])
+        x = cudagrad.nn.cross_entropy(t, [0])
+        x.backward()
         self.assertAlmostEqual(x.item(), 0.7517, places=3)
-        self.assertAlmostEqual(x.grad[[0]].item(), -0.5284, places=3)
-        self.assertAlmostEqual(x.grad[[1]].item(), 0.5284, places=3)
+        self.assertAlmostEqual(t.grad[[0]].item(), -0.5284, places=3)
+        self.assertAlmostEqual(t.grad[[1]].item(), 0.5284, places=3)
 
     @unittest.skip("Skipping cross entropy")
     def test_cross_entropy_loss_mnist(self):
