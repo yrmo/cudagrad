@@ -79,7 +79,6 @@ class TestNN(unittest.TestCase):
                 t_input.grad[i].item(), u_input.grad[[i]].item(), places=5
             )
 
-    @unittest.skip("Not implemented")
     def test_log_softmax_2(self):
         # >>> t = torch.tensor([[0.1782, 0.2920]], requires_grad=True)
         # >>> l = torch.nn.functional.log_softmax(t).sum()
@@ -169,24 +168,24 @@ class TestNN(unittest.TestCase):
     @unittest.skip("Not implemented")
     def test_cross_entropy_loss_cross_backward(self):
         """
-        >>> t = torch.tensor([[-0.1600,  0.4920,  0.9304, -1.5375, -0.0106,  1.3549, -0.9282,  1.3031, -0.5426, -0.9015]], requi
+        t = torch.tensor([[-0.1600,  0.4920,  0.9304, -1.5375, -0.0106,  1.3549, -0.9282,  1.3031, -0.5426, -0.9015]], requi
         res_grad=True)
-        >>> t
+        t
         tensor([[-0.1600,  0.4920,  0.9304, -1.5375, -0.0106,  1.3549, -0.9282,  1.3031,
                 -0.5426, -0.9015]], requires_grad=True)
-        >>> torch.nn.functional.cross_entropy
+        torch.nn.functional.cross_entropy
         <function cross_entropy at 0x000001F0CD8C1C60>
-        >>> torch.nn.functional.cross_entropy(t, torch.tensor([5]))
+        torch.nn.functional.cross_entropy(t, torch.tensor([5]))
         tensor(1.3642, grad_fn=<NllLossBackward0>)
-        >>> l = torch.nn.functional.cross_entropy(t, torch.tensor([5]))
-        >>> l.backward()
-        >>> t
+        l = torch.nn.functional.cross_entropy(t, torch.tensor([5]))
+        l.backward()
+        t
         tensor([[-0.1600,  0.4920,  0.9304, -1.5375, -0.0106,  1.3549, -0.9282,  1.3031,
                 -0.5426, -0.9015]], requires_grad=True)
-        >>> t.grad
+        t.grad
         tensor([[ 0.0562,  0.1078,  0.1672,  0.0142,  0.0652, -0.7444,  0.0261,  0.2427,
                 0.0383,  0.0268]])
-        >>> l
+        l
         tensor(1.3642, grad_fn=<NllLossBackward0>)
         """
         t = cudagrad.Tensor([1, 10], [-0.1600,  0.4920,  0.9304, -1.5375, -0.0106,  1.3549, -0.9282,  1.3031, -0.5426, -0.9015])
@@ -205,4 +204,4 @@ class TestNN(unittest.TestCase):
         self.assertAlmostEqual(t.grad[[0, 9]].item(), 0.0268, places=3)
 
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main(verbosity=2)
