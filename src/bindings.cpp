@@ -90,9 +90,6 @@ PYBIND11_MODULE(tensor, m) {
       .def("log", &cg::Tensor::ln)
       .def_property_readonly("data", &cg::Tensor::data_proxy)
       .def_property_readonly("grad", &cg::Tensor::grad_proxy)
-      .def("select", &cg::Tensor::select)
-      .def("__getitem__", &cg::Tensor::select) // TODO(yrmo): remove
-      // .def("__setitem__", &cg::Tensor::put)
       .def("item", &cg::Tensor::item)
       .def_property_readonly("size",
                              &cg::Tensor::get_size)  // do something about this

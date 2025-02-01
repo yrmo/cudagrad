@@ -533,19 +533,20 @@ std::shared_ptr<Tensor> binaryForwardOperator(std::shared_ptr<Tensor> lhs,
   return (*forward)();  // forward.get()();
 }
 
-std::shared_ptr<Tensor> Tensor::select(std::vector<size_t> indexes) {
-  assert(indexes.size() == 1);
-  size_t idx = _dot(indexes, strides_);
-  std::vector<float> selected(1, data_[idx]);
-  auto grad_fn = std::make_shared<SelectBackward1>(idx);
-  return std::make_shared<Tensor>(
-    std::vector<size_t>{1},
-    selected,
-    std::vector<std::shared_ptr<Tensor>>{get_shared()},
-    grad_fn,
-    "SelectBackward1"
-  );
-}
+// std::shared_ptr<Tensor> Tensor::select(std::vector<size_t> indexes) {
+//   // TODO(yrmo): nllloss needs size to be one? not sure see bc01cbf
+//   // assert(indexes.size() == 1);
+//   size_t idx = _dot(indexes, strides_);
+//   std::vector<float> selected(1, data_[idx]);
+//   auto grad_fn = std::make_shared<SelectBackward1>(idx);
+//   return std::make_shared<Tensor>(
+//     std::vector<size_t>{1},
+//     selected,
+//     std::vector<std::shared_ptr<Tensor>>{get_shared()},
+//     grad_fn,
+//     "SelectBackward1"
+//   );
+// }
 
 std::shared_ptr<Tensor> Tensor::matmul(std::shared_ptr<Tensor> other) {
   std::shared_ptr<MatMulForward> f =

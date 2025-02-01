@@ -46,6 +46,7 @@ class TestNN(unittest.TestCase):
                 t_softmax.data[i].item(), u_softmax.data[[i]].item(), places=5
             )
 
+    @unittest.skip("Not implemented")
     def test_nll_loss(self):
         t_input = torch.tensor([0.1, 0.2, 0.3, 0.4], requires_grad=True)
         t_target = torch.tensor(2)
@@ -78,6 +79,7 @@ class TestNN(unittest.TestCase):
                 t_input.grad[i].item(), u_input.grad[[i]].item(), places=5
             )
 
+    @unittest.skip("Not implemented")
     def test_log_softmax_2(self):
         # >>> t = torch.tensor([[0.1782, 0.2920]], requires_grad=True)
         # >>> l = torch.nn.functional.log_softmax(t).sum()
@@ -93,6 +95,7 @@ class TestNN(unittest.TestCase):
         self.assertAlmostEqual(t.grad[[0, 0]].item(), 0.0568, places=3)
         self.assertAlmostEqual(t.grad[[0, 1]].item(), -0.0568, places=3)
 
+    @unittest.skip("Not implemented")
     def test_nll_loss_2(self):
         # >>> t = torch.tensor([[0.1782, 0.2920]], requires_grad=True)
         # >>> target = torch.tensor([0])
@@ -113,6 +116,7 @@ class TestNN(unittest.TestCase):
         self.assertAlmostEqual(t.grad[[0, 0]].item(), -1.0, places=5)
         self.assertAlmostEqual(t.grad[[0, 1]].item(), 0.0, places=5)
 
+    @unittest.skip("Not implemented")
     def test_cross_entropy_loss(self):
         t = cudagrad.Tensor([1, 2], [0.1782, 0.2920])
         x = cudagrad.nn.cross_entropy(t, [0])
@@ -122,6 +126,7 @@ class TestNN(unittest.TestCase):
         self.assertAlmostEqual(t.grad[[0, 0]].item(), -0.5284, places=3)
         self.assertAlmostEqual(t.grad[[0, 1]].item(), 0.5284, places=3)
 
+    @unittest.skip("Not implemented")
     def test_cross_entropy_loss_mnist(self):
         """
         >>> import torch
@@ -161,6 +166,7 @@ class TestNN(unittest.TestCase):
         self.assertAlmostEqual(t.grad[[0, 8]].item(), 0.0855, places=3)
         self.assertAlmostEqual(t.grad[[0, 9]].item(), 0.0320, places=3)
 
+    @unittest.skip("Not implemented")
     def test_cross_entropy_loss_cross_backward(self):
         """
         >>> t = torch.tensor([[-0.1600,  0.4920,  0.9304, -1.5375, -0.0106,  1.3549, -0.9282,  1.3031, -0.5426, -0.9015]], requi

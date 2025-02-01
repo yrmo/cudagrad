@@ -47,7 +47,7 @@ def log_softmax(t: Tensor) -> Tensor:
 
 def nll_loss(inputs: Tensor, target: list[int]) -> Tensor:
     # inputs is [num_classes] and log-softmaxed
-    selected = inputs.select(target)
+    selected = inputs.data[target]
     return Tensor([1], [-1.0]) * selected
 
 def cross_entropy(inputs: Tensor, target: list[int]) -> Tensor:

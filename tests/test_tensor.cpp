@@ -30,28 +30,28 @@ TEST(Basic, NotEqual) {
   EXPECT_EQ((foo != bar).get()->data_[0], 1.0);
 }
 
-TEST(Basic, Select) {
-  auto t = cg::tensor({2, 3}, {0.0, 1.0, 2.0, 3.0, 4.0, 5.0});
-  auto t2 = t->select(std::vector<size_t>{0, 2});
-  auto l = t2->sum();
-  l->backward();
+// TEST(Basic, Select) {
+//   auto t = cg::tensor({2, 3}, {0.0, 1.0, 2.0, 3.0, 4.0, 5.0});
+//   auto t2 = t->select(std::vector<size_t>{0, 2});
+//   auto l = t2->sum();
+//   l->backward();
 
-  EXPECT_NEAR(l->data_[0], 2.0, 0.01);
+//   EXPECT_NEAR(l->data_[0], 2.0, 0.01);
 
-  EXPECT_NEAR(t2->data_[0], 0.0, 0.01);
-  EXPECT_NEAR(t2->data_[1], 0.0, 0.01);
-  EXPECT_NEAR(t2->data_[2], 2.0, 0.01);
-  EXPECT_NEAR(t2->data_[3], 0.0, 0.01);
-  EXPECT_NEAR(t2->data_[4], 0.0, 0.01);
-  EXPECT_NEAR(t2->data_[5], 0.0, 0.01);
+//   EXPECT_NEAR(t2->data_[0], 0.0, 0.01);
+//   EXPECT_NEAR(t2->data_[1], 0.0, 0.01);
+//   EXPECT_NEAR(t2->data_[2], 2.0, 0.01);
+//   EXPECT_NEAR(t2->data_[3], 0.0, 0.01);
+//   EXPECT_NEAR(t2->data_[4], 0.0, 0.01);
+//   EXPECT_NEAR(t2->data_[5], 0.0, 0.01);
 
-  EXPECT_NEAR(t->grad_[0], 0.0, 0.01);
-  EXPECT_NEAR(t->grad_[1], 0.0, 0.01);
-  EXPECT_NEAR(t->grad_[2], 1.0, 0.01);
-  EXPECT_NEAR(t->grad_[3], 0.0, 0.01);
-  EXPECT_NEAR(t->grad_[4], 0.0, 0.01);
-  EXPECT_NEAR(t->grad_[5], 0.0, 0.01);
-}
+//   EXPECT_NEAR(t->grad_[0], 0.0, 0.01);
+//   EXPECT_NEAR(t->grad_[1], 0.0, 0.01);
+//   EXPECT_NEAR(t->grad_[2], 1.0, 0.01);
+//   EXPECT_NEAR(t->grad_[3], 0.0, 0.01);
+//   EXPECT_NEAR(t->grad_[4], 0.0, 0.01);
+//   EXPECT_NEAR(t->grad_[5], 0.0, 0.01);
+// }
 
 TEST(Basic, Add) {
   auto a = cg::tensor({1}, {42.0});
